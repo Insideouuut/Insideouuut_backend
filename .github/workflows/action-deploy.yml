@@ -1,0 +1,63 @@
+name: deploy
+
+on:
+  push: # main 브랜치에 push하는 상황에만 실행
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest # EC2와 같은 우분투 환경으로 맞춤
+    defaults:
+      run:
+        working-directory: ./Inside-Out
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17 # JDK 17 설치
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - name: make application.properties # properties 파일은 시크릿으로 관리할 예정
+        run: |
+          cd ./src/main
+          mkdir -p ./resources
+          cd ./resources
+          touch -f ./application.properties
+          echo "${{ secrets.APPLICATION_PROD }}" > ./application.properties
+
+      - name: make application.properties # properties 파일은 시크릿으로 관리할 예정
+        run: |
+          cd ./src/main/resources 
+          touch -f ./application.properties
+          echo "${{ secrets.APPLICATION_PROD }}" > ./application.properties
+
+      - name: Build with Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: Docker build & push to docker repo
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker build -f Dockerfile-dev -t "${{ secrets.DOCKER_USERNAME }}/inside-out" .
+          docker push "${{ secrets.DOCKER_USERNAME }}/inside-out"
+          
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        id: deploy
+        with:
+          host: ${{ secrets.AWS_HOST }} # 호스트 또한 시크릿으로
+          username: ubuntu
+          key: ${{ secrets.AWS_KEY }} # 접근키도 시크릿으로 관리
+          envs: GITHUB_SHA # 안쓸거 같긴한데.. 다들 환경변수 써놓길래 일단 적어놈
+        script: |
+          sudo docker rm -f $(docker ps -qa)
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/inside-out
+          docker-compose up -d
+          docker image prune -f
