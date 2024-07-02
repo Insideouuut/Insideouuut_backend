@@ -47,17 +47,18 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker build -f Dockerfile-dev -t "${{ secrets.DOCKER_USERNAME }}/inside-out" .
           docker push "${{ secrets.DOCKER_USERNAME }}/inside-out"
-          
+
       - name: Deploy to server
         uses: appleboy/ssh-action@master
-        id: deploy
         with:
-          host: ${{ secrets.AWS_HOST }} # 호스트 또한 시크릿으로
+          host: ${{ secrets.AWS_HOST }}
           username: ubuntu
-          key: ${{ secrets.AWS_KEY }} # 접근키도 시크릿으로 관리
-          envs: GITHUB_SHA # 안쓸거 같긴한데.. 다들 환경변수 써놓길래 일단 적어놈
-        script: |
-          sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/inside-out
-          docker-compose up -d
-          docker image prune -f
+          key: ${{ secrets.AWS_KEY }}
+          env: GITHUB_SHA  # 단일 환경 변수 전달
+
+          # SSH 세션 내에서 실행될 스크립트
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/inside-out
+            docker-compose up -d
+            docker image prune -f
