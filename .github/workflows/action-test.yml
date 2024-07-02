@@ -1,0 +1,38 @@
+name: test
+
+on:
+  pull_request: #push 할때도 적용할지는 고려 해 봐야 할듯
+    branches:
+      - develop
+permissions:
+   contents: read
+
+jobs:
+  test:
+    name: merge-test
+    runs-on: ubuntu-latest #EC2와 같은 우분투 환경으로 맞춤
+    environment: test
+    defaults:
+      run:
+        working-directory: ./Inside-Out
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17 #JDK 17 설치
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          
+      - name: make application.properties #properties 파일은 시크릿으로 관리할 예정
+        run: |
+          cd ./src/main/resources 
+          touch -f ./application.properties
+          echo "${{ secrets.APPLICATION_PROD }}" > ./application.properties
+        #해당 디렉토리로 이동 및 properties 파일 생성
+        
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew #실행 파일 권한 부여
+        
+      - name: Test with Gradle
+        run: ./gradlew build #빌드 테스트
