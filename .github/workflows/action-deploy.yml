@@ -60,5 +60,5 @@ jobs:
           script: |
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/inside-out
-            docker-compose up -d
+            docker-compose -p myproject up -d
             docker image prune -f
