@@ -26,7 +26,9 @@ jobs:
           
       - name: make application.properties #properties 파일은 시크릿으로 관리할 예정
         run: |
-          cd ./src/main/resources 
+          cd ./src/main
+          mkdir -p ./resources
+          cd ./resources
           touch -f ./application.properties
           echo "${{ secrets.APPLICATION_PROD }}" > ./application.properties
         #해당 디렉토리로 이동 및 properties 파일 생성
