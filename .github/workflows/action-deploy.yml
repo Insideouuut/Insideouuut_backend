@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           key: ${{ secrets.AWS_KEY }}
           port: 22
-          source: "script/deploy.sh"
+          source: "./script/deploy.sh"
           target: "/home/ubuntu/"
 
       - name: Deploy to server
