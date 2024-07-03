@@ -69,6 +69,6 @@ jobs:
           # SSH 세션 내에서 실행될 스크립트
           script: |
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/inside-out
-            chmod 777 ./deploy.sh
-            ./deploy.sh
+            chmod 777 ./script/deploy.sh
+            ./script/deploy.sh
             docker image prune -f
