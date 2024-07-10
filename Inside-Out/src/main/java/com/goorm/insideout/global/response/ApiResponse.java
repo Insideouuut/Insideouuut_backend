@@ -24,7 +24,8 @@ public class ApiResponse<T> {
 	}
 
 	public ApiResponse(T data) {
-		this.data = data;
+		this.metadata = new Metadata(1);
+		this.results = List.of(data);
 	}
 
 	@Getter
