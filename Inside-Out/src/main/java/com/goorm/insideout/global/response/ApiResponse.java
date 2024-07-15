@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,18 +35,24 @@ public class ApiResponse<T> {
 		this.status = new Status(errorCode);
 	}
 
+	public ApiResponse(ModongException exception) {
+		this.status = new Status(exception.getErrorCode());
+	}
+
 	@Getter
 	@AllArgsConstructor
 	private static class Metadata {
 		private int resultCount = 0;
 	}
+
 	@Getter
 	private static class Status {
 		private int code;
 		private String message;
-		public Status(ErrorCode errorCode){
-			this.code=errorCode.getStatus().value();
-			this.message=errorCode.getMessage();
+
+		public Status(ErrorCode errorCode) {
+			this.code = errorCode.getStatus().value();
+			this.message = errorCode.getMessage();
 		}
 	}
 }
