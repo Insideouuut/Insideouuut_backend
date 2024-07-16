@@ -36,7 +36,7 @@ public class ApiResponse<T> {
 	}
 
 	public ApiResponse(ModongException exception) {
-		this.status = new Status(exception.getErrorCode());
+		this.status = new Status(exception.getErrorCode(),exception.GetMessage());
 	}
 
 	@Getter
@@ -53,6 +53,10 @@ public class ApiResponse<T> {
 		public Status(ErrorCode errorCode) {
 			this.code = errorCode.getStatus().value();
 			this.message = errorCode.getMessage();
+		}
+		public Status(ErrorCode errorCode,String message) {
+			this.code = errorCode.getStatus().value();
+			this.message = message;
 		}
 	}
 }
