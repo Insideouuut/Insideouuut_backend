@@ -33,7 +33,7 @@ public class UserJoinController {
 		if (errors.hasErrors()) {
 			errors.getFieldErrors().forEach(error -> {
 				String errorMessage = error.getDefaultMessage();
-				throw ModongException.from(ErrorCode.INVALID_REQUEST);
+				throw ModongException.from(ErrorCode.INVALID_REQUEST,errorMessage);
 			});
 		}
 	}
