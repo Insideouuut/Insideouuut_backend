@@ -24,12 +24,12 @@ public class UserJoinController {
 
 	@PostMapping("/join")
 	public ApiResponse join(@Validated @RequestBody UserJoinRequestDTO userJoinRequest, Errors errors) {
-		validateRequestForm(errors);
+		validateRequest(errors);
 		service.join(userJoinRequest);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
-	private void validateRequestForm(Errors errors) {
+	private void validateRequest(Errors errors) {
 		if (errors.hasErrors()) {
 			errors.getFieldErrors().forEach(error -> {
 				String errorMessage = error.getDefaultMessage();
