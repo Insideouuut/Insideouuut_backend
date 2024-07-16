@@ -32,18 +32,14 @@ class UserJoinServiceTest {
 		requestDTO.setName("테스트");
 		requestDTO.setPassword("test1234");
 
-		// Mocking the userRepository behavior to return true, indicating duplicate email
 		when(userRepository.existsByEmail(requestDTO.getEmail())).thenReturn(true);
 
-		// When, Then
 		assertThrows(ModongException.class, () -> {
 			userJoinService.join(requestDTO);
 		}, "예외처리 발생");
 
-		// Verify that userRepository.existsByEmail() was called exactly once with the correct email
 		verify(userRepository, times(1)).existsByEmail(requestDTO.getEmail());
 
-		// Verify that userRepository.save() was never called
 		verify(userRepository, never()).save(any(User.class));
 	}
 
