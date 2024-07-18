@@ -15,9 +15,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.goorm.insideout.auth.filter.CustomLogoutFilter;
 import com.goorm.insideout.auth.filter.JWTFilter;
 import com.goorm.insideout.auth.filter.LoginFilter;
 import com.goorm.insideout.auth.repository.RefreshTokenRepository;
@@ -87,9 +89,10 @@ public class SecurityConfig {
 			.addFilterAt(
 				new LoginFilter(authenticationManager(authenticationConfiguration), refreshTokenRepository, jwtUtil,
 					"/api/login"),
-				UsernamePasswordAuthenticationFilter.class);
-		//.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository), LogoutFilter.class);
-		//추후 로그아웃 필터 구현 예정
+				UsernamePasswordAuthenticationFilter.class)
+			//로그아웃 전에 커스텀한 로그아웃 필터 적용
+			.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository), LogoutFilter.class);
+
 
 		http
 			.sessionManagement((session) -> session
