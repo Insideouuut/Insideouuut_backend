@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.goorm.insideout.auth.filter.JWTFilter;
 import com.goorm.insideout.auth.filter.LoginFilter;
+import com.goorm.insideout.auth.repository.RefreshTokenRepository;
 import com.goorm.insideout.auth.utils.JWTUtil;
 import com.goorm.insideout.user.repository.UserRepository;
 
@@ -33,6 +34,7 @@ public class SecurityConfig {
 	private final AuthenticationConfiguration authenticationConfiguration;
 	private final JWTUtil jwtUtil;
 	private final UserRepository userRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -82,7 +84,9 @@ public class SecurityConfig {
 			//로그인 필터 전애 인가 정보 확인 필터 삽입
 			.addFilterBefore(new JWTFilter(jwtUtil, userRepository), LoginFilter.class)
 			//인증 필터 자리에 커스텀한 로그인 필터 삽입
-			.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, "/api/login"),
+			.addFilterAt(
+				new LoginFilter(authenticationManager(authenticationConfiguration), refreshTokenRepository, jwtUtil,
+					"/api/login"),
 				UsernamePasswordAuthenticationFilter.class);
 		//.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository), LogoutFilter.class);
 		//추후 로그아웃 필터 구현 예정
