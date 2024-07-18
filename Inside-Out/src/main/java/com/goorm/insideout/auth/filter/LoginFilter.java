@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -67,7 +68,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		//토큰 생성 - access 토큰 유효기간 30분
 		String accessToken = jwtUtil.createJwt("access", userEmail, 30 * 60 * 1000L);
+		//토큰 생성 - refresh 토큰 유효기간 1일
+		String refresh = jwtUtil.createJwt("refresh", userEmail, 24*60 * 60 * 1000L);
 		response.addHeader("Authorization", "Bearer " + accessToken);// 헤더에 access 토큰 넣기
+		response.addHeader("Set-Cookie", createCookie("refresh", refresh).toString()); //쿠키 생성밒 추가
 		//API 응답 생성
 		createAPIResponse(response, REQUEST_OK);
 	}
@@ -79,6 +83,16 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		//API 응답 생성 - failed 예외는 BadCredentialsException 하나로만 처리함
 		createAPIResponse(response, INCORRECT_AUTH_INFO);
+	}
+
+	private ResponseCookie createCookie(String key, String value) {
+		return ResponseCookie.from(key, value)
+			.path("/") //쿠키 경로 설정(=도메인 내 모든경로)
+			.sameSite("None") //sameSite 설정 (크롬에서 사용하려면 해당 설정이 필요함)
+			.httpOnly(false) //JS에서 쿠키 접근 가능하도록함
+			.secure(true) // HTTPS 연결에서만 쿠키 사용 sameSite 설정시 필요
+			.maxAge(24*60*60)// 쿠키 유효기간 설정 (=refresh 토큰 만료주기)
+			.build();
 	}
 
 	private void createAPIResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
