@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.goorm.insideout.auth.domain.RefreshToken;
+import com.goorm.insideout.auth.repository.RefreshTokenRepository;
 import com.goorm.insideout.auth.utils.JWTUtil;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
@@ -29,10 +31,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	private final AuthenticationManager authenticationManager;
+	private final RefreshTokenRepository refreshTokenRepository;
 	private final JWTUtil jwtUtil;
 
-	public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, String url) {
+	public LoginFilter(AuthenticationManager authenticationManager, RefreshTokenRepository refreshTokenRepository,
+		JWTUtil jwtUtil, String url) {
 		this.authenticationManager = authenticationManager;
+		this.refreshTokenRepository = refreshTokenRepository;
 		this.jwtUtil = jwtUtil;
 		setFilterProcessesUrl(url);
 	}
@@ -69,9 +74,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		//토큰 생성 - access 토큰 유효기간 30분
 		String accessToken = jwtUtil.createJwt("access", userEmail, 30 * 60 * 1000L);
 		//토큰 생성 - refresh 토큰 유효기간 1일 (refresh 토큰에서는 사용자 정보를 포함하지 않음)
-		String refresh = jwtUtil.createJwt("refresh", "fakeEmail", 24*60 * 60 * 1000L);
+		String refresh = jwtUtil.createJwt("refresh", "fakeEmail", 24 * 60 * 60 * 1000L);
 		response.addHeader("Authorization", "Bearer " + accessToken);// 헤더에 access 토큰 넣기
 		response.addHeader("Set-Cookie", createCookie("refresh", refresh).toString()); //쿠키 생성밒 추가
+		// refresh 토큰 객체 생성 및 Redis 저장
+		RefreshToken refreshToken = new RefreshToken(refresh,userEmail);
+		refreshTokenRepository.save(refreshToken);
+
 		//API 응답 생성
 		createAPIResponse(response, REQUEST_OK);
 	}
@@ -91,7 +100,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 			.sameSite("None") //sameSite 설정 (크롬에서 사용하려면 해당 설정이 필요함)
 			.httpOnly(false) //JS에서 쿠키 접근 가능하도록함
 			.secure(true) // HTTPS 연결에서만 쿠키 사용 sameSite 설정시 필요
-			.maxAge(24*60*60)// 쿠키 유효기간 설정 (=refresh 토큰 만료주기)
+			.maxAge(24 * 60 * 60)// 쿠키 유효기간 설정 (=refresh 토큰 만료주기)
 			.build();
 	}
 
