@@ -4,6 +4,7 @@ import static com.goorm.insideout.global.exception.ErrorCode.*;
 
 import java.util.Optional;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import com.goorm.insideout.auth.domain.RefreshToken;
@@ -33,6 +34,8 @@ public class ReissueService {
 		// 새로운 refresh 토큰 객체 생성 및 Redis 저장
 		RefreshToken newRefreshToken = new RefreshToken(newRefresh, userEmail);
 		refreshTokenRepository.save(newRefreshToken);
+		// 새로운 refresh 토큰 쿠키에 삽입
+		response.addHeader("Set-Cookie", createCookie("refresh", newRefresh).toString());
 
 		return newAccess;
 	}
@@ -74,6 +77,16 @@ public class ReissueService {
 		}
 		//Redis 에 Value 값으로 저장되있던 email을 반환
 		return refreshTokenEntity.get().getUserEmail();
+	}
+
+	private ResponseCookie createCookie(String key, String value) {
+		return ResponseCookie.from(key, value)
+			.path("/") //쿠키 경로 설정(=도메인 내 모든경로)
+			.sameSite("None") //sameSite 설정 (크롬에서 사용하려면 해당 설정이 필요함)
+			.httpOnly(false) //JS에서 쿠키 접근 가능하도록함
+			.secure(true) // HTTPS 연결에서만 쿠키 사용 sameSite 설정시 필요
+			.maxAge(24 * 60 * 60)// 쿠키 유효기간 설정 (=refresh 토큰 만료주기)
+			.build();
 	}
 
 }
