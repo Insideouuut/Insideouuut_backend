@@ -18,6 +18,7 @@ public enum ErrorCode {
 	DUPLICATE_USER_PHONE_NUMBER(HttpStatus.CONFLICT, "중복된 전화번호입니다"),
 
 	// auth
+	NOT_FOUND_REFRESH_TOKEN(HttpStatus.BAD_REQUEST,"쿠키에 refresh token 을 찾아올 수 없습니다"),
 	EXPIRED_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 로그인 토큰입니다."),
 	INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 로그인 토큰입니다."),
 	NOT_BEARER_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "Bearer 타입의 토큰이 아닙니다."),
