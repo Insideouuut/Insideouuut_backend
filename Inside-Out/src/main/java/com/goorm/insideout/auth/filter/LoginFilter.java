@@ -68,8 +68,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 		//토큰 생성 - access 토큰 유효기간 30분
 		String accessToken = jwtUtil.createJwt("access", userEmail, 30 * 60 * 1000L);
-		//토큰 생성 - refresh 토큰 유효기간 1일
-		String refresh = jwtUtil.createJwt("refresh", userEmail, 24*60 * 60 * 1000L);
+		//토큰 생성 - refresh 토큰 유효기간 1일 (refresh 토큰에서는 사용자 정보를 포함하지 않음)
+		String refresh = jwtUtil.createJwt("refresh", "fakeEmail", 24*60 * 60 * 1000L);
 		response.addHeader("Authorization", "Bearer " + accessToken);// 헤더에 access 토큰 넣기
 		response.addHeader("Set-Cookie", createCookie("refresh", refresh).toString()); //쿠키 생성밒 추가
 		//API 응답 생성
