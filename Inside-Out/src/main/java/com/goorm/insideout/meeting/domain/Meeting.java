@@ -9,6 +9,8 @@ import com.goorm.insideout.image.domain.Image;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,6 +45,10 @@ public class Meeting {
 
 	@Column(name = "date_time")
 	private LocalDateTime dateTime;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "level")
+	private Level level;
 
 	@Column(name = "minimum_age")
 	private int minimumAge;
