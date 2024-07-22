@@ -1,5 +1,8 @@
 package com.goorm.insideout.meeting.domain;
 
+import lombok.Getter;
+
+@Getter
 public enum Level {
 
 	BEGINNER("하", "해당 스포츠에 이제 막 입문했거나 경험이 적은 사용자에요."),
