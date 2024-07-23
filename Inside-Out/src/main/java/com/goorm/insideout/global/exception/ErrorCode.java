@@ -11,13 +11,14 @@ public enum ErrorCode {
 	// user
 	USER_NOT_AUTHENTICATED(HttpStatus.UNAUTHORIZED, "로그인하지 않은 사용자입니다"),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자 정보가 존재하지 않습니다"),
-	INCORRECT_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다"),
+	INCORRECT_AUTH_INFO(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다"),
 	DUPLICATE_USER_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다"),
 	DUPLICATE_USER_LOGIN_ID(HttpStatus.CONFLICT, "중복된 로그인 아이디입니다"),
 	DUPLICATE_USER_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
 	DUPLICATE_USER_PHONE_NUMBER(HttpStatus.CONFLICT, "중복된 전화번호입니다"),
 
 	// auth
+	NOT_FOUND_REFRESH_TOKEN(HttpStatus.BAD_REQUEST,"쿠키에 refresh token 을 찾아올 수 없습니다"),
 	EXPIRED_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 로그인 토큰입니다."),
 	INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 로그인 토큰입니다."),
 	NOT_BEARER_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "Bearer 타입의 토큰이 아닙니다."),
@@ -57,7 +58,6 @@ public enum ErrorCode {
 
 	// others
 	REQUEST_OK(HttpStatus.OK, "올바른 요청입니다."),
-
 
 	INVALID_REQUEST(HttpStatus.BAD_REQUEST, "올바르지 않은 요청입니다."),
 	NOT_ENOUGH_PERMISSION(HttpStatus.FORBIDDEN, "해당 권한이 없습니다."),
