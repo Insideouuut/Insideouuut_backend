@@ -54,7 +54,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   }
 
   /*
-  정렬된 전체 게시글 조회 + 일반 검색 및 정렬된 검색 결과 조회
+  정렬된 전체 모임 조회 + 일반 검색 및 정렬된 모임 검색 결과 조회
    */
   @Override
   public Page<MeetingResponse> findAllBySortType(MeetingSearchRequest condition, Pageable pageable) {
@@ -97,7 +97,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   }
 
   /**
-   * 제목, 내용, 글쓴이 포함 여부 조사 메소드
+   * 제목, 내용, 카테고리 포함 여부 조사 메소드
    */
   private BooleanExpression titleContains(String name) {
     return hasText(name) ? meeting.title.contains(name) : null;
