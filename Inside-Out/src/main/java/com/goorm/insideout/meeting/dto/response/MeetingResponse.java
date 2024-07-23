@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MeetingResponse {
-	private String name;
+	private String title;
 	// User 엔티티를 구현하지 않았으므로 임시 주석 처리
 	// private UserResponse user;
 	private String description;
@@ -27,9 +27,10 @@ public class MeetingResponse {
 	private String level;
 	private String hobby;
 	private String category;
-	private String area;
-	private LocalDateTime dateTime;
+	private String location;
+	private LocalDateTime schedule;
 	private int participantsNumber;
+	private int participantLimit;
 	private String genderCondition;
 	private int maleRatio;
 	private int femaleRatio;
@@ -38,7 +39,7 @@ public class MeetingResponse {
 
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
-		this.name = meeting.getName();
+		this.title = meeting.getTitle();
 		// User 엔티티를 구현하지 않았으므로 임시 주석 처리
 		// this.user = new UserResponse(meeting.getAuthor());
 		this.description = meeting.getDescription();
@@ -54,10 +55,11 @@ public class MeetingResponse {
 		this.membershipFee = meeting.getMembershipFee();
 		this.level = meeting.getLevel().getName();
 		this.hobby = meeting.getHobby();
-		this.category = meeting.getCategory();
-		this.area = meeting.getArea();
-		this.dateTime = meeting.getDateTime();
+		this.category = meeting.getCategory().getName();
+		this.location = meeting.getLocation();
+		this.schedule = meeting.getSchedule();
 		this.participantsNumber = meeting.getParticipantsNumber();
+		this.participantLimit = meeting.getParticipantLimit();
 		this.genderCondition = meeting.getGenderCondition();
 		this.maleRatio = meeting.getMaleRatio();
 		this.femaleRatio = meeting.getFemaleRatio();

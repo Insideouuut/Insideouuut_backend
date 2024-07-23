@@ -6,19 +6,16 @@ import java.util.List;
 
 import com.goorm.insideout.image.domain.Image;
 import com.goorm.insideout.like.domain.MeetingLike;
-import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 
 @Entity
@@ -32,8 +29,11 @@ public class Meeting {
 	@Column(name = "participants_number")
 	private int participantsNumber;
 
-	@Column(name = "name")
-	private String name;
+	@Column(name = "participant_limit")
+	private int participantLimit;
+
+	@Column(name = "title")
+	private String title;
 
 	@Column(name = "description")
 	private String description;
@@ -47,11 +47,11 @@ public class Meeting {
 	@Column(name = "join_question")
 	private String joinQuestion;
 
-	@Column(name = "area")
-	private String area;
+	@Column(name = "location")
+	private String location;
 
-	@Column(name = "date_time")
-	private LocalDateTime dateTime;
+	@Column(name = "schedule")
+	private LocalDateTime schedule;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "level")
@@ -75,8 +75,9 @@ public class Meeting {
 	@Column(name = "membership_fee")
 	private int membershipFee;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "category")
-	private String category;
+	private Category category;
 
 	@Column(name = "gender_condition")
 	private String genderCondition;

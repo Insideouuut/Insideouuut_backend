@@ -1,7 +1,6 @@
 package com.goorm.insideout.meeting.repository.custom;
 
 import static com.goorm.insideout.meeting.domain.QMeeting.*;
-import static com.goorm.insideout.user.domain.QUser.*;
 import static org.springframework.util.StringUtils.*;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
         // User 엔티티를 구현하지 않았으므로 임시 주석 처리
         // .leftJoin(meeting.author, user).fetchJoin()
         .where(
-            nameContains(condition.getQuery()),
+            titleContains(condition.getQuery()),
             descriptionContains(condition.getQuery()),
             categoryEquals(condition.getCategory())
         )
@@ -65,7 +64,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
         // User 엔티티를 구현하지 않았으므로 임시 주석 처리
         // .leftJoin(meeting.author, user).fetchJoin()
         .where(
-            nameContains(condition.getQuery()),
+            titleContains(condition.getQuery()),
             descriptionContains(condition.getQuery()),
             categoryEquals(condition.getCategory())
         )
@@ -91,7 +90,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
         // User 엔티티를 구현하지 않았으므로 임시 주석 처리
         // .leftJoin(meeting.author, user).fetchJoin()
         .where(
-            nameContains(condition.getQuery()),
+            titleContains(condition.getQuery()),
             descriptionContains(condition.getQuery()),
             categoryEquals(condition.getCategory())
         );
@@ -100,8 +99,8 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   /**
    * 제목, 내용, 글쓴이 포함 여부 조사 메소드
    */
-  private BooleanExpression nameContains(String name) {
-    return hasText(name) ? meeting.name.contains(name) : null;
+  private BooleanExpression titleContains(String name) {
+    return hasText(name) ? meeting.title.contains(name) : null;
   }
 
   private BooleanExpression descriptionContains(String description) {
@@ -109,7 +108,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   }
 
   private BooleanExpression categoryEquals(String category) {
-    return hasText(category) ? meeting.category.eq(category) : null;
+    return hasText(category) ? meeting.category.stringValue().eq(category) : null;
   }
 
   /*
@@ -132,13 +131,13 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
 
       case "date":
         content = basicQuery
-            .orderBy(meeting.dateTime.desc())
+            .orderBy(meeting.schedule.desc())
             .fetch();
         break;
 
       case "rdate":
         content = basicQuery
-            .orderBy(meeting.dateTime.asc())
+            .orderBy(meeting.schedule.asc())
             .fetch();
         break;
 
