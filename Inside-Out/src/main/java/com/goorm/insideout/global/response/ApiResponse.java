@@ -2,6 +2,8 @@ package com.goorm.insideout.global.response;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
@@ -25,6 +27,12 @@ public class ApiResponse<T> {
 		this.results = results;
 	}
 
+	public ApiResponse(List<T> results, Pageable pageable) {
+		this.status = new Status(ErrorCode.REQUEST_OK);
+		this.metadata = new Metadata(results.size(), pageable);
+		this.results = results;
+	}
+
 	public ApiResponse(T data) {
 		this.status = new Status(ErrorCode.REQUEST_OK);
 		this.metadata = new Metadata(1);
@@ -43,6 +51,7 @@ public class ApiResponse<T> {
 	@AllArgsConstructor
 	private static class Metadata {
 		private int resultCount = 0;
+		private Pageable pageable;
 	}
 
 	@Getter
