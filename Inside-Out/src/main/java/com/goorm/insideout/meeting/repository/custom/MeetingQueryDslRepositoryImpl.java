@@ -36,7 +36,8 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
     List<MeetingResponse> content = queryFactory
         .select(new QMeetingResponse(meeting))
         .from(meeting)
-        .leftJoin(meeting.author, user).fetchJoin()
+        // User 엔티티를 구현하지 않았으므로 임시 주석 처리
+        // .leftJoin(meeting.author, user).fetchJoin()
         .where(
             nameContains(condition.getQuery()),
             descriptionContains(condition.getQuery()),
@@ -61,7 +62,8 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
     JPAQuery<MeetingResponse> basicQuery = queryFactory
         .select(new QMeetingResponse(meeting))
         .from(meeting)
-        .leftJoin(meeting.author, user).fetchJoin()
+        // User 엔티티를 구현하지 않았으므로 임시 주석 처리
+        // .leftJoin(meeting.author, user).fetchJoin()
         .where(
             nameContains(condition.getQuery()),
             descriptionContains(condition.getQuery()),
@@ -86,7 +88,8 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
     return queryFactory
         .select(meeting.count())
         .from(meeting)
-        .leftJoin(meeting.author, user).fetchJoin()
+        // User 엔티티를 구현하지 않았으므로 임시 주석 처리
+        // .leftJoin(meeting.author, user).fetchJoin()
         .where(
             nameContains(condition.getQuery()),
             descriptionContains(condition.getQuery()),

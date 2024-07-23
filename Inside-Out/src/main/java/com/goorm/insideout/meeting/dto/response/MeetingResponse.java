@@ -3,10 +3,8 @@ package com.goorm.insideout.meeting.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.goorm.insideout.image.domain.Image;
 import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.goorm.insideout.meeting.domain.Meeting;
-import com.goorm.insideout.user.dto.UserResponse;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
@@ -16,7 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MeetingResponse {
 	private String name;
-	private UserResponse user;
+	// User 엔티티를 구현하지 않았으므로 임시 주석 처리
+	// private UserResponse user;
 	private String description;
 	private List<ImageResponse> images;
 	private String rule;
@@ -40,7 +39,8 @@ public class MeetingResponse {
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
 		this.name = meeting.getName();
-		this.user = new UserResponse(meeting.getAuthor());
+		// User 엔티티를 구현하지 않았으므로 임시 주석 처리
+		// this.user = new UserResponse(meeting.getAuthor());
 		this.description = meeting.getDescription();
 		this.images = meeting.getImages()
 			.stream()
