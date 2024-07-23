@@ -52,6 +52,10 @@ public class ApiResponse<T> {
 	private static class Metadata {
 		private int resultCount = 0;
 		private Pageable pageable;
+
+		public Metadata(int resultCount) {
+			this.resultCount = resultCount;
+		}
 	}
 
 	@Getter
