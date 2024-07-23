@@ -2,10 +2,7 @@ package com.goorm.insideout.chat.domain;
 
 import static jakarta.persistence.FetchType.*;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-
-import org.hibernate.annotations.CreationTimestamp;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.user.domain.User;
@@ -51,6 +48,5 @@ public class Chat {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "id", nullable = false)
 	private User user;
-
 
 }
