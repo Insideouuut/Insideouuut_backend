@@ -18,6 +18,7 @@ public enum ErrorCode {
 	DUPLICATE_USER_PHONE_NUMBER(HttpStatus.CONFLICT, "중복된 전화번호입니다"),
 
 	// auth
+	NOT_FOUND_REFRESH_TOKEN(HttpStatus.BAD_REQUEST,"쿠키에 refresh token 을 찾아올 수 없습니다"),
 	EXPIRED_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 로그인 토큰입니다."),
 	INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "올바르지 않은 로그인 토큰입니다."),
 	NOT_BEARER_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "Bearer 타입의 토큰이 아닙니다."),
@@ -47,13 +48,16 @@ public enum ErrorCode {
 	MEETING_NOT_MEMBER(HttpStatus.FORBIDDEN, "모임의 멤버가 아닙니다."),
 
 	// chat
-	CHAT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
+	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
 	CHAT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 채팅방입니다."),
 	CHAT_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "채팅방에 가입되어 있지 않습니다."),
 	CHAT_ALREADY_JOINED(HttpStatus.CONFLICT, "이미 가입된 채팅방입니다."),
 	CHATROOM_NOT_ALLOWED(HttpStatus.FORBIDDEN, "채팅방에 접근할 수 없습니다."),
 	CHAT_NOT_AVAILABLE(HttpStatus.FORBIDDEN, "메시지를 보낼 수 없습니다."),
 	NOT_ALLOWED_TO_DELETE_CHATROOM(HttpStatus.FORBIDDEN, "채팅방을 삭제할 수 없습니다."),
+
+	// stomp
+	INVALID_STOMP_MESSAGE_HEADER(HttpStatus.NOT_FOUND,"유효한 헤더가 아닙니다"),
 
 	// others
 	REQUEST_OK(HttpStatus.OK, "올바른 요청입니다."),
