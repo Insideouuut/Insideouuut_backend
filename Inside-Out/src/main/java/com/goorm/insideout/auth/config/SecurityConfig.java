@@ -75,7 +75,7 @@ public class SecurityConfig {
 
 		http
 			.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/actuator/health", "/api/login", "/api/join", "/").permitAll()
+				.requestMatchers("/actuator/health", "/api/login", "/api/join", "/", "/api/clubs", "/api/clubs/{clubId}").permitAll()
 				.anyRequest().authenticated());
 
 		http
