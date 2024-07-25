@@ -1,33 +1,23 @@
 package com.goorm.insideout.club.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.goorm.insideout.club.dto.ClubInfo;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
-import com.goorm.insideout.club.dto.responseDto.ClubResponseDto;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.entity.Club;
-import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubUserRepository;
-import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
@@ -62,7 +52,7 @@ public class ClubServiceImpl implements ClubService{
 		Club club = clubRepository.save(clubBuilder(clubRequestDto, /*clubImgUrl,*/ user));
 
 		club.setCreatedAt(LocalDateTime.now());
-		club.setMemberCunt(1);
+		club.setMemberCount(1);
 
 		/*
 		ClubUser clubUser = ClubUser.builder()
@@ -119,7 +109,7 @@ public class ClubServiceImpl implements ClubService{
 		 */
 
 		Club modify_club = clubBuilder(clubRequestDto, /*clubImgUrl,*/ user);
-		modify_club.setMemberCunt(club.getMemberCunt());
+		modify_club.setMemberCount(club.getMemberCount());
 		modify_club.setCreatedAt(club.getCreatedAt());
 		modify_club.setClubId(clubId);
 
@@ -138,6 +128,14 @@ public class ClubServiceImpl implements ClubService{
 	@Override
 	public Club belongToClub(String selectedClub, Long userId) {
 		return null;
+	}
+
+	@Override
+	public List<ClubListResponseDto> findByCategory(String category) {
+
+		return clubRepository.findByCategoryJQL(category).stream()
+			.map(ClubListResponseDto::new)
+			.collect(Collectors.toList());
 	}
 
 	/*

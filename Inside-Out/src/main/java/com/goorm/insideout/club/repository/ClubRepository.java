@@ -20,4 +20,9 @@ public interface ClubRepository extends JpaRepository<Club, Long> {
 		,nativeQuery = true)
 	Optional<Club> findByClubIdAndUserIdJQL(@Param("clubId") Long clubId,
 		@Param("userId") Long userId);
+
+	@Query(value = "select * from club " +
+		"where category = :category "
+		,nativeQuery = true)
+	List<Club> findByCategoryJQL(@Param("category") String category);
 }

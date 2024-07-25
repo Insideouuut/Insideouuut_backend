@@ -29,7 +29,7 @@ public class ClubModifyResponseDto {
 
 
 	protected Integer memberLimit;
-	Integer price;
+	protected Integer price;
 	protected Integer ageLimit;
 
 	protected String clubImgUrl;

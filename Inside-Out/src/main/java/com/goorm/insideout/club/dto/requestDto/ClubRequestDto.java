@@ -36,7 +36,7 @@ public class ClubRequestDto {
 
 
 	private Integer memberLimit;
-	Integer price;
+	private Integer price;
 	private Integer ageLimit;
 
 	//   private MultipartFile clubImg;

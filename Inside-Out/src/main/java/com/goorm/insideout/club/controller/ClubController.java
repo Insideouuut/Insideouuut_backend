@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
@@ -51,10 +52,19 @@ public class ClubController {
 	private final ClubUserService clubUserService;
 	private final UserService userService;
 
+	/*
 	@GetMapping("/clubs")
 	public ApiResponse<List<ClubListResponseDto>> findAllClub() {
 
 		return new ApiResponse<List<ClubListResponseDto>>(clubService.findAllClubDesc());
+	}
+
+	 */
+
+	@GetMapping("/clubs")
+	public ApiResponse<List<ClubListResponseDto>> findByType(@RequestParam(name = "category") String category) {
+
+		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
 	}
 
 /*

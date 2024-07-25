@@ -28,6 +28,6 @@ public interface ClubService {
 
 	Club belongToClub(String selectedClub,Long userId);
 
-
+	List<ClubListResponseDto> findByCategory(String category);
 
 }

@@ -31,8 +31,8 @@ public class ClubBoardDto {
 
 
 	private Integer memberLimit;
-	Integer memberCunt;
-	Integer price;
+	private Integer memberCount;
+	private Integer price;
 	private Integer ageLimit;
 
 	private String clubImgUrl;
@@ -58,11 +58,11 @@ public class ClubBoardDto {
 			ClubBoardDto.setQuestion(Club.getQuestion());
 			ClubBoardDto.setMemberLimit(Club.getMemberLimit());
 
-			ClubBoardDto.setMemberCunt(Club.getMemberCunt());
+			ClubBoardDto.setMemberCount(Club.getMemberCount());
 			ClubBoardDto.setPrice(Club.getPrice());
 			ClubBoardDto.setAgeLimit(Club.getAgeLimit());
 
-			if(Club.getMemberLimit() > Club.getMemberCunt()){
+			if(Club.getMemberLimit() > Club.getMemberCount()){
 				ClubBoardDto.setIsRecruiting(true);
 			}
 

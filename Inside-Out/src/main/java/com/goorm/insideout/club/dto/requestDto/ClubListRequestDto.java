@@ -20,7 +20,7 @@ public class ClubListRequestDto {
 
 	private Integer memberLimit;
 	//Integer memberCunt;
-	Integer price;
+	private Integer price;
 	private Integer ageLimit;
 
 	Boolean isRecruiting = false;

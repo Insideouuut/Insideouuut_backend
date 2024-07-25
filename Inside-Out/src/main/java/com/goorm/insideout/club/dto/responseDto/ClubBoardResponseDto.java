@@ -1,10 +1,7 @@
 package com.goorm.insideout.club.dto.responseDto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.goorm.insideout.club.dto.ClubBoardDto;
 import com.goorm.insideout.club.entity.Club;
 
 import lombok.Getter;
@@ -31,8 +28,8 @@ public class ClubBoardResponseDto {
 
 
 	private Integer memberLimit;
-	Integer memberCunt;
-	Integer price;
+	private Integer memberCount;
+	private Integer price;
 	private Integer ageLimit;
 
 	private String clubImgUrl;
@@ -55,11 +52,11 @@ public class ClubBoardResponseDto {
 		res.setQuestion(club.getQuestion());
 		res.setMemberLimit(club.getMemberLimit());
 
-		res.setMemberCunt(club.getMemberCunt());
+		res.setMemberCount(club.getMemberCount());
 		res.setPrice(club.getPrice());
 		res.setAgeLimit(club.getAgeLimit());
 
-		if(club.getMemberLimit() > club.getMemberCunt()){
+		if(club.getMemberLimit() > club.getMemberCount()){
 			res.setIsRecruiting(true);
 		}
 		return res;

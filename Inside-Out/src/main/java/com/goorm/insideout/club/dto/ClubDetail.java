@@ -27,8 +27,8 @@ public class ClubDetail extends ClubModifyResponseDto {
 
 	public ClubDetail(Club club){
 		super(club);
-		this.setMembers(ClubDetailUserDto.of(club.getMembers()));
-		this.setOwner(ClubDetailOwnerDto.of(club.getOwner()));
-		this.setCreatedAt(club.getCreatedAt());
+		this.members = ClubDetailUserDto.of(club.getMembers());
+		this.owner = ClubDetailOwnerDto.of(club.getOwner());
+		this.createdAt = club.getCreatedAt();
 	}
 }

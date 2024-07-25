@@ -51,8 +51,8 @@ public class Club {
 
 
 	private Integer memberLimit;
-	Integer memberCunt;
-	Integer price;
+	private Integer memberCount;
+	private Integer price;
 	private Integer ageLimit;
 
 
