@@ -6,16 +6,23 @@ import java.util.List;
 
 import com.goorm.insideout.image.domain.Image;
 import com.goorm.insideout.like.domain.MeetingLike;
+import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
 import lombok.Getter;
 
 @Entity
@@ -86,6 +93,9 @@ public class Meeting {
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private User host;
+
+	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
+	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place_id")
