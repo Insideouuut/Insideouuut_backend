@@ -63,11 +63,9 @@ public class Meeting {
 	@Column(name = "maximum_age")
 	private int maximumAge;
 
-	@Column(name = "male_ratio")
-	private int maleRatio;
-
-	@Column(name = "femail_ratio")
-	private int femaleRatio;
+	@Enumerated(EnumType.STRING)
+	@Column(name = "gender_ratio")
+	private GenderRatio genderRatio;
 
 	@Column(name = "has_membership_fee")
 	private boolean hasMembershipFee;
@@ -78,9 +76,6 @@ public class Meeting {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category")
 	private Category category;
-
-	@Column(name = "gender_condition")
-	private String genderCondition;
 
 	@Column(name = "hobby")
 	private String hobby;
