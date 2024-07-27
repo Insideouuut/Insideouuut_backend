@@ -105,6 +105,51 @@ public class Meeting {
 	@JoinColumn(name = "place_id")
 	private Place place;
 
+	/**
+	 * 생성 메서드
+	 */
+	public static Meeting createMeeting (
+		String title,
+		String description,
+		Category category,
+		int participantsNumber,
+		int participantLimit,
+		String rule,
+		String joinQuestion,
+		LocalDateTime schedule,
+		Level level,
+		int minimumAge,
+		int maximumAge,
+		GenderRatio genderRatio,
+		boolean hasMembershipFee,
+		int membershipFee,
+		String hobby,
+		User host,
+		Place place
+	) {
+		Meeting meeting = new Meeting();
+
+		meeting.title = title;
+		meeting.description = description;
+		meeting.category = category;
+		meeting.participantsNumber = participantsNumber;
+		meeting.participantLimit = participantLimit;
+		meeting.rule = rule;
+		meeting.joinQuestion = joinQuestion;
+		meeting.schedule = schedule;
+		meeting.level = level;
+		meeting.minimumAge = minimumAge;
+		meeting.maximumAge = maximumAge;
+		meeting.genderRatio = genderRatio;
+		meeting.hasMembershipFee = hasMembershipFee;
+		meeting.membershipFee = membershipFee;
+		meeting.hobby = hobby;
+		meeting.setHost(host);
+		meeting.setPlace(place);
+
+		return meeting;
+	}
+
 	/*
 	 * 연관관계 설정 메서드
 	 */
