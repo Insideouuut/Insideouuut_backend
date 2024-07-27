@@ -41,9 +41,11 @@ public class Meeting {
 	@Column(name = "participant_limit")
 	private int participantLimit;
 
+	@Lob
 	@Column(name = "title")
 	private String title;
 
+	@Lob
 	@Column(name = "description")
 	private String description;
 
