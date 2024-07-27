@@ -47,9 +47,6 @@ public class Meeting {
 	@Column(name = "join_question")
 	private String joinQuestion;
 
-	@Column(name = "location")
-	private String location;
-
 	@Column(name = "schedule")
 	private LocalDateTime schedule;
 
@@ -90,4 +87,7 @@ public class Meeting {
 	@JoinColumn(name = "user_id")
 	private User host;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "place_id")
+	private Place place;
 }
