@@ -86,7 +86,8 @@ public class Meeting {
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
 	private List<MeetingLike> likes = new ArrayList<>();
 
-	// User 엔티티를 구현하지 않았으므로 임시 주석 처리
-	// @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	// private User author;
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	private User host;
+
 }
