@@ -104,4 +104,17 @@ public class Meeting {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place_id")
 	private Place place;
+
+	/*
+	 * 연관관계 설정 메서드
+	 */
+	private void setHost(User host) {
+		this.host = host;
+		host.getMeetings().add(this);
+	}
+
+	private void setPlace(Place place) {
+		this.place = place;
+		place.getMeetings().add(this);
+	}
 }
