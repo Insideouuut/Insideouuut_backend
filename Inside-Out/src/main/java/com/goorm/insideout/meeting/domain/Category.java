@@ -1,8 +1,10 @@
 package com.goorm.insideout.meeting.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Category {
 
 	SOCIAL("사교/취미"),
@@ -10,8 +12,4 @@ public enum Category {
 	STUDY("스터디");
 
 	private final String name;
-
-	Category(String name) {
-		this.name = name;
-	}
 }
