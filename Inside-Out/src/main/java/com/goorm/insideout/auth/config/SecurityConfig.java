@@ -43,6 +43,16 @@ public class SecurityConfig {
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final CustomOAuthLoginHandler customOAuthLoginHandler;
 
+	private static final String[] PUBLIC_URLS = {
+		"/actuator/health",
+		"/oauth2/**",
+		"/api/login/**",
+		"/api/join",
+		"/api/reissue",
+		"/"
+	};
+
+
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
@@ -88,7 +98,7 @@ public class SecurityConfig {
 				.successHandler(customOAuthLoginHandler));
 		http
 			.authorizeHttpRequests((auth) -> auth
-				.requestMatchers("/actuator/health", "/oauth2/**","/api/login/**", "/api/join", "api/reissue", "/").permitAll()
+				.requestMatchers(PUBLIC_URLS).permitAll()
 				.anyRequest().authenticated());
 
 		http
