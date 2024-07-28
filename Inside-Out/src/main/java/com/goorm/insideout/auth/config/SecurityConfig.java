@@ -49,6 +49,8 @@ public class SecurityConfig {
 		"/api/login/**",
 		"/api/join",
 		"/api/reissue",
+    "/api/clubs",
+    "/api/clubs/{clubId}",
 		"/"
 	};
 
