@@ -12,18 +12,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum GenderRatio {
 
-	ONLY_MALE(10, 0), // 남자만
-	ONLY_FEMALE(0, 10), // 여자만
+	ONLY_MALE(100, 0), // 남자만
+	ONLY_FEMALE(0, 100), // 여자만
 
-	ONE_TO_NINE(1, 9),
-	TWO_TO_EIGHT(2, 8),
-	THREE_TO_SEVEN(3, 7),
-	FOUR_TO_SIX(4, 6),
-	FIVE_TO_FIVE(5, 5),
-	SIX_TO_FOUR(6, 4),
-	SEVEN_TO_THREE(7, 3),
-	EIGHT_TO_TWO(8, 2),
-	NINE_TO_ONE(9, 1),
+	ONE_TO_NINE(10, 90),
+	TWO_TO_EIGHT(20, 80),
+	THREE_TO_SEVEN(30, 70),
+	FOUR_TO_SIX(40, 60),
+	FIVE_TO_FIVE(50, 50),
+	SIX_TO_FOUR(60, 40),
+	SEVEN_TO_THREE(70, 30),
+	EIGHT_TO_TWO(80, 20),
+	NINE_TO_ONE(90, 10),
 
 	IRRELEVANT(0, 0); // 성별 비율 무관
 
