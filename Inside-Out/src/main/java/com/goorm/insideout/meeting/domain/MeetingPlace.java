@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Place {
+public class MeetingPlace {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "place_id")
+	@Column(name = "meeting_place_id")
 	private Long id;
 
 	@Column(name = "name")
@@ -30,7 +30,7 @@ public class Place {
 	private String placeUrl;
 
 	@Column(name = "map_id")
-	private Long mapId;
+	private Long kakaoMapId;
 
 	@Column(name = "latitude")
 	private Double latitude;
@@ -38,27 +38,27 @@ public class Place {
 	@Column(name = "longitude")
 	private Double longitude;
 
-	@OneToMany(mappedBy = "place", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "meetingPlace", cascade = CascadeType.ALL)
 	private List<Meeting> meetings = new ArrayList<>();
 
 	/**
 	 * 생성 메서드
 	 */
-	public static Place createPlace(
+	public static MeetingPlace createMeetingPlace(
 		String name,
 		String placeUrl,
 		Long mapId,
 		Double latitude,
 		Double longitude
 	) {
-		Place place = new Place();
+		MeetingPlace meetingPlace = new MeetingPlace();
 
-		place.name = name;
-		place.placeUrl = placeUrl;
-		place.mapId = mapId;
-		place.latitude = latitude;
-		place.longitude = longitude;
+		meetingPlace.name = name;
+		meetingPlace.placeUrl = placeUrl;
+		meetingPlace.kakaoMapId = mapId;
+		meetingPlace.latitude = latitude;
+		meetingPlace.longitude = longitude;
 
-		return place;
+		return meetingPlace;
 	}
 }
