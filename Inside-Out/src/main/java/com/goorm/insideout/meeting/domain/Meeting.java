@@ -150,6 +150,39 @@ public class Meeting {
 		return meeting;
 	}
 
+	/**
+	 * 수정 메서드
+	 */
+	public void updateMeeting(Meeting meeting) {
+		this.title = meeting.title;
+		this.description = meeting.description;
+		this.category = meeting.category;
+		this.participantsNumber = meeting.participantsNumber;
+		this.participantLimit = meeting.participantLimit;
+		this.rule = meeting.rule;
+		this.joinQuestion = meeting.joinQuestion;
+		this.schedule = meeting.schedule;
+		this.level = meeting.level;
+		this.minimumAge = meeting.minimumAge;
+		this.maximumAge = meeting.maximumAge;
+		this.genderRatio = meeting.genderRatio;
+		this.hasMembershipFee = meeting.hasMembershipFee;
+		this.membershipFee = meeting.membershipFee;
+		this.hobby = meeting.hobby;
+		this.setMeetingPlace(meeting.getMeetingPlace());
+	}
+
+	/**
+	 * 비즈니스 로직
+	 */
+	public boolean isHost(User user) {
+		return this.host.equals(user);
+	}
+
+	public void changeProgress(Progress progress) {
+		this.progress = progress;
+	}
+
 	/*
 	 * 연관관계 설정 메서드
 	 */
