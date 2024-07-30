@@ -106,7 +106,7 @@ public class Meeting {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "place_id")
-	private Place place;
+	private MeetingPlace meetingPlace;
 
 	/**
 	 * 생성 메서드
@@ -115,7 +115,6 @@ public class Meeting {
 		String title,
 		String description,
 		Category category,
-		int participantsNumber,
 		int participantLimit,
 		String rule,
 		String joinQuestion,
@@ -127,19 +126,20 @@ public class Meeting {
 		boolean hasMembershipFee,
 		int membershipFee,
 		String hobby,
-		User host,
-		Place place
+		User user,
+		MeetingPlace meetingPlace
 	) {
 		Meeting meeting = new Meeting();
 
 		meeting.title = title;
 		meeting.description = description;
 		meeting.category = category;
-		meeting.participantsNumber = participantsNumber;
+		meeting.participantsNumber = 1;
 		meeting.participantLimit = participantLimit;
 		meeting.rule = rule;
 		meeting.joinQuestion = joinQuestion;
 		meeting.schedule = schedule;
+		meeting.progress = Progress.ONGOING;
 		meeting.level = level;
 		meeting.minimumAge = minimumAge;
 		meeting.maximumAge = maximumAge;
@@ -147,8 +147,8 @@ public class Meeting {
 		meeting.hasMembershipFee = hasMembershipFee;
 		meeting.membershipFee = membershipFee;
 		meeting.hobby = hobby;
-		meeting.setHost(host);
-		meeting.setPlace(place);
+		meeting.setHost(user);
+		meeting.setMeetingPlace(meetingPlace);
 
 		return meeting;
 	}
@@ -189,13 +189,13 @@ public class Meeting {
 	/*
 	 * 연관관계 설정 메서드
 	 */
-	private void setHost(User host) {
-		this.host = host;
-		host.getMeetings().add(this);
+	private void setHost(User user) {
+		this.host = user;
+		user.getRunningMeetings().add(this);
 	}
 
-	private void setPlace(Place place) {
-		this.place = place;
-		place.getMeetings().add(this);
+	private void setMeetingPlace(MeetingPlace meetingPlace) {
+		this.meetingPlace = meetingPlace;
+		meetingPlace.getMeetings().add(this);
 	}
 }
