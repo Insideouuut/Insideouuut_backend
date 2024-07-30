@@ -21,7 +21,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -94,8 +93,8 @@ public class Meeting {
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
 	private List<MeetingLike> likes = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "host_id")
 	private User host;
 
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
