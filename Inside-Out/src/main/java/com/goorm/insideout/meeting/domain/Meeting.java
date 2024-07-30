@@ -34,58 +34,62 @@ public class Meeting {
 	@Column(name = "meeting_id")
 	private Long id;
 
-	@Column(name = "participants_number")
-	private int participantsNumber;
-
-	@Column(name = "participant_limit")
-	private int participantLimit;
-
 	@Lob
-	@Column(name = "title")
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@Lob
-	@Column(name = "description")
+	@Column(name = "description", nullable = false)
 	private String description;
 
-	@Column(name = "view", columnDefinition = "integer default 0", nullable = false)
-	private int view;
-
-	@Column(name = "rule")
+	@Column(name = "rule", nullable = false)
 	private String rule;
 
-	@Column(name = "join_question")
+	@Column(name = "join_question", nullable = false)
 	private String joinQuestion;
 
-	@Column(name = "schedule")
+	@Column(name = "schedule", nullable = false)
 	private LocalDateTime schedule;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "level")
+	@Column(name="progress", nullable = false)
+	private Progress progress;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "level", nullable = false)
 	private Level level;
 
-	@Column(name = "minimum_age")
+	@Column(name = "hobby", nullable = false)
+	private String hobby;
+
+	@Column(name = "participants_number", columnDefinition = "integer default 0", nullable = false)
+	private int participantsNumber;
+
+	@Column(name = "participant_limit", nullable = false)
+	private int participantLimit;
+
+	@Column(name = "minimum_age", nullable = false)
 	private int minimumAge;
 
-	@Column(name = "maximum_age")
+	@Column(name = "maximum_age", nullable = false)
 	private int maximumAge;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "gender_ratio")
+	@Column(name = "gender_ratio", nullable = false)
 	private GenderRatio genderRatio;
 
-	@Column(name = "has_membership_fee")
+	@Column(name = "has_membership_fee", nullable = false)
 	private boolean hasMembershipFee;
 
-	@Column(name = "membership_fee")
+	@Column(name = "membership_fee", nullable = false)
 	private int membershipFee;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "category")
+	@Column(name = "category", nullable = false)
 	private Category category;
 
-	@Column(name = "hobby")
-	private String hobby;
+	@Column(name = "view", columnDefinition = "integer default 0", nullable = false)
+	private int view;
 
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
 	private List<Image> images = new ArrayList<>();
