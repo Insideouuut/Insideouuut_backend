@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.goorm.insideout.meeting.domain.Meeting;
+import com.goorm.insideout.meeting.domain.MeetingUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,7 +41,10 @@ public class User {
 	@Column(nullable = false)
 	private String name;
 
+	@OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+	private List<Meeting> runningMeetings = new ArrayList<>();
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<Meeting> meetings = new ArrayList<>();
+	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
 }
