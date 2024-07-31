@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.goorm.insideout.image.domain.Image;
+import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.like.domain.MeetingLike;
 import com.goorm.insideout.user.domain.User;
 
@@ -92,7 +92,7 @@ public class Meeting {
 	private int view;
 
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
-	private List<Image> images = new ArrayList<>();
+	private List<MeetingImage> images = new ArrayList<>();
 
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
 	private List<MeetingLike> likes = new ArrayList<>();
