@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.user.domain.User;
 
@@ -66,4 +68,7 @@ public class Club {
 
 	private String clubImg;
 
+	public void increaseMemberCount() {
+		this.memberCount++;
+	}
 }

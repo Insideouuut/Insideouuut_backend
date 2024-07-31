@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.function.Predicate;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
+import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.entity.Club;
@@ -60,8 +62,8 @@ public class ClubServiceImpl implements ClubService{
 			.clubId(club.getClubId())
 			.build();
 		clubUserRepository.save(clubUser);
-		 */
 
+		 */
 
 		return club;
 	}
@@ -126,8 +128,8 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
-	public Club belongToClub(String selectedClub, Long userId) {
-		return null;
+	public Club belongToClub(Long userId) {
+		return clubRepository.belongToTeam(userId).orElse(null);
 	}
 
 	@Override
@@ -206,4 +208,19 @@ public class ClubServiceImpl implements ClubService{
 		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId).orElse(null);
 
 	}
+
+	@Transactional(readOnly = true)
+	public List<ClubUser> getMembers(Long clubId) {
+		if(!this.clubRepository.findById(clubId).isPresent()){
+			throw new NoSuchElementException();
+		}
+		Club club = this.clubRepository.findById(clubId).get();
+
+		// @Transactional 없다면 LazyInitializationException 이 발생한다.
+		List<ClubUser> members = club.getMembers();
+
+		return members;
+	}
+
+
 }

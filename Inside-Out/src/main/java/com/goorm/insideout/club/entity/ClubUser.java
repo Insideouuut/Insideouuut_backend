@@ -1,5 +1,6 @@
 package com.goorm.insideout.club.entity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,17 +25,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class ClubUser {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue
+	@Column(name = "clubUser_id")
+	private Long clubUserId;
+
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -56,4 +61,7 @@ public class ClubUser {
 	@Column(name = "club_id")
 	Long clubId;
 
+	private String userName;
+	private String profileImgUrl;
+	private String mannerTemp;
 }
