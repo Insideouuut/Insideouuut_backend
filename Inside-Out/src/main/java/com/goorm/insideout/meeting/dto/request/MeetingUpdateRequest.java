@@ -77,6 +77,10 @@ public class MeetingUpdateRequest {
 
 		private Long kakaoMapId;
 
+		private String addressName;
+
+		private String roadAddressName;
+
 		private Double latitude;
 
 		private Double longitude;
@@ -86,6 +90,8 @@ public class MeetingUpdateRequest {
 				name,
 				placeUrl,
 				kakaoMapId,
+				addressName,
+				roadAddressName,
 				latitude,
 				longitude
 			);

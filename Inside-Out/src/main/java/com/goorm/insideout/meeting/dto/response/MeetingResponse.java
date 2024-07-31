@@ -79,6 +79,10 @@ public class MeetingResponse {
 
 		private Long kakaoMapId;
 
+		private String addressName;
+
+		private String roadAddressName;
+
 		private Double latitude;
 
 		private Double longitude;
@@ -87,6 +91,8 @@ public class MeetingResponse {
 			this.name = meetingPlace.getName();
 			this.placeUrl = meetingPlace.getPlaceUrl();
 			this.kakaoMapId = meetingPlace.getKakaoMapId();
+			this.addressName = meetingPlace.getAddressName();
+			this.roadAddressName = meetingPlace.getRoadAddressName();
 			this.latitude = meetingPlace.getLatitude();
 			this.longitude = meetingPlace.getLongitude();
 
