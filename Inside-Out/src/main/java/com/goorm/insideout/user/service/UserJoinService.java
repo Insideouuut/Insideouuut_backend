@@ -1,5 +1,8 @@
 package com.goorm.insideout.user.service;
 
+import static com.goorm.insideout.global.exception.ErrorCode.*;
+
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +20,7 @@ import com.goorm.insideout.user.dto.request.CheckNicknameRequest;
 import com.goorm.insideout.user.dto.request.UserJoinRequestDTO;
 import com.goorm.insideout.user.repository.UserRepository;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -47,6 +51,17 @@ public class UserJoinService {
 			.nickname(userJoinRequest.getNickName())
 			.build();
 		userRepository.save(joinUser);
+	}
+
+	public void checkFirstLogin(User user, HttpServletResponse response) throws IOException {
+		if(user==null){
+			throw ModongException.from(USER_NOT_FOUND);
+		}
+		String nickname= user.getNickname();
+		if(nickname==null){
+			response.sendRedirect("http://localhost:5173/userinfo");
+			//response.sendRedirect("https://modong.link/userinfo");
+		}
 	}
 
 	public void validateExistEmail(String email) {
