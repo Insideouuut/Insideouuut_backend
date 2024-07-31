@@ -17,6 +17,7 @@ import com.goorm.insideout.user.domain.Gender;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.dto.request.CheckEmailRequest;
 import com.goorm.insideout.user.dto.request.CheckNicknameRequest;
+import com.goorm.insideout.user.dto.request.SocialJoinRequest;
 import com.goorm.insideout.user.dto.request.UserJoinRequestDTO;
 import com.goorm.insideout.user.repository.UserRepository;
 
@@ -32,20 +33,15 @@ public class UserJoinService {
 
 	@Transactional
 	public void join(UserJoinRequestDTO userJoinRequest) {
-		List<String> categoryDTO = userJoinRequest.getCategory();
-		Set<Category> categorySet = new HashSet<>();
-		for (String category : categoryDTO) {
-			categorySet.add(Category.valueOf(category));
-		}
 		validateExistEmail(userJoinRequest.getEmail());
-		validateExistNickname(userJoinRequest.getName());
+		validateExistNickname(userJoinRequest.getNickName());
 		User joinUser = User.builder()
 			.email(userJoinRequest.getEmail())
 			.password(bCryptPasswordEncoder.encode(userJoinRequest.getPassword()))
 			.name(userJoinRequest.getName())
 			.birthDate(userJoinRequest.getBirthDate())
 			.phoneNumber(userJoinRequest.getPhoneNumber())
-			.interests(categorySet)
+			.interests(stringListToCategorySet(userJoinRequest.getCategory()))
 			.gender(Gender.valueOf(userJoinRequest.getGender()))
 			.location(userJoinRequest.getLocation())
 			.nickname(userJoinRequest.getNickName())
@@ -54,14 +50,35 @@ public class UserJoinService {
 	}
 
 	public void checkFirstLogin(User user, HttpServletResponse response) throws IOException {
-		if(user==null){
+		if (user == null) {
 			throw ModongException.from(USER_NOT_FOUND);
 		}
-		String nickname= user.getNickname();
-		if(nickname==null){
+		String nickname = user.getNickname();
+		if (nickname == null) {
 			response.sendRedirect("http://localhost:5173/userinfo");
 			//response.sendRedirect("https://modong.link/userinfo");
 		}
+	}
+
+	public void socialJoin(User user, SocialJoinRequest socialJoinRequest) {
+		if (user == null) {
+			throw ModongException.from(USER_NOT_FOUND);
+		}
+		user.setBirthDate(socialJoinRequest.getBirthDate());
+		user.setPhoneNumber(socialJoinRequest.getPhoneNumber());
+		user.setInterests(stringListToCategorySet(socialJoinRequest.getCategory()));
+		user.setGender(Gender.valueOf(socialJoinRequest.getGender()));
+		user.setLocation(socialJoinRequest.getLocation());
+		user.setNickname(socialJoinRequest.getNickName());
+		userRepository.save(user);
+	}
+
+	private Set<Category> stringListToCategorySet(List<String> categoryDTO) {
+		Set<Category> categorySet = new HashSet<>();
+		for (String category : categoryDTO) {
+			categorySet.add(Category.valueOf(category));
+		}
+		return categorySet;
 	}
 
 	public void validateExistEmail(String email) {
