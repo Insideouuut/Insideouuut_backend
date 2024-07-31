@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Setter
 public class UserJoinRequestDTO {
 	@NotBlank(message = "email은 필수 입니다")
 	@Email(message = "올바른 email 형식이 아닙니다")
