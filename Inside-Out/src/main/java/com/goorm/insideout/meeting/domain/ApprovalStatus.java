@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Category {
+public enum ApprovalStatus {
 
-	SOCIAL("사교/취미"),
-	SPORTS("운동"),
-	STUDY("스터디");
+	APPROVED("승인"),
+	DENIED("거절"),
+	PENDING("대기");
 
 	private final String name;
 }
