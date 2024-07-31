@@ -27,7 +27,7 @@ public class MeetingResponse {
 	private int membershipFee;
 	private String progress;
 	private String level;
-	private String hobby;
+	private String categoryDetail;
 	private String category;
 	private MeetingPlaceResponse place;
 	private LocalDateTime schedule;
@@ -56,7 +56,7 @@ public class MeetingResponse {
 		this.membershipFee = meeting.getMembershipFee();
 		this.progress = meeting.getProgress().name();
 		this.level = meeting.getLevel().name();
-		this.hobby = meeting.getHobby();
+		this.categoryDetail = meeting.getCategoryDetail();
 		this.category = meeting.getCategory().name();
 		this.place = new MeetingPlaceResponse().toDto(meeting.getMeetingPlace());
 		this.schedule = meeting.getSchedule();

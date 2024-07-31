@@ -59,9 +59,6 @@ public class Meeting {
 	@Column(name = "level", nullable = false)
 	private Level level;
 
-	@Column(name = "hobby", nullable = false)
-	private String hobby;
-
 	@Column(name = "participants_number", columnDefinition = "integer default 0", nullable = false)
 	private int participantsNumber;
 
@@ -87,6 +84,9 @@ public class Meeting {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
 	private Category category;
+
+	@Column(name = "category_detail", nullable = false)
+	private String categoryDetail;
 
 	@Column(name = "view", columnDefinition = "integer default 0", nullable = false)
 	private int view;
@@ -115,6 +115,7 @@ public class Meeting {
 		String title,
 		String description,
 		Category category,
+		String categoryDetail,
 		int participantLimit,
 		String rule,
 		String joinQuestion,
@@ -125,7 +126,6 @@ public class Meeting {
 		GenderRatio genderRatio,
 		boolean hasMembershipFee,
 		int membershipFee,
-		String hobby,
 		User user,
 		MeetingPlace meetingPlace
 	) {
@@ -134,6 +134,7 @@ public class Meeting {
 		meeting.title = title;
 		meeting.description = description;
 		meeting.category = category;
+		meeting.categoryDetail = categoryDetail;
 		meeting.participantsNumber = 1;
 		meeting.participantLimit = participantLimit;
 		meeting.rule = rule;
@@ -146,7 +147,6 @@ public class Meeting {
 		meeting.genderRatio = genderRatio;
 		meeting.hasMembershipFee = hasMembershipFee;
 		meeting.membershipFee = membershipFee;
-		meeting.hobby = hobby;
 		meeting.setHost(user);
 		meeting.setMeetingPlace(meetingPlace);
 
@@ -160,6 +160,7 @@ public class Meeting {
 		this.title = meeting.title;
 		this.description = meeting.description;
 		this.category = meeting.category;
+		this.categoryDetail = meeting.categoryDetail;
 		this.participantsNumber = meeting.participantsNumber;
 		this.participantLimit = meeting.participantLimit;
 		this.rule = meeting.rule;
@@ -171,7 +172,6 @@ public class Meeting {
 		this.genderRatio = meeting.genderRatio;
 		this.hasMembershipFee = meeting.hasMembershipFee;
 		this.membershipFee = meeting.membershipFee;
-		this.hobby = meeting.hobby;
 		this.setMeetingPlace(meeting.getMeetingPlace());
 	}
 
