@@ -5,11 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum Category {
+public enum Role {
 
-	SOCIAL("사교/취미"),
-	SPORTS("운동"),
-	STUDY("스터디");
+	HOST("호스트"),
+	MEMBER("멤버");
 
 	private final String name;
 }

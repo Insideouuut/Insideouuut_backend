@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.goorm.insideout.meeting.domain.Meeting;
+import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
@@ -24,14 +25,14 @@ public class MeetingResponse {
 	private int like;
 	private boolean hasMembershipFee;
 	private int membershipFee;
+	private String progress;
 	private String level;
 	private String hobby;
 	private String category;
-	private String location;
+	private MeetingPlaceResponse place;
 	private LocalDateTime schedule;
 	private int participantsNumber;
 	private int participantLimit;
-	private String genderCondition;
 	private int maleRatio;
 	private int femaleRatio;
 	private int minimumAge;
@@ -53,21 +54,43 @@ public class MeetingResponse {
 		this.like = meeting.getLikes().size();
 		this.hasMembershipFee = meeting.isHasMembershipFee();
 		this.membershipFee = meeting.getMembershipFee();
-		this.level = meeting.getLevel().getName();
+		this.progress = meeting.getProgress().name();
+		this.level = meeting.getLevel().name();
 		this.hobby = meeting.getHobby();
-		this.category = meeting.getCategory().getName();
-		this.location = meeting.getLocation();
+		this.category = meeting.getCategory().name();
+		this.place = new MeetingPlaceResponse().toDto(meeting.getMeetingPlace());
 		this.schedule = meeting.getSchedule();
 		this.participantsNumber = meeting.getParticipantsNumber();
 		this.participantLimit = meeting.getParticipantLimit();
-		this.genderCondition = meeting.getGenderCondition();
-		this.maleRatio = meeting.getMaleRatio();
-		this.femaleRatio = meeting.getFemaleRatio();
+		this.maleRatio = meeting.getGenderRatio().getMaleRatio();
+		this.femaleRatio = meeting.getGenderRatio().getFemaleRatio();
 		this.minimumAge = meeting.getMinimumAge();
 		this.maximumAge = meeting.getMaximumAge();
 	}
 
-	public MeetingResponse from(Meeting meeting) {
+	public static MeetingResponse from(Meeting meeting) {
 		return new MeetingResponse(meeting);
+	}
+
+	public static class MeetingPlaceResponse {
+		private String name;
+
+		private String placeUrl;
+
+		private Long kakaoMapId;
+
+		private Double latitude;
+
+		private Double longitude;
+
+		private MeetingPlaceResponse toDto(MeetingPlace meetingPlace) {
+			this.name = meetingPlace.getName();
+			this.placeUrl = meetingPlace.getPlaceUrl();
+			this.kakaoMapId = meetingPlace.getKakaoMapId();
+			this.latitude = meetingPlace.getLatitude();
+			this.longitude = meetingPlace.getLongitude();
+
+			return this;
+		}
 	}
 }

@@ -44,8 +44,9 @@ public enum ErrorCode {
 	MEETING_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 모임입니다."),
 	MEETING_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "모임에 가입되어 있지 않습니다."),
 	MEETING_ALREADY_JOINED(HttpStatus.CONFLICT, "이미 가입된 모임입니다."),
-	MEETING_NOT_OWNER(HttpStatus.FORBIDDEN, "모임의 호스트가 아닙니다."),
+	MEETING_NOT_HOST(HttpStatus.FORBIDDEN, "모임의 호스트가 아닙니다."),
 	MEETING_NOT_MEMBER(HttpStatus.FORBIDDEN, "모임의 멤버가 아닙니다."),
+	MEETING_GENDER_RATIO_INVALID(HttpStatus.BAD_REQUEST, "성별 비율이 올바르지 않습니다."),
 
 	// chat
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
