@@ -43,50 +43,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 		clubUserRepository.deleteByUserIdAndClubId(userId,clubId);
 	}
 
-	/*
-	@Override
-	public ClubUser clubUserApply(Club club, User user, ClubApplyRequestDto clubApplyRequestDto) {
-		ClubUser clubUser = ClubUser.builder()
-			.userId(user.getId())
-			.clubId(club.getClubId())
-			.userName(user.getName())
-			//.profileImgUrl(user.getProfileImgUrl)
-			//.mannerTemp(user.getMannerTemp)
-			.build();
-
-		List<ClubUser> byClubIdJQL = clubUserRepository.findByClubIdJQL(club.getClubId());
-		List<ClubUser> members = getMembers(club.getClubId());
-		System.out.println("byClubIdJQL = " + byClubIdJQL);
-		System.out.println("members = " + members);
-
-		return clubUserRepository.save(clubUser);
-	}
-
-	 */
-
-	/*
-	@Override
-	public void clubUserAccept(Club club, User user, Long applyId) {
-		List<ClubUser> members = club.getMembers();
-		Optional<ClubUser> clubUser = clubUserRepository.findByApplyId(applyId);
-
-		if(!user.getId().equals(club.getOwner().getId())){
-			System.out.println("user = " + user);
-			System.out.println("club.getOwner() = " + club.getOwner());
-			System.out.println("user.getId() = " + user.getId());
-			System.out.println("club.getOwner().getId() = " + club.getOwner().getId());
-
-			throw new NoSuchElementException();
-		}
-		if(clubUser.isEmpty()){
-			throw new NullPointerException();
-		}else {
-			members.add(clubUser.get());
-		}
-	}
-
-	 */
-
 	@Override
 	@Transactional
 	public ClubUser clubUserAccept(Club club, User user, Long applyId) {
@@ -100,7 +56,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 		if(memberCount >= memberLimit){
 			throw new IllegalStateException();
 		}
-		System.out.println("memberCount = " + club.getMemberCount());
 		ClubUser clubUser = ClubUser.builder()
 			.userId(clubApply.getUserId())
 			.clubId(clubApply.getClubId())
@@ -109,7 +64,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 			//.mannerTemp(user.getMannerTemp)
 			.build();
 		club.increaseMemberCount();
-		System.out.println("memberCount = " + club.getMemberCount());
 		clubRepository.save(club);
 		clubApplyRepository.deleteByApplyId(applyId);
 
@@ -128,38 +82,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 		clubApplyRepository.deleteByApplyId(applyId);
 	}
 
-	/*
-	@Override
-	public List<ClubApplyResponseDto> findApplyList(Club club, User user) {
-		List<ClubUser> byClubIdJQL = clubUserRepository.findByClubIdJQL(club.getClubId());
-		List<ClubApplyResponseDto> applyList = new ArrayList<>();
-
-		List<ClubUser> members = getMembers(club.getClubId());
-
-		if(!user.getId().equals(club.getOwner().getId())){
-			System.out.println("user = " + user);
-			System.out.println("club.getOwner() = " + club.getOwner());
-			System.out.println("user.getId() = " + user.getId());
-			System.out.println("club.getOwner().getId() = " + club.getOwner().getId());
-
-			throw new NoSuchElementException();
-		}
-		System.out.println("byClubIdJQL = " + byClubIdJQL);
-		System.out.println("members = " + members);
-		for(ClubUser clubUser: byClubIdJQL){
-
-			if(!members.contains(clubUser)){
-				ClubApplyResponseDto clubApplyResponseDto = ClubApplyResponseDto.of(clubUser);
-				applyList.add(clubApplyResponseDto);
-			}
-		}
-
-		return applyList;
-	}
-
-	 */
-
-
 	@Override
 	public List<ClubMembersResponseDto> findMemberList(Club club) {
 		List<ClubUser> memberList = getMembers(club.getClubId());
@@ -170,28 +92,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 		}
 		return clubMembersResponseDtoList;
 	}
-
-
-/*
-	@Override
-	public List<ClubDetailResponseDto> findMemberList(Club club) {
-		List<ClubUser> byClubIdJQL = clubUserRepository.findByClubIdJQL(club.getClubId());
-		List<ClubDetailResponseDto> memberList = new ArrayList<>();
-
-
-		for(ClubUser clubUser: byClubIdJQL){
-			ClubDetailResponseDto clubDetailResponseDto = memberValidate(club, clubUser);
-			if(clubDetailResponseDto.getRole().equals("member")){
-				memberList.add(clubDetailResponseDto);
-			}
-		}
-
-
-
-		return memberList;
-	}
-
- */
 
 	@Override
 	public void clubUserLeave(Club club, User user) {
@@ -236,35 +136,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 	public ClubUser clubUserReport(Club club, User user) {
 		return null;
 	}
-
-	/*
-	//클럽멤버 구분할때 씀 참여대기자보기에 씀
-	@Transactional
-	public ClubDetailResponseDto memberValidate(Club club, ClubUser clubUser){
-		ClubDetailResponseDto res = new ClubDetailResponseDto();
-
-		if(club == null){
-			res.setClubData(null);
-			res.setRole(null);
-		}
-		else {
-			res.setClubData(ClubMemberDetail.of(club));
-			res.setRole("outsider");
-			if (club.getOwner().getId().equals(clubUser.getUserId()))
-				res.setRole("owner");
-			else {
-				for (ClubUser member : club.getMembers()) {
-					if (member.getUser().getId().equals(clubUser.getUserId())) {
-						res.setRole("member");
-						break;
-					}
-				}
-			}
-		}
-		return res;
-	}
-
-	 */
 
 	@Transactional(readOnly = true)
 	public List<ClubUser> getMembers(Long clubId) {
