@@ -1,13 +1,16 @@
 package com.goorm.insideout.user.dto.request;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 public class UserJoinRequestDTO {
 	@NotBlank(message = "email은 필수 입니다")
 	@Email(message = "올바른 email 형식이 아닙니다")
@@ -19,4 +22,16 @@ public class UserJoinRequestDTO {
 
 	@NotBlank(message = "이름은 필수 입니다")
 	private String name;
+
+	private String nickName;
+
+	private String phoneNumber;
+
+	private String location;
+
+	private String gender;
+
+	private List<String> category;
+
+	private LocalDate birthDate;
 }

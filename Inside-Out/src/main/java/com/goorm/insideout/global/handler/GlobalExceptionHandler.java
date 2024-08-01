@@ -43,8 +43,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
           at com.festago.admin.presentation.AdminController.getError(AdminController.java:129)
      */
 
-	@ExceptionHandler(RuntimeException.class)
-	public ApiResponse<Void> handle(ModongException exception, HttpServletRequest request) {
+	@ExceptionHandler(ModongException.class)
+	public ApiResponse handle(ModongException exception, HttpServletRequest request) {
 		logInfo(exception, request);
 		return new ApiResponse<>(exception);
 	}
