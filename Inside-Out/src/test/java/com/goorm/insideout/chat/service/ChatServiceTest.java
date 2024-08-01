@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.goorm.insideout.chat.domain.Chat;
 import com.goorm.insideout.chat.dto.request.ChatRequestDTO;
 import com.goorm.insideout.chat.dto.response.ChatResponseDTO;
+import com.goorm.insideout.chat.dto.response.InitialChatListResponseDTO;
 import com.goorm.insideout.chat.repository.ChatRepository;
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
@@ -149,5 +151,125 @@ public class ChatServiceTest {
 		List<ChatResponseDTO> result = chatService.getUnreadMessages(testUser.getId(), testChatRoom.getId());
 
 		assertEquals(expectedResponse, result);
+	}
+	@Test
+	public void testGetInitialMessages() {
+		LocalDateTime lastVisitedTime = LocalDateTime.now().minusDays(1);
+		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
+
+		// Mock 데이터 설정
+		List<Chat> unreadChats = Arrays.asList(
+			Chat.builder()
+				.id(1L)
+				.content("Unread Message 1")
+				.sendTime(LocalDateTime.now().minusHours(1))
+				.user(testUser)
+				.chatRoom(testChatRoom)
+				.build()
+		);
+
+		List<Chat> readChats = Arrays.asList(
+			Chat.builder()
+				.id(2L)
+				.content("Read Message 1")
+				.sendTime(LocalDateTime.now().minusDays(2))
+				.user(testUser)
+				.chatRoom(testChatRoom)
+				.build()
+		);
+
+		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(lastVisitedTime);
+		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(invitationTime);
+		when(chatRepository.findUnreadMessages(testChatRoom.getId(), lastVisitedTime, invitationTime)).thenReturn(unreadChats);
+		when(chatRepository.findPreviousMessages(testChatRoom.getId(), lastVisitedTime, invitationTime)).thenReturn(readChats);
+
+		// Expected DTO 리스트 생성
+		List<ChatResponseDTO> unreadChatDTOs = unreadChats.stream()
+			.map(this::convertToChatResponseDTO)
+			.collect(Collectors.toList());
+
+		List<ChatResponseDTO> readChatDTOs = readChats.stream()
+			.sorted(Comparator.comparing(Chat::getSendTime))
+			.map(this::convertToChatResponseDTO)
+			.collect(Collectors.toList());
+
+		InitialChatListResponseDTO expectedResponse = InitialChatListResponseDTO.builder()
+			.readMessages(readChatDTOs)
+			.unreadMessages(unreadChatDTOs)
+			.build();
+
+		// Call the service method
+		InitialChatListResponseDTO result = chatService.getInitialMessages(testUser.getId(), testChatRoom.getId());
+
+		// Assertions
+		assertEquals(expectedResponse, result);
+	}
+	@Test
+	public void testGetPreviousMessagesBeforeId() {
+		Long firstMessageId = 1L;
+		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
+
+		// Mock 데이터 설정
+		List<Chat> previousChats = Arrays.asList(
+			Chat.builder()
+				.id(2L)
+				.content("Previous Message")
+				.sendTime(LocalDateTime.now().minusDays(2))
+				.user(testUser)
+				.chatRoom(testChatRoom)
+				.build()
+		);
+
+		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(invitationTime);
+		when(chatRepository.findPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId, invitationTime)).thenReturn(previousChats);
+
+		// Expected DTO 리스트 생성
+		List<ChatResponseDTO> expectedDTOs = previousChats.stream()
+			.sorted(Comparator.comparing(Chat::getSendTime))
+			.map(this::convertToChatResponseDTO)
+			.collect(Collectors.toList());
+
+		// Call the service method
+		List<ChatResponseDTO> result = chatService.getPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId, testUser.getId());
+
+		// Assertions
+		assertEquals(expectedDTOs, result);
+	}
+	@Test
+	public void testGetNextMessagesAfterId() {
+		Long lastMessageId = 1L;
+		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
+
+		// Mock 데이터 설정
+		List<Chat> nextChats = Arrays.asList(
+			Chat.builder()
+				.id(2L)
+				.content("Next Message")
+				.sendTime(LocalDateTime.now().plusDays(1))
+				.user(testUser)
+				.chatRoom(testChatRoom)
+				.build()
+		);
+
+		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(invitationTime);
+		when(chatRepository.findNextMessagesAfterId(testChatRoom.getId(), lastMessageId, invitationTime)).thenReturn(nextChats);
+
+		// Expected DTO 리스트 생성
+		List<ChatResponseDTO> expectedDTOs = nextChats.stream()
+			.map(this::convertToChatResponseDTO)
+			.collect(Collectors.toList());
+
+		// Call the service method
+		List<ChatResponseDTO> result = chatService.getNextMessagesAfterId(testChatRoom.getId(), lastMessageId, testUser.getId());
+
+		// Assertions
+		assertEquals(expectedDTOs, result);
+	}
+	private ChatResponseDTO convertToChatResponseDTO(Chat chat) {
+		return ChatResponseDTO.builder()
+			.content(chat.getContent())
+			.sendTime(chat.getSendTime())
+			.sender(chat.getUser().getName())
+			.build();
 	}
 }
