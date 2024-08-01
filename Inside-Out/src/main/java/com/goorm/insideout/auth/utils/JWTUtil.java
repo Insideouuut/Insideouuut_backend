@@ -9,6 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 
 @Component
@@ -43,13 +45,13 @@ public class JWTUtil {
 
 	//claim 에서 토큰 만료 여부 추출
 	public Boolean isExpired(String token) {
-		return Jwts.parser()
-			.verifyWith(secretKey)
-			.build()
-			.parseSignedClaims(token)
-			.getPayload()
-			.getExpiration()
-			.before(new Date());
+		try {
+			Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+			return false;
+		} catch (ExpiredJwtException e) {
+			// 토큰이 만료된 경우
+			return true;
+		}
 	}
 
 	//JWT 토큰 생성 Claim 에는 토큰 종류와 email 만 담음
@@ -69,7 +71,11 @@ public class JWTUtil {
 		try {
 			Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
 			return true;
+		} catch (ExpiredJwtException e) {
+			// 토큰이 만료된 경우
+			return true;
 		} catch (Exception e) {
+			// 서명이 잘못됬거나 형식이 잘못됐을경우
 			return false;
 		}
 	}

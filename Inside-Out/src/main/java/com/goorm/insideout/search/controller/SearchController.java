@@ -30,8 +30,8 @@ public class SearchController {
 		MeetingSearchRequest condition = new MeetingSearchRequest(query, category, sortType);
 		PageRequest pageRequest = PageRequest.of(page - 1, 20);
 
-		Page<MeetingResponse> searchResult = meetingService.findAllBySortType(condition, pageRequest);
+		Page<MeetingResponse> searchResult = meetingService.findBySortType(condition, pageRequest);
 
-		return new ApiResponse<>(searchResult.getContent(), searchResult.getPageable());
+		return new ApiResponse<>(searchResult);
 	}
 }
