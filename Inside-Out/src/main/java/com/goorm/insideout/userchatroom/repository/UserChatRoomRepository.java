@@ -18,8 +18,14 @@ public interface UserChatRoomRepository extends JpaRepository<UserChatRoom, Long
 	void deleteByUserIdAndChatRoomId(Long userId, Long chatRoomId);
 
 	Long countByChatRoomId(Long chatRoomId);
+
 	Optional<UserChatRoom> findByUserAndChatRoom(User user, ChatRoom chatRoom);
 
+	// 초대되었던 시간 찾기
+	@Query("SELECT ucr.invitationTime FROM UserChatRoom ucr WHERE ucr.user.id = :userId AND ucr.chatRoom.id = :chatRoomId")
+	LocalDateTime findInvitationTime(@Param("userId") Long userId, @Param("chatRoomId") Long chatRoomId);
+
+	// 입/퇴장 시간 찾기
 	@Query("SELECT ucr.configTime FROM UserChatRoom ucr WHERE ucr.user.id = :userId AND ucr.chatRoom.id = :chatRoomId")
 	LocalDateTime findConfigTime(@Param("userId") Long userId, @Param("chatRoomId") Long chatRoomId);
 

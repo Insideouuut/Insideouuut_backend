@@ -88,10 +88,19 @@ public class ChatRoomService {
 	private Map<Long, Long> getUnreadMessageCountByChatRoomId(Long userId, List<Long> chatRoomIds) {
 		return chatRoomIds.stream()
 			.collect(Collectors.toMap(chatRoomId -> chatRoomId, chatRoomId -> {
+				// 초대 시간 조회
+				LocalDateTime invitationTime = userChatRoomRepository.findInvitationTime(userId, chatRoomId);
+
+				// 마지막 방문 시간 조회
 				LocalDateTime lastVisitedTime = userChatRoomRepository.findConfigTime(userId, chatRoomId);
-				return (lastVisitedTime == null) ?
-					chatRepository.countByChatRoomId(chatRoomId) :
-					chatRepository.countByChatRoomIdAndSendTimeAfter(chatRoomId, lastVisitedTime);
+
+				// 초대 시간 이후의 메시지 카운트
+				if (lastVisitedTime == null) {
+					// 사용자가 아직 방문하지 않은 경우: 초대 이후의 모든 메시지 카운트
+					return chatRepository.countByChatRoomIdAndSendTimeAfter(chatRoomId, invitationTime);
+				} else {
+					return chatRepository.countByChatRoomIdAndSendTimeAfter(chatRoomId, lastVisitedTime);
+				}
 			}));
 	}
 
