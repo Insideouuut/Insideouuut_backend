@@ -48,6 +48,7 @@ public enum ErrorCode {
 	MEETING_NOT_MEMBER(HttpStatus.FORBIDDEN, "모임의 멤버가 아닙니다."),
 
 	// chat
+	CHAT_NOT_EMPTY(HttpStatus.NOT_FOUND, "빈값을 보낼 수 없습니다."),
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
 	CHAT_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 채팅방입니다."),
 	CHAT_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "채팅방에 가입되어 있지 않습니다."),
