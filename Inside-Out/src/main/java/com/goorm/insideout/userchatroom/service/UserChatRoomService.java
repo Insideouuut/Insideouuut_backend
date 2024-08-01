@@ -58,6 +58,7 @@ public class UserChatRoomService {
 			.user(user)
 			.chatRoom(chatRoom)
 			.configTime(null)
+			.invitationTime(LocalDateTime.now()) // 초대 시간 설정
 			.build();
 		userChatRoomRepository.save(userChatRoom);
 	}

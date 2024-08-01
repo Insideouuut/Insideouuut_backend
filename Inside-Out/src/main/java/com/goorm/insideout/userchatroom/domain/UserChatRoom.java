@@ -32,6 +32,9 @@ public class UserChatRoom {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "invitation_time")
+	private LocalDateTime invitationTime;
+
 	@Column(name = "config_time")
 	private LocalDateTime configTime;
 
