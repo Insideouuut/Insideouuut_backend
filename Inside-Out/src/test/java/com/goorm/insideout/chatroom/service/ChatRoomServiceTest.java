@@ -156,4 +156,5 @@ class ChatRoomServiceTest {
 		assertEquals(1, meetingRooms.size());
 		assertEquals(ChatRoomType.MEETING, meetingRooms.get(0).getType());
 	}
+
 }
