@@ -31,7 +31,7 @@ public class ClubUser {
 	@Id
 	@GeneratedValue
 	@Column(name = "clubUser_id")
-	private Long id;
+	private Long clubUserId;
 
 
 	@JsonIgnore
