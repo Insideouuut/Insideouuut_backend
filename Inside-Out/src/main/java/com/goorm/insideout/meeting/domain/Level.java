@@ -1,8 +1,10 @@
 package com.goorm.insideout.meeting.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public enum Level {
 
 	BEGINNER("하", "해당 스포츠에 이제 막 입문했거나 경험이 적은 사용자에요."),
@@ -12,9 +14,4 @@ public enum Level {
 
 	private final String name;
 	private final String description;
-
-	Level(String name, String description) {
-		this.name = name;
-		this.description = description;
-	}
 }
