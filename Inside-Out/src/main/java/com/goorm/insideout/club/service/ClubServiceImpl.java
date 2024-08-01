@@ -17,6 +17,8 @@ import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.repository.ClubUserRepository;
+import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -129,7 +131,7 @@ public class ClubServiceImpl implements ClubService{
 
 	@Override
 	public Club belongToClub(Long userId) {
-		return clubRepository.belongToTeam(userId).orElse(null);
+		return clubRepository.belongToTeam(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
 
 	@Override
@@ -205,18 +207,15 @@ public class ClubServiceImpl implements ClubService{
 	@Override
 	public Club ownClub(Long clubId, Long userId) {
 
-		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId).orElse(null);
+		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 
 	}
 
 	@Transactional(readOnly = true)
 	public List<ClubUser> getMembers(Long clubId) {
-		if(!this.clubRepository.findById(clubId).isPresent()){
-			throw new NoSuchElementException();
-		}
-		Club club = this.clubRepository.findById(clubId).get();
 
-		// @Transactional 없다면 LazyInitializationException 이 발생한다.
+		Club club = this.clubRepository.findById(clubId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+
 		List<ClubUser> members = club.getMembers();
 
 		return members;

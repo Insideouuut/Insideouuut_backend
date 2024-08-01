@@ -50,7 +50,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 		Integer memberLimit = club.getMemberLimit();
 		Integer memberCount = club.getMemberCount();
 
-		if(!user.getId().equals(club.getOwner().getId())){
+		if(!isOwner(club, user)){
 			throw new NoSuchElementException();
 		}
 		if(memberCount >= memberLimit){
@@ -75,7 +75,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 		Long clubId = club.getClubId();
 		Long userId = user.getId();
 
-		if(!user.getId().equals(club.getOwner().getId())){
+		if(!isOwner(club, user)){
 
 			throw new NoSuchElementException();
 		}
@@ -115,13 +115,12 @@ public class ClubUserServiceImpl implements ClubUserService {
 	@Override
 	public void clubUserExpel(Club club, User user, Long clubUserId) {
 		Long clubId = club.getClubId();
-		Long ownerId = user.getId();
 		List<ClubUser> members = getMembers(clubId);
 		Optional<ClubUser> clubUser = clubUserRepository.findByClubUserId(clubUserId);
 
 
 		if(clubUser.isPresent()){
-			if(club.getOwner().getId().equals(ownerId) && members.contains(clubUser.get())){
+			if(isOwner(club, user) && members.contains(clubUser.get())){
 				members.remove(clubUser.get());
 				clubUserRepository.deleteByUserIdAndClubId(clubUser.get().getUserId(), clubId);
 			}else {
@@ -147,5 +146,10 @@ public class ClubUserServiceImpl implements ClubUserService {
 		List<ClubUser> members = club.getMembers();
 
 		return members;
+	}
+
+	@Transactional
+	public boolean isOwner(Club club, User owner){
+		return club.getOwner().getId().equals(owner.getId());
 	}
 }
