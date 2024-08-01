@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.function.Predicate;
 
@@ -11,10 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
+import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.repository.ClubUserRepository;
+import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -60,8 +64,8 @@ public class ClubServiceImpl implements ClubService{
 			.clubId(club.getClubId())
 			.build();
 		clubUserRepository.save(clubUser);
-		 */
 
+		 */
 
 		return club;
 	}
@@ -126,8 +130,8 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
-	public Club belongToClub(String selectedClub, Long userId) {
-		return null;
+	public Club belongToClub(Long userId) {
+		return clubRepository.belongToTeam(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
 
 	@Override
@@ -203,7 +207,19 @@ public class ClubServiceImpl implements ClubService{
 	@Override
 	public Club ownClub(Long clubId, Long userId) {
 
-		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId).orElse(null);
+		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 
 	}
+
+	@Transactional(readOnly = true)
+	public List<ClubUser> getMembers(Long clubId) {
+
+		Club club = this.clubRepository.findById(clubId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+
+		List<ClubUser> members = club.getMembers();
+
+		return members;
+	}
+
+
 }
