@@ -1,7 +1,6 @@
 package com.goorm.insideout.chat.dto.response;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
