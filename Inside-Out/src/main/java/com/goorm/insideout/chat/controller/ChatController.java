@@ -45,15 +45,6 @@ public class ChatController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
-	// 메세지 로그 가져오기
-	@GetMapping("/api/chatroom/{chatRoomId}/logs")
-	public ApiResponse<List<ChatResponseDTO>> getChatLogs(@PathVariable Long chatRoomId,
-		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		Long userId = customUserDetails.getUser().getId();
-		List<ChatResponseDTO> chatLogs = chatService.getUnreadMessages(userId, chatRoomId);
-		return new ApiResponse<List<ChatResponseDTO>>(chatLogs);
-	}
-
 	// 채팅방 입장시 메세지 가져오기 (읽은 메세지 + 안읽은 메세지) 자연스러운 흐름을 위해
 	@GetMapping("/api/chat/initial/chatroom/{chatRoomId}")
 	public ApiResponse<InitialChatListResponseDTO> getInitialMessages(@PathVariable Long chatRoomId,

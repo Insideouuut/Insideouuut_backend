@@ -68,7 +68,8 @@ public class ChatServiceTest {
 			.title("Test Chat Room")
 			.build();
 
-		chatRequestDTO = new ChatRequestDTO("Hello World");
+		chatRequestDTO = new ChatRequestDTO();
+		chatRequestDTO.setContent("Hello World");
 
 		testChat = Chat.builder()
 			.id(1L)
@@ -112,71 +113,6 @@ public class ChatServiceTest {
 		assertEquals(ErrorCode.CHATROOM_NOT_FOUND, thrown.getErrorCode());
 	}
 
-	@Test
-	public void testGetUnreadMessages_WithLastVisitedTime() {
-		// Arrange
-		List<Chat> unreadChats = Collections.singletonList(testChat);
-
-		List<ChatResponseDTO> expectedResponse = unreadChats.stream()
-			.map(chat -> ChatResponseDTO.builder()
-				.id(chat.getId())
-				.content(chat.getContent())
-				.sendTime(chat.getSendTime())
-				.sender(chat.getUser().getName())
-				.build())
-			.toList();
-
-		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(lastVisitedTime);
-		when(chatRepository.findAllUnreadMessages(testChatRoom.getId(), lastVisitedTime)).thenReturn(unreadChats);
-
-		// Act
-		List<ChatResponseDTO> result = chatService.getUnreadMessages(testUser.getId(), testChatRoom.getId());
-
-		// Assert
-		assertEquals(expectedResponse.size(), result.size());
-
-		for (int i = 0; i < expectedResponse.size(); i++) {
-			ChatResponseDTO expected = expectedResponse.get(i);
-			ChatResponseDTO actual = result.get(i);
-
-			assertEquals(expected.getId(), actual.getId());
-			assertEquals(expected.getContent(), actual.getContent());
-			assertEquals(expected.getSendTime(), actual.getSendTime());
-			assertEquals(expected.getSender(), actual.getSender() );
-		}
-	}
-	@Test
-	public void testGetUnreadMessages_WithoutLastVisitedTime() {
-		// Arrange
-		List<Chat> allChats = Collections.singletonList(testChat);
-
-		List<ChatResponseDTO> expectedResponse = allChats.stream()
-			.map(chat -> ChatResponseDTO.builder()
-				.id(chat.getId())
-				.content(chat.getContent())
-				.sendTime(chat.getSendTime())
-				.sender(chat.getUser().getName())
-				.build())
-			.toList();
-
-		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(null);
-		when(chatRepository.findAllByChatRoomId(testChatRoom.getId())).thenReturn(allChats);
-
-		// Act
-		List<ChatResponseDTO> result = chatService.getUnreadMessages(testUser.getId(), testChatRoom.getId());
-
-		// Assert
-		assertEquals(expectedResponse.size(), result.size());
-		for (int i = 0; i < expectedResponse.size(); i++) {
-			ChatResponseDTO expected = expectedResponse.get(i);
-			ChatResponseDTO actual = result.get(i);
-
-			assertEquals(expected.getId(), actual.getId());
-			assertEquals(expected.getContent(), actual.getContent());
-			assertEquals(expected.getSendTime(), actual.getSendTime());
-			assertEquals(expected.getSender(), actual.getSender());
-		}
-	}
 	@Test
 	public void testGetInitialMessages() {
 		LocalDateTime lastVisitedTime = LocalDateTime.now().minusDays(1);
