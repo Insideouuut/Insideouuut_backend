@@ -68,7 +68,6 @@ public class ChatServiceTest {
 			.title("Test Chat Room")
 			.build();
 
-		// Use no-argument constructor and set content
 		chatRequestDTO = new ChatRequestDTO();
 		chatRequestDTO.setContent("Hello World");
 
