@@ -98,9 +98,8 @@ public class ChatRoomService {
 				if (lastVisitedTime == null) {
 					// 사용자가 아직 방문하지 않은 경우: 초대 이후의 모든 메시지 카운트
 					return chatRepository.countByChatRoomIdAndSendTimeAfter(chatRoomId, invitationTime);
-				} else {
-					return chatRepository.countByChatRoomIdAndSendTimeAfter(chatRoomId, lastVisitedTime);
 				}
+				return chatRepository.countByChatRoomIdAndSendTimeAfter(chatRoomId, lastVisitedTime);
 			}));
 	}
 
