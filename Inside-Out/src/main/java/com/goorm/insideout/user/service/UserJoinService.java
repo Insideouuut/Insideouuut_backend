@@ -15,8 +15,6 @@ import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Category;
 import com.goorm.insideout.user.domain.Gender;
 import com.goorm.insideout.user.domain.User;
-import com.goorm.insideout.user.dto.request.CheckEmailRequest;
-import com.goorm.insideout.user.dto.request.CheckNicknameRequest;
 import com.goorm.insideout.user.dto.request.SocialJoinRequest;
 import com.goorm.insideout.user.dto.request.UserJoinRequestDTO;
 import com.goorm.insideout.user.repository.UserRepository;

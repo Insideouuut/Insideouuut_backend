@@ -26,29 +26,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class ClubUser {
+public class ClubApply {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "clubUser_id")
-	private Long clubUserId;
+	@Column(name = "apply_Id")
+	private Long applyId;
 
-
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id",insertable = false,updatable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	User user;
 
 	@NotNull
 	@Column(name = "user_id")
 	Long userId;
 
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "club_id",insertable = false,updatable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	Club club;
 
 	@NotNull
 	@Column(name = "club_id")
@@ -57,4 +46,5 @@ public class ClubUser {
 	private String userName;
 	private String profileImgUrl;
 	private String mannerTemp;
+	private String answer;
 }

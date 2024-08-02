@@ -16,19 +16,19 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClubDetail extends ClubModifyResponseDto {
+public class ClubMemberDetail extends ClubModifyResponseDto {
 	ClubDetailOwnerDto owner;
 	List<ClubDetailUserDto> members = new ArrayList<>();
 	private LocalDateTime createDateTime;
 
-	public static ClubDetail of(Club club){
-		return new ClubDetail(club);
+	public static ClubMemberDetail of(Club club){
+		return new ClubMemberDetail(club);
 	}
 
-	public ClubDetail(Club club){
+	public ClubMemberDetail(Club club){
 		super(club);
 		this.members = ClubDetailUserDto.of(club.getMembers());
 		this.owner = ClubDetailOwnerDto.of(club.getOwner());
-		this.createdAt = club.getCreatedAt();
+		this.createDateTime = LocalDateTime.now();
 	}
 }
