@@ -60,19 +60,6 @@ public class ChatService {
 		}
 	}
 
-	// 읽지 않은 메시지 조회
-	@Transactional(readOnly = true)
-	public List<ChatResponseDTO> getUnreadMessages(Long userId, Long chatRoomId) {
-		LocalDateTime lastVisitedTime = userChatRoomRepository.findConfigTime(userId, chatRoomId);
-		List<Chat> chats = (lastVisitedTime == null) ?
-			chatRepository.findAllByChatRoomId(chatRoomId) :
-			chatRepository.findAllUnreadMessages(chatRoomId, lastVisitedTime);
-
-		return chats.stream()
-			.map(this::convertToChatResponseDTO)
-			.collect(Collectors.toList());
-	}
-
 	// 채팅방 가져오기
 	private ChatRoom getChatRoom(Long roomId) {
 		return chatRoomRepository.findById(roomId)
