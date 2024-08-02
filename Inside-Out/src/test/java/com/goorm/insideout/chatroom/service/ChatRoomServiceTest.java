@@ -126,15 +126,12 @@ class ChatRoomServiceTest {
 
 	@Test
 	void testGetClubRoomsByUserId() {
-		// Test implementation similar to testGetChatRoomsByUserId but filtering for CLUB rooms
 		when(userChatRoomRepository.findByUserId(userId)).thenReturn(Collections.singletonList(testUserChatRoom));
 		when(chatRoomRepository.findAllById(Collections.singletonList(chatRoomId)))
 			.thenReturn(Collections.singletonList(testChatRoom));
 
-		// Call the service method
 		List<ChatRoomResponseDTO> clubRooms = chatRoomService.getClubRoomsByUserId(userId);
 
-		// Validate the results
 		assertNotNull(clubRooms);
 		assertEquals(1, clubRooms.size());
 		assertEquals(ChatRoomType.CLUB, clubRooms.get(0).getType());
@@ -142,16 +139,16 @@ class ChatRoomServiceTest {
 
 	@Test
 	void testGetMeetingRoomsByUserId() {
-		// Test implementation similar to testGetChatRoomsByUserId but filtering for MEETING rooms
+
 		ChatRoom meetingRoom = ChatRoom.builder().id(chatRoomId).title("Meeting Room").type(ChatRoomType.MEETING).build();
 		when(userChatRoomRepository.findByUserId(userId)).thenReturn(Collections.singletonList(testUserChatRoom));
 		when(chatRoomRepository.findAllById(Collections.singletonList(chatRoomId)))
 			.thenReturn(Collections.singletonList(meetingRoom));
 
-		// Call the service method
+
 		List<ChatRoomResponseDTO> meetingRooms = chatRoomService.getMeetingRoomsByUserId(userId);
 
-		// Validate the results
+
 		assertNotNull(meetingRooms);
 		assertEquals(1, meetingRooms.size());
 		assertEquals(ChatRoomType.MEETING, meetingRooms.get(0).getType());

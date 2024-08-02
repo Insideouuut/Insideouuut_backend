@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chat.domain.Chat;
 import com.goorm.insideout.chat.dto.request.ChatRequestDTO;
@@ -115,10 +114,12 @@ public class ChatServiceTest {
 
 	@Test
 	public void testGetUnreadMessages_WithLastVisitedTime() {
+		// Arrange
 		List<Chat> unreadChats = Arrays.asList(testChat);
 
 		List<ChatResponseDTO> expectedResponse = unreadChats.stream()
 			.map(chat -> ChatResponseDTO.builder()
+				.id(chat.getId())
 				.content(chat.getContent())
 				.sendTime(chat.getSendTime())
 				.sender(chat.getUser().getName())
@@ -128,17 +129,30 @@ public class ChatServiceTest {
 		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(lastVisitedTime);
 		when(chatRepository.findAllUnreadMessages(testChatRoom.getId(), lastVisitedTime)).thenReturn(unreadChats);
 
+		// Act
 		List<ChatResponseDTO> result = chatService.getUnreadMessages(testUser.getId(), testChatRoom.getId());
 
-		assertEquals(expectedResponse, result);
-	}
+		// Assert
+		assertEquals(expectedResponse.size(), result.size());
 
+		for (int i = 0; i < expectedResponse.size(); i++) {
+			ChatResponseDTO expected = expectedResponse.get(i);
+			ChatResponseDTO actual = result.get(i);
+
+			assertEquals(expected.getId(), actual.getId());
+			assertEquals(expected.getContent(), actual.getContent());
+			assertEquals(expected.getSendTime(), actual.getSendTime());
+			assertEquals(expected.getSender(), actual.getSender() );
+		}
+	}
 	@Test
 	public void testGetUnreadMessages_WithoutLastVisitedTime() {
+		// Arrange
 		List<Chat> allChats = Arrays.asList(testChat);
 
 		List<ChatResponseDTO> expectedResponse = allChats.stream()
 			.map(chat -> ChatResponseDTO.builder()
+				.id(chat.getId())
 				.content(chat.getContent())
 				.sendTime(chat.getSendTime())
 				.sender(chat.getUser().getName())
@@ -148,9 +162,20 @@ public class ChatServiceTest {
 		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(null);
 		when(chatRepository.findAllByChatRoomId(testChatRoom.getId())).thenReturn(allChats);
 
+		// Act
 		List<ChatResponseDTO> result = chatService.getUnreadMessages(testUser.getId(), testChatRoom.getId());
 
-		assertEquals(expectedResponse, result);
+		// Assert
+		assertEquals(expectedResponse.size(), result.size());
+		for (int i = 0; i < expectedResponse.size(); i++) {
+			ChatResponseDTO expected = expectedResponse.get(i);
+			ChatResponseDTO actual = result.get(i);
+
+			assertEquals(expected.getId(), actual.getId());
+			assertEquals(expected.getContent(), actual.getContent());
+			assertEquals(expected.getSendTime(), actual.getSendTime());
+			assertEquals(expected.getSender(), actual.getSender());
+		}
 	}
 	@Test
 	public void testGetInitialMessages() {
@@ -185,12 +210,22 @@ public class ChatServiceTest {
 
 		// Expected DTO 리스트 생성
 		List<ChatResponseDTO> unreadChatDTOs = unreadChats.stream()
-			.map(this::convertToChatResponseDTO)
+			.map(chat -> ChatResponseDTO.builder()
+				.id(chat.getId())
+				.content(chat.getContent())
+				.sendTime(chat.getSendTime())
+				.sender(chat.getUser().getName())
+				.build())
 			.collect(Collectors.toList());
 
 		List<ChatResponseDTO> readChatDTOs = readChats.stream()
 			.sorted(Comparator.comparing(Chat::getSendTime))
-			.map(this::convertToChatResponseDTO)
+			.map(chat -> ChatResponseDTO.builder()
+				.id(chat.getId())
+				.content(chat.getContent())
+				.sendTime(chat.getSendTime())
+				.sender(chat.getUser().getName())
+				.build())
 			.collect(Collectors.toList());
 
 		InitialChatListResponseDTO expectedResponse = InitialChatListResponseDTO.builder()
@@ -198,10 +233,10 @@ public class ChatServiceTest {
 			.unreadMessages(unreadChatDTOs)
 			.build();
 
-		// Call the service method
+		// Act
 		InitialChatListResponseDTO result = chatService.getInitialMessages(testUser.getId(), testChatRoom.getId());
 
-		// Assertions
+		// Assert
 		assertEquals(expectedResponse, result);
 	}
 	@Test
@@ -226,14 +261,28 @@ public class ChatServiceTest {
 		// Expected DTO 리스트 생성
 		List<ChatResponseDTO> expectedDTOs = previousChats.stream()
 			.sorted(Comparator.comparing(Chat::getSendTime))
-			.map(this::convertToChatResponseDTO)
+			.map(chat -> ChatResponseDTO.builder()
+				.id(chat.getId())
+				.content(chat.getContent())
+				.sendTime(chat.getSendTime())
+				.sender(chat.getUser().getName())
+				.build())
 			.collect(Collectors.toList());
 
-		// Call the service method
+		// Act
 		List<ChatResponseDTO> result = chatService.getPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId, testUser.getId());
 
-		// Assertions
-		assertEquals(expectedDTOs, result);
+		// Assert
+		assertEquals(expectedDTOs.size(), result.size());
+		for (int i = 0; i < expectedDTOs.size(); i++) {
+			ChatResponseDTO expected = expectedDTOs.get(i);
+			ChatResponseDTO actual = result.get(i);
+
+			assertEquals(expected.getId(), actual.getId());
+			assertEquals(expected.getContent(), actual.getContent());
+			assertEquals(expected.getSendTime(), actual.getSendTime());
+			assertEquals(expected.getSender(), actual.getSender());
+		}
 	}
 	@Test
 	public void testGetNextMessagesAfterId() {
@@ -256,14 +305,28 @@ public class ChatServiceTest {
 
 		// Expected DTO 리스트 생성
 		List<ChatResponseDTO> expectedDTOs = nextChats.stream()
-			.map(this::convertToChatResponseDTO)
+			.map(chat -> ChatResponseDTO.builder()
+				.id(chat.getId())
+				.content(chat.getContent())
+				.sendTime(chat.getSendTime())
+				.sender(chat.getUser().getName())
+				.build())
 			.collect(Collectors.toList());
 
-		// Call the service method
+		// Act
 		List<ChatResponseDTO> result = chatService.getNextMessagesAfterId(testChatRoom.getId(), lastMessageId, testUser.getId());
 
-		// Assertions
-		assertEquals(expectedDTOs, result);
+		// Assert
+		assertEquals(expectedDTOs.size(), result.size());
+		for (int i = 0; i < expectedDTOs.size(); i++) {
+			ChatResponseDTO expected = expectedDTOs.get(i);
+			ChatResponseDTO actual = result.get(i);
+
+			assertEquals(expected.getId(), actual.getId() );
+			assertEquals(expected.getContent(), actual.getContent());
+			assertEquals(expected.getSendTime(), actual.getSendTime());
+			assertEquals(expected.getSender(), actual.getSender());
+		}
 	}
 	private ChatResponseDTO convertToChatResponseDTO(Chat chat) {
 		return ChatResponseDTO.builder()
