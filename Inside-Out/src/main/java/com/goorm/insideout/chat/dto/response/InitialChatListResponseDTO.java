@@ -1,6 +1,6 @@
 package com.goorm.insideout.chat.dto.response;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -11,9 +11,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @EqualsAndHashCode
-public class ChatResponseDTO {
-	private Long id;
-	private String content;
-	private LocalDateTime sendTime;
-	private String sender;
+public class InitialChatListResponseDTO {
+	private List<ChatResponseDTO> readMessages;
+	private List<ChatResponseDTO> unreadMessages;
 }
