@@ -3,22 +3,19 @@ package com.goorm.insideout.user.controller;
 import java.io.IOException;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.global.response.ApiResponse;
-import com.goorm.insideout.user.dto.request.CheckEmailRequest;
-import com.goorm.insideout.user.dto.request.CheckNicknameRequest;
 import com.goorm.insideout.user.dto.request.SocialJoinRequest;
 import com.goorm.insideout.user.dto.request.UserJoinRequestDTO;
 import com.goorm.insideout.user.service.UserJoinService;
@@ -40,16 +37,14 @@ public class UserJoinController {
 	}
 
 	@GetMapping("/check-email")
-	public ApiResponse checkEmail(@Validated @RequestBody CheckEmailRequest checkEmailRequest, Errors errors) {
-		validateRequest(errors);
-		service.validateExistEmail(checkEmailRequest.getEmail());
+	public ApiResponse checkEmail(@RequestParam("email") String email) {
+		service.validateExistEmail(email);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
 	@GetMapping("/check-nickname")
-	public ApiResponse checkNickname(@Validated @RequestBody CheckNicknameRequest checkNicknameRequest, Errors errors) {
-		validateRequest(errors);
-		service.validateExistEmail(checkNicknameRequest.getNickname());
+	public ApiResponse checkNickname(@RequestParam("email") String nickname) {
+		service.validateExistEmail(nickname);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
