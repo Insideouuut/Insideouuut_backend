@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -115,7 +115,7 @@ public class ChatServiceTest {
 	@Test
 	public void testGetUnreadMessages_WithLastVisitedTime() {
 		// Arrange
-		List<Chat> unreadChats = Arrays.asList(testChat);
+		List<Chat> unreadChats = Collections.singletonList(testChat);
 
 		List<ChatResponseDTO> expectedResponse = unreadChats.stream()
 			.map(chat -> ChatResponseDTO.builder()
@@ -124,7 +124,7 @@ public class ChatServiceTest {
 				.sendTime(chat.getSendTime())
 				.sender(chat.getUser().getName())
 				.build())
-			.collect(Collectors.toList());
+			.toList();
 
 		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(lastVisitedTime);
 		when(chatRepository.findAllUnreadMessages(testChatRoom.getId(), lastVisitedTime)).thenReturn(unreadChats);
@@ -148,7 +148,7 @@ public class ChatServiceTest {
 	@Test
 	public void testGetUnreadMessages_WithoutLastVisitedTime() {
 		// Arrange
-		List<Chat> allChats = Arrays.asList(testChat);
+		List<Chat> allChats = Collections.singletonList(testChat);
 
 		List<ChatResponseDTO> expectedResponse = allChats.stream()
 			.map(chat -> ChatResponseDTO.builder()
@@ -157,7 +157,7 @@ public class ChatServiceTest {
 				.sendTime(chat.getSendTime())
 				.sender(chat.getUser().getName())
 				.build())
-			.collect(Collectors.toList());
+			.toList();
 
 		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(null);
 		when(chatRepository.findAllByChatRoomId(testChatRoom.getId())).thenReturn(allChats);
@@ -183,7 +183,7 @@ public class ChatServiceTest {
 		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
 
 		// Mock 데이터 설정
-		List<Chat> unreadChats = Arrays.asList(
+		List<Chat> unreadChats = Collections.singletonList(
 			Chat.builder()
 				.id(1L)
 				.content("Unread Message 1")
@@ -193,7 +193,7 @@ public class ChatServiceTest {
 				.build()
 		);
 
-		List<Chat> readChats = Arrays.asList(
+		List<Chat> readChats = Collections.singletonList(
 			Chat.builder()
 				.id(2L)
 				.content("Read Message 1")
@@ -245,7 +245,7 @@ public class ChatServiceTest {
 		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
 
 		// Mock 데이터 설정
-		List<Chat> previousChats = Arrays.asList(
+		List<Chat> previousChats = Collections.singletonList(
 			Chat.builder()
 				.id(2L)
 				.content("Previous Message")
@@ -267,7 +267,7 @@ public class ChatServiceTest {
 				.sendTime(chat.getSendTime())
 				.sender(chat.getUser().getName())
 				.build())
-			.collect(Collectors.toList());
+			.toList();
 
 		// Act
 		List<ChatResponseDTO> result = chatService.getPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId, testUser.getId());
@@ -290,7 +290,7 @@ public class ChatServiceTest {
 		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
 
 		// Mock 데이터 설정
-		List<Chat> nextChats = Arrays.asList(
+		List<Chat> nextChats = Collections.singletonList(
 			Chat.builder()
 				.id(2L)
 				.content("Next Message")
@@ -311,7 +311,7 @@ public class ChatServiceTest {
 				.sendTime(chat.getSendTime())
 				.sender(chat.getUser().getName())
 				.build())
-			.collect(Collectors.toList());
+			.toList();
 
 		// Act
 		List<ChatResponseDTO> result = chatService.getNextMessagesAfterId(testChatRoom.getId(), lastMessageId, testUser.getId());
@@ -327,12 +327,5 @@ public class ChatServiceTest {
 			assertEquals(expected.getSendTime(), actual.getSendTime());
 			assertEquals(expected.getSender(), actual.getSender());
 		}
-	}
-	private ChatResponseDTO convertToChatResponseDTO(Chat chat) {
-		return ChatResponseDTO.builder()
-			.content(chat.getContent())
-			.sendTime(chat.getSendTime())
-			.sender(chat.getUser().getName())
-			.build();
 	}
 }
