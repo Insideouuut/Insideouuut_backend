@@ -1,6 +1,4 @@
-package com.goorm.insideout.chat.domain;
-
-import static jakarta.persistence.FetchType.*;
+package com.goorm.insideout.userchatroom.domain;
 
 import java.time.LocalDateTime;
 
@@ -9,13 +7,13 @@ import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,30 +21,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "UserChatRooms")
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CHATS")
-public class Chat {
+@Builder
+public class UserChatRoom {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "chat_id", updatable = false, nullable = false, unique = true)
 	private Long id;
 
-	@Column(name = "content", nullable = false)
-	private String content;
+	@Column(name = "invitation_time")
+	private LocalDateTime invitationTime;
 
-	@Column(name = "send_time", nullable = false)
-	private LocalDateTime sendTime;
+	@Column(name = "config_time")
+	private LocalDateTime configTime;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "chat_room_id", nullable = false)
-	private ChatRoom chatRoom;
-
-	@ManyToOne(fetch = LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "chat_room_id", nullable = false)
+	private ChatRoom chatRoom;
 
 }

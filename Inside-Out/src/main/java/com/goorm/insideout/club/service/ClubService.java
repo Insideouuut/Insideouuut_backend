@@ -3,6 +3,7 @@ package com.goorm.insideout.club.service;
 import java.io.IOException;
 import java.util.List;
 
+import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
@@ -28,4 +29,5 @@ public interface ClubService {
 
 	List<ClubListResponseDto> findByCategory(String category);
 
+	public void setChatRoom(Club club, ChatRoom chatRoom);
 }

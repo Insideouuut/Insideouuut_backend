@@ -35,7 +35,7 @@ public class ClubPost {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "board_Id")
+	@Column(name = "clubPost_Id")
 	private Long Id;
 
 	private String postTitle;

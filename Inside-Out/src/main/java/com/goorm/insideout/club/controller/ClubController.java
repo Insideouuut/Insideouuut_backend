@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
+import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.chatroom.domain.ChatRoomType;
+import com.goorm.insideout.chatroom.service.ChatRoomService;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.service.ClubService;
@@ -24,6 +27,7 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +39,8 @@ public class ClubController {
 
 
 	private final ClubService clubService;
+	private final ChatRoomService chatRoomService;
+	private final UserChatRoomService userChatRoomService;
 
 
 
@@ -65,6 +71,9 @@ public class ClubController {
 			user = userDetails.getUser();
 			
 			club = clubService.createClub(clubRequestDto, /*clubRequestDto.getClubImg(), */ user);
+
+			ChatRoom chatRoom = chatRoomService.createChatRoom(club.getClubId(), club.getClubName(), ChatRoomType.CLUB);
+			clubService.setChatRoom(club, chatRoom);
 
 		} catch (Exception exception) {
 			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);

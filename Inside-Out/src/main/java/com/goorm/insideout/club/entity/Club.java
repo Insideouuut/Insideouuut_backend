@@ -78,13 +78,14 @@ public class Club {
 	private String clubImg;
 
 
-	/*///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
+	///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
 	@OneToOne
+	@JoinColumn(name = "club")
 	ChatRoom chatRoom;
 
 	private Long chat_room_id;
 
-	 */
+
 
 	public void increaseMemberCount() {
 		this.memberCount++;
