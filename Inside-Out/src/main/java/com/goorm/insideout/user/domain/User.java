@@ -1,6 +1,7 @@
 package com.goorm.insideout.user.domain;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.ArrayList;
@@ -63,6 +64,9 @@ public class User {
 	private LocalDate birthDate;
 
 	private String phoneNumber;
+
+	@Column(precision = 4, scale = 1)
+	private BigDecimal mannerTemp;
 
 	@ElementCollection(targetClass = Category.class, fetch = FetchType.LAZY)
 	@Enumerated(EnumType.STRING)
