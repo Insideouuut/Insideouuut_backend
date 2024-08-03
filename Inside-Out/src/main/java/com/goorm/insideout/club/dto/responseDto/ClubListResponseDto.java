@@ -11,7 +11,7 @@ import lombok.Getter;
 public class ClubListResponseDto {
 	private Long clubId;
 	private String category;
-	Long ownerId;
+	private Long ownerId;
 	private String clubName;
 	private String content;
 
