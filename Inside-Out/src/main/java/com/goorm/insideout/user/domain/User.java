@@ -81,4 +81,22 @@ public class User {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
+	public void increaseMannerTemperature(){
+		BigDecimal temp = this.getMannerTemp().add(BigDecimal.valueOf(0.1));
+		if(temp.compareTo(BigDecimal.valueOf(100)) > 0){
+			this.mannerTemp=BigDecimal.valueOf(100);
+		}
+		else {
+			this.mannerTemp = this.getMannerTemp().add(BigDecimal.valueOf(0.1));
+		}
+	}
+	public void decreaseMannerTemperature(){
+		BigDecimal temp = this.mannerTemp=this.getMannerTemp().subtract(BigDecimal.valueOf(5.0));
+		if(temp.compareTo(BigDecimal.valueOf(0)) < 0){
+			this.mannerTemp=BigDecimal.valueOf(0);
+		}
+		this.mannerTemp=this.getMannerTemp().subtract(BigDecimal.valueOf(5.0));
+	}
+
+
 }
