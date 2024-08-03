@@ -31,6 +31,12 @@ public class ReportController {
 		reportService.reportUser(customUserDetails.getUser(),userId,reportRequest);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
+	@PostMapping("like/{userId}")
+	public ApiResponse likeUser(@PathVariable("userId") Long userId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		reportService.likeUser(customUserDetails.getUser(),userId);
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
 	private void validateRequest(Errors errors) {
 		if (errors.hasErrors()) {
 			errors.getFieldErrors().forEach(error -> {

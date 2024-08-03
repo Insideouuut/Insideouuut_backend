@@ -34,8 +34,18 @@ public class ReportService {
 
 		Report report = new Report(reportRequest.getReason(),reportingUser,targetUser.get());
 		reportRepository.save(report);
+	}
+	public void likeUser(User reportingUser,Long targetUserId){
+		Optional<User> targetUser = userRepository.findById(targetUserId);
+		if(targetUser.isEmpty()){
+			throw ModongException.from(USER_NOT_FOUND);
+		}
+		if(reportingUser==null){
+			throw ModongException.from(USER_NOT_FOUND);
+		}
 
-
+		targetUser.get().increaseMannerTemperature();
+		userRepository.save(targetUser.get());
 	}
 
 }
