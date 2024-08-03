@@ -1,5 +1,6 @@
 package com.goorm.insideout.club.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,11 +36,22 @@ public class ClubController {
 
 	private final ClubService clubService;
 
+
+
 	@GetMapping("/clubs")
 	public ApiResponse<List<ClubListResponseDto>> findByType(@RequestParam(name = "category") String category) {
 
+		List<ClubListResponseDto> byCategory = clubService.findByCategory(category);
+		System.out.println("byCategory.size = " + byCategory.size());
+		for (ClubListResponseDto clubListResponseDto: byCategory){
+			System.out.println("clubListResponseDto.getClubName() = " + clubListResponseDto.getClubName());;
+		}
+		System.out.println("clubService = " + clubService.findByCategory(category));
 		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
 	}
+
+
+
 
 	@GetMapping("/clubs/{clubId}")
 	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId) {

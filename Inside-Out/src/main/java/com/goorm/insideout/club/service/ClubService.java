@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
+import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.user.domain.User;

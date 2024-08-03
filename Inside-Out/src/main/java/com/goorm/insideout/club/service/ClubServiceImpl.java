@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubRepository;
@@ -134,13 +135,17 @@ public class ClubServiceImpl implements ClubService{
 		return clubRepository.belongToTeam(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
 
+
 	@Override
 	public List<ClubListResponseDto> findByCategory(String category) {
+
 
 		return clubRepository.findByCategoryJQL(category).stream()
 			.map(ClubListResponseDto::new)
 			.collect(Collectors.toList());
 	}
+
+
 
 	/*
 	@Override
