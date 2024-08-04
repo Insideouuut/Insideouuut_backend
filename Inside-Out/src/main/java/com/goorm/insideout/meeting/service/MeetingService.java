@@ -1,5 +1,6 @@
 package com.goorm.insideout.meeting.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -42,6 +43,13 @@ public class MeetingService {
 		meetingRepository.save(meeting);
 
 		return meeting.getId();
+	}
+
+	public List<MeetingResponse> findAll() {
+		return meetingRepository.findAll()
+			.stream()
+			.map(MeetingResponse::from)
+			.toList();
 	}
 
 	public MeetingResponse findById(Long id) {
