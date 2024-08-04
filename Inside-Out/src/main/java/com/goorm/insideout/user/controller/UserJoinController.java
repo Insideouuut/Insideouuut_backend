@@ -20,16 +20,20 @@ import com.goorm.insideout.user.dto.request.SocialJoinRequest;
 import com.goorm.insideout.user.dto.request.UserJoinRequestDTO;
 import com.goorm.insideout.user.service.UserJoinService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "UserJoinController", description = "회원가입 관련 API")
 public class UserJoinController {
 	private final UserJoinService service;
 
 	@PostMapping("/join")
+	@Operation(summary = "회원가입 API", description = "회원가입을 하는 API 입니다.")
 	public ApiResponse join(@Validated @RequestBody UserJoinRequestDTO userJoinRequest, Errors errors) {
 		validateRequest(errors);
 		service.join(userJoinRequest);
@@ -37,18 +41,21 @@ public class UserJoinController {
 	}
 
 	@GetMapping("/check-email")
+	@Operation(summary = "이메일 중복체크 API", description = "이메일 중복체크를 하는 API 입니다.")
 	public ApiResponse checkEmail(@RequestParam("email") String email) {
 		service.validateExistEmail(email);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
 	@GetMapping("/check-nickname")
+	@Operation(summary = "닉네임 중복체크 API", description = "닉네임 중복체크를 하는 API 입니다.")
 	public ApiResponse checkNickname(@RequestParam("nickname") String nickname) {
 		service.validateExistNickname(nickname);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
 	@GetMapping("/oauth2/userInfo")
+	@Operation(summary = "최초 로그인 체크 API", description = "최초 로그인 체크를 하는 API 입니다.")
 	public ApiResponse checkFirstLogin(@AuthenticationPrincipal CustomUserDetails userDetails,
 		HttpServletResponse response) throws
 		IOException {
@@ -57,6 +64,7 @@ public class UserJoinController {
 	}
 
 	@PostMapping("/oauth2/userInfo")
+	@Operation(summary = "소셜 로그인 API", description = "소셜 로그인을 하는 API 입니다.")
 	public ApiResponse insertUserInfo(@RequestBody SocialJoinRequest socialJoinRequest,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 		service.socialJoin(userDetails.getUser(), socialJoinRequest);
