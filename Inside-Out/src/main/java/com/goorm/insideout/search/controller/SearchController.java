@@ -12,15 +12,19 @@ import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "SearchController", description = "검색 관련 API")
 public class SearchController {
 	private final MeetingService meetingService;
 
 	@GetMapping("/search/meeting")
+	@Operation(summary = "모임 검색 API", description = "모임을 검색하는 API 입니다.")
 	public ApiResponse<MeetingResponse> findAll(
 		@RequestParam("query") String query,
 		@RequestParam("category") String category,
