@@ -147,8 +147,8 @@ public class Meeting {
 		meeting.hasMembershipFee = hasMembershipFee;
 		meeting.membershipFee = membershipFee;
 		meeting.hobby = hobby;
-		meeting.setHost(user);
-		meeting.setMeetingPlace(meetingPlace);
+		meeting.host = user;
+		meeting.meetingPlace = meetingPlace;
 
 		return meeting;
 	}
@@ -172,7 +172,7 @@ public class Meeting {
 		this.hasMembershipFee = meeting.hasMembershipFee;
 		this.membershipFee = meeting.membershipFee;
 		this.hobby = meeting.hobby;
-		this.setMeetingPlace(meeting.getMeetingPlace());
+		this.meetingPlace = meeting.getMeetingPlace();
 	}
 
 	/**
@@ -184,18 +184,5 @@ public class Meeting {
 
 	public void changeProgress(Progress progress) {
 		this.progress = progress;
-	}
-
-	/*
-	 * 연관관계 설정 메서드
-	 */
-	private void setHost(User user) {
-		this.host = user;
-		user.getRunningMeetings().add(this);
-	}
-
-	private void setMeetingPlace(MeetingPlace meetingPlace) {
-		this.meetingPlace = meetingPlace;
-		meetingPlace.getMeetings().add(this);
 	}
 }
