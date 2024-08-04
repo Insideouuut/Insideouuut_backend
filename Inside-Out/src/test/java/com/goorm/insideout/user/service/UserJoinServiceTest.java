@@ -30,7 +30,7 @@ class UserJoinServiceTest {
 		UserJoinRequestDTO requestDTO = new UserJoinRequestDTO();
 		requestDTO.setEmail("test@example.com");
 		requestDTO.setName("테스트");
-		requestDTO.setPassword("test1234");
+		requestDTO.setPassword("test1234!");
 
 		when(userRepository.existsByEmail(requestDTO.getEmail())).thenReturn(true);
 

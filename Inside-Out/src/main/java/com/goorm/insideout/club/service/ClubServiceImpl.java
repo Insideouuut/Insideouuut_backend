@@ -11,6 +11,10 @@ import java.util.function.Predicate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
+import com.goorm.insideout.club.dto.ClubUserDto;
+import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubRepository;
@@ -20,6 +24,7 @@ import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +34,8 @@ import lombok.RequiredArgsConstructor;
 public class ClubServiceImpl implements ClubService{
 
 	private final ClubRepository clubRepository;
+	private final ChatRoomRepository chatRoomRepository;
+	private final UserChatRoomRepository userChatRoomRepository;
 	private final ClubUserRepository clubUserRepository;
 
 	String domainPrefix = "https://insideout.site:8082/resources/upload/images/club_image/";
@@ -55,17 +62,18 @@ public class ClubServiceImpl implements ClubService{
 
 		Club club = clubRepository.save(clubBuilder(clubRequestDto, /*clubImgUrl,*/ user));
 
-		club.setCreatedAt(LocalDateTime.now());
-		club.setMemberCount(1);
 
-		/*
+		club.setCreatedAt(LocalDateTime.now());
+
 		ClubUser clubUser = ClubUser.builder()
 			.userId(user.getId())
 			.clubId(club.getClubId())
+			.userName(user.getName())
+			//.profileImgUrl(user.getProfileImgUrl)
+			//.mannerTemp(user.getMannerTemp)
 			.build();
 		clubUserRepository.save(clubUser);
 
-		 */
 
 		return club;
 	}
@@ -134,13 +142,17 @@ public class ClubServiceImpl implements ClubService{
 		return clubRepository.belongToTeam(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
 
+
 	@Override
 	public List<ClubListResponseDto> findByCategory(String category) {
+
 
 		return clubRepository.findByCategoryJQL(category).stream()
 			.map(ClubListResponseDto::new)
 			.collect(Collectors.toList());
 	}
+
+
 
 	/*
 	@Override
@@ -189,6 +201,7 @@ public class ClubServiceImpl implements ClubService{
 			.region(ClubRequestDto.getRegion())
 			.question(ClubRequestDto.getQuestion())
 			.memberLimit(ClubRequestDto.getMemberLimit())
+			.memberCount(1)
 			.price(ClubRequestDto.getPrice())
 			.ageLimit(ClubRequestDto.getAgeLimit())
 			.clubImg(ClubRequestDto.getClubImgUrl())
@@ -221,5 +234,12 @@ public class ClubServiceImpl implements ClubService{
 		return members;
 	}
 
+	@Override
+	@Transactional
+	public void setChatRoom(Club club, ChatRoom chatRoom){
+		club.setChatRoom(chatRoom);
+		club.setChat_room_id(chatRoom.getId());
+		clubRepository.save(club);
+	}
 
 }

@@ -46,7 +46,7 @@ public class Chat {
 	private ChatRoom chatRoom;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "id", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 }

@@ -1,5 +1,6 @@
 package com.goorm.insideout.meeting.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -36,16 +37,19 @@ public class MeetingService {
 	private final UserRepository userRepository;
 
 	@Transactional
-	public Long save(MeetingCreateRequest request, CustomUserDetails customUserDetails) {
-		User user = userRepository.findById(customUserDetails.getUser().getId())
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
-		userRepository.save(user);
-
+	public Long save(MeetingCreateRequest request, User user) {
 		MeetingPlace meetingPlace = findOrCreatePlace(request.getMeetingPlace());
 		Meeting meeting = request.toEntity(user, meetingPlace);
 		meetingRepository.save(meeting);
 
 		return meeting.getId();
+	}
+
+	public List<MeetingResponse> findAll() {
+		return meetingRepository.findAll()
+			.stream()
+			.map(MeetingResponse::from)
+			.toList();
 	}
 
 	public MeetingResponse findById(Long id) {
