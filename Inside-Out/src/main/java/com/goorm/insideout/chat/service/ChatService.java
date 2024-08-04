@@ -144,4 +144,5 @@ public class ChatService {
 			.map(this::convertToChatResponseDTO)
 			.collect(Collectors.toList());
 	}
+
 }

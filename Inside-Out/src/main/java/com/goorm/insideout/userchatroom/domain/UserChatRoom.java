@@ -46,4 +46,5 @@ public class UserChatRoom {
 	@JoinColumn(name = "chat_room_id", nullable = false)
 	private ChatRoom chatRoom;
 
+
 }

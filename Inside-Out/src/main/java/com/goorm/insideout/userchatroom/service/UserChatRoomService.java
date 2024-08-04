@@ -118,4 +118,5 @@ public class UserChatRoomService {
 		return chatRoomRepository.findById(chatRoomId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CHATROOM_NOT_FOUND));
 	}
+
 }

@@ -29,4 +29,5 @@ public interface UserChatRoomRepository extends JpaRepository<UserChatRoom, Long
 	@Query("SELECT ucr.configTime FROM UserChatRoom ucr WHERE ucr.user.id = :userId AND ucr.chatRoom.id = :chatRoomId")
 	LocalDateTime findConfigTime(@Param("userId") Long userId, @Param("chatRoomId") Long chatRoomId);
 
+
 }

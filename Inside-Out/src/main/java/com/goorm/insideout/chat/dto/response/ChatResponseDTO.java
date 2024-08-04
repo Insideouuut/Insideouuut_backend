@@ -16,4 +16,5 @@ public class ChatResponseDTO {
 	private String content;
 	private LocalDateTime sendTime;
 	private String sender;
+
 }

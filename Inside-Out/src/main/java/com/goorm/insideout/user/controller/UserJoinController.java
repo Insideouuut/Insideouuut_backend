@@ -43,8 +43,8 @@ public class UserJoinController {
 	}
 
 	@GetMapping("/check-nickname")
-	public ApiResponse checkNickname(@RequestParam("email") String nickname) {
-		service.validateExistEmail(nickname);
+	public ApiResponse checkNickname(@RequestParam("nickname") String nickname) {
+		service.validateExistNickname(nickname);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
