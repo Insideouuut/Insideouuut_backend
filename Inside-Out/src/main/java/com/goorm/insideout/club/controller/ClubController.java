@@ -24,24 +24,29 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "ClubController", description = "동아리 관련 API")
 public class ClubController {
 
 
 	private final ClubService clubService;
 
 	@GetMapping("/clubs")
+	@Operation(summary = "동아리 목록 조회 API", description = "동아리 목록을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubListResponseDto>> findByType(@RequestParam(name = "category") String category) {
 
 		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
 	}
 
 	@GetMapping("/clubs/{clubId}")
+	@Operation(summary = "동아리 단건 조회 API", description = "동아리를 단건으로 조회하는 API 입니다.")
 	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId) {
 
 
@@ -49,6 +54,7 @@ public class ClubController {
 	}
 
 	@PostMapping("/clubs")
+	@Operation(summary = "동아리 생성 API", description = "동아리를 생성하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> saveClub(@Valid @RequestBody ClubRequestDto clubRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
 		User user;
@@ -67,6 +73,7 @@ public class ClubController {
 
 
 	@PutMapping("/clubs/{clubId}")
+	@Operation(summary = "동아리 수정 API", description = "동아리를 수정하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> updateClub(@PathVariable Long clubId, @Valid @RequestBody ClubRequestDto clubRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user;
@@ -93,6 +100,7 @@ public class ClubController {
 	}
 
 	@DeleteMapping("/clubs/{clubId}")
+	@Operation(summary = "동아리 삭제 API", description = "동아리를 삭제하는 API 입니다.")
 	public ApiResponse clubDelete(@PathVariable Long clubId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		try {
 			User user = userDetails.getUser();
