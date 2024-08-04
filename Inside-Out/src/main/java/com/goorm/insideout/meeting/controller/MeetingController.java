@@ -44,9 +44,10 @@ public class MeetingController {
 		@RequestPart(value = "meetingImage", required = false) List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		meetingService.save(request, customUserDetails);
+		User user = customUserDetails.getUser();
+		meetingService.save(request, user);
 
-		return new ApiResponse<>("성공성공성공");
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
 	// 모임 단건 조회
