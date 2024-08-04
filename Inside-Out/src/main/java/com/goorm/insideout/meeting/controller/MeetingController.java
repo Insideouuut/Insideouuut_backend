@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
@@ -23,6 +24,7 @@ import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
+import com.goorm.insideout.user.domain.User;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -48,6 +50,12 @@ public class MeetingController {
 		meetingService.save(request, user);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
+
+	@GetMapping("/meetings")
+	@Operation(summary = "모임 전체 조회 API", description = "모임 전체를 조회할 수 있는 API 입니다.")
+	public ApiResponse<MeetingResponse> findAll() {
+		return new ApiResponse<>(meetingService.findAll());
 	}
 
 	// 모임 단건 조회
