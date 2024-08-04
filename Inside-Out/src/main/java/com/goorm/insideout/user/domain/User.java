@@ -1,16 +1,10 @@
 package com.goorm.insideout.user.domain;
 
-
 import java.time.LocalDate;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.goorm.insideout.meeting.domain.Category;
-import com.goorm.insideout.meeting.domain.Meeting;
-import com.goorm.insideout.meeting.domain.MeetingUser;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -20,9 +14,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +43,6 @@ public class User {
 
 	@Column(nullable = false)
 	private String name;
-
 
 	private String profileImage;
 
