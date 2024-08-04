@@ -45,10 +45,6 @@ public class ClubPost {
 	private LocalDateTime createTime;
 	private String postContent;
 
-	private Integer views;
-
-	private Integer postLike;
-
 
 	@OneToMany(mappedBy = "clubPost",cascade = CascadeType.ALL)
 	@Builder.Default

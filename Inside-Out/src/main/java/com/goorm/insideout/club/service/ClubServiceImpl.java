@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
+import com.goorm.insideout.club.dto.ClubUserDto;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.ClubUser;
@@ -35,6 +36,7 @@ public class ClubServiceImpl implements ClubService{
 	private final ClubRepository clubRepository;
 	private final ChatRoomRepository chatRoomRepository;
 	private final UserChatRoomRepository userChatRoomRepository;
+	private final ClubUserRepository clubUserRepository;
 
 	String domainPrefix = "https://insideout.site:8082/resources/upload/images/club_image/";
 
@@ -58,15 +60,22 @@ public class ClubServiceImpl implements ClubService{
 
 		 */
 
-		Club club = clubBuilder(clubRequestDto, /*clubImgUrl,*/ user);
+		Club club = clubRepository.save(clubBuilder(clubRequestDto, /*clubImgUrl,*/ user));
+
 
 		club.setCreatedAt(LocalDateTime.now());
-		club.setMemberCount(1);
+
+		ClubUser clubUser = ClubUser.builder()
+			.userId(user.getId())
+			.clubId(club.getClubId())
+			.userName(user.getName())
+			//.profileImgUrl(user.getProfileImgUrl)
+			//.mannerTemp(user.getMannerTemp)
+			.build();
+		clubUserRepository.save(clubUser);
 
 
-
-
-		return clubRepository.save(club);
+		return club;
 	}
 
 	@Override
@@ -192,6 +201,7 @@ public class ClubServiceImpl implements ClubService{
 			.region(ClubRequestDto.getRegion())
 			.question(ClubRequestDto.getQuestion())
 			.memberLimit(ClubRequestDto.getMemberLimit())
+			.memberCount(1)
 			.price(ClubRequestDto.getPrice())
 			.ageLimit(ClubRequestDto.getAgeLimit())
 			.clubImg(ClubRequestDto.getClubImgUrl())

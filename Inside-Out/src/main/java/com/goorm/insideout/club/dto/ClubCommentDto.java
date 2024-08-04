@@ -2,7 +2,8 @@ package com.goorm.insideout.club.dto;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,18 +13,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClubPostDto {
+public class ClubCommentDto {
 	private Long id;
-
-	@NotBlank(message = "제목을 입력해주세요.")
-	private String title;
+	private String comment;
 
 	private LocalDateTime dateTime;
 
-	private String writer;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private ClubPostDto clubPostDto;
 
-	@NotBlank(message = "내용을 입력하세요.")
-	private String content;
-
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private ClubUserDto clubUserDto;
 }

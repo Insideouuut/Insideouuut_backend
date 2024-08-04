@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -79,7 +81,7 @@ public class Club {
 
 
 	///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "club")
 	ChatRoom chatRoom;
 

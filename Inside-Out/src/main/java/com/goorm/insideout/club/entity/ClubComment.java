@@ -2,6 +2,9 @@ package com.goorm.insideout.club.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -38,6 +41,7 @@ public class ClubComment {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "clubPost_Id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ClubPost clubPost;
 
 	@ManyToOne(fetch = FetchType.LAZY)

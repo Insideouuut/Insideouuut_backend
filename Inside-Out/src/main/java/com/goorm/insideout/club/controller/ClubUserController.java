@@ -75,6 +75,7 @@ public class ClubUserController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
+	/*
 	@PostMapping("/{clubId}/apply/{applyId}/accept")
 	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
 		User owner = userDetails.getUser();
@@ -84,6 +85,23 @@ public class ClubUserController {
 		clubUserService.clubUserAccept(club, owner, applyId);
 
 		ClubUser clubUser = clubUserService.clubUserFind(clubApply.getUserId(), clubId);
+		userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), clubUser.getUser());
+
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
+	 */
+
+	@PostMapping("/{clubId}/apply/{applyId}/accept")
+	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails,
+		@PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
+		User owner = userDetails.getUser();
+		Club club = clubService.findByClubId(clubId);
+		ClubApply clubApply = clubApplyService.findClubApplyById(applyId);
+
+		clubUserService.clubUserAccept(club, owner, applyId);
+
+		ClubUser clubUser = clubUserService.clubUserFind(clubApply.getUserId(), clubId);
+
 		userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), clubUser.getUser());
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);

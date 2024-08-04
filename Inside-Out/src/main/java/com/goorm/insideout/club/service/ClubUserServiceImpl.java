@@ -33,9 +33,19 @@ public class ClubUserServiceImpl implements ClubUserService {
 	private final ClubRepository clubRepository;
 	private final ClubApplyRepository clubApplyRepository;
 
+	/*
 	@Override
 	public ClubUser clubUserFind(Long userId, Long clubId) {
 		return clubUserRepository.findByUserIdAndClubId(userId,clubId).orElse(null);
+	}
+
+	 */
+
+	@Override
+	public ClubUser clubUserFind(Long userId, Long clubId) {
+
+		return clubUserRepository.findByUserIdAndClubId(userId, clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
 
 	@Modifying(clearAutomatically = true)

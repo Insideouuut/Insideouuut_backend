@@ -80,15 +80,10 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 		List<ClubUser> members = getMembers(club.getClubId());
 
 		if(!user.getId().equals(club.getOwner().getId())){
-			System.out.println("user = " + user);
-			System.out.println("club.getOwner() = " + club.getOwner());
-			System.out.println("user.getId() = " + user.getId());
-			System.out.println("club.getOwner().getId() = " + club.getOwner().getId());
 
 			throw new NoSuchElementException();
 		}
-		System.out.println("byClubIdJQL = " + byClubIdJQL);
-		System.out.println("members = " + members);
+
 		for(ClubApply clubApply: byClubIdJQL){
 			ClubApplyResponseDto clubApplyResponseDto = ClubApplyResponseDto.of(clubApply);
 			applyList.add(clubApplyResponseDto);

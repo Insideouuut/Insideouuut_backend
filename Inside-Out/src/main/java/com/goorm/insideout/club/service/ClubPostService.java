@@ -16,9 +16,9 @@ import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.user.domain.User;
 
 public interface ClubPostService {
-	ClubPost save(ClubPostDto boardDto);
+	ClubPost save(ClubPostDto clubPostDto);
 
-	ClubPost findByBoardId(Long boardId);
+	ClubPost findByClubPostId(Long clubPostId);
 
 	List<ClubPostListResponseDto> findAllClubPost(ClubPost clubPost);
 
