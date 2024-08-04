@@ -12,7 +12,7 @@ public interface ClubCommentService {
 
 	void deleteComment(ClubCommentDto clubCommentDto);
 
-	void deleteBoardID(Long clubPostId);
+	void deleteClubPostID(Long clubPostId);
 
 	Integer countComment(Long clubPostId);
 

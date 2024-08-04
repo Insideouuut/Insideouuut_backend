@@ -27,7 +27,6 @@ public interface ClubPostService {
 	ClubPost updateClubPost(ClubPostDto clubPostDto);
 
 	ClubPostResponseDto findClubPost(Long clubPostId);
-	int board_like(ClubPostDto clubPostDto);
 
 	Integer passwordVerify(ClubPostDto clubPostDto);
 }
