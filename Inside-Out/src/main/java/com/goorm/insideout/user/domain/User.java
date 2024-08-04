@@ -1,5 +1,6 @@
 package com.goorm.insideout.user.domain;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -54,10 +55,36 @@ public class User {
 
 	private String phoneNumber;
 
+	@Column(precision = 4, scale = 1)
+	private BigDecimal mannerTemp;
+
 	@ElementCollection(targetClass = Category.class, fetch = FetchType.LAZY)
 	@Enumerated(EnumType.STRING)
 	private Set<Category> interests;
 
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
+  
+	@OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+	private List<Meeting> runningMeetings = new ArrayList<>();
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	private List<MeetingUser> meetingUsers = new ArrayList<>();
+
+	public void increaseMannerTemperature(){
+		BigDecimal temp = this.getMannerTemp().add(BigDecimal.valueOf(0.1));
+		if(temp.compareTo(BigDecimal.valueOf(100)) > 0){
+			this.mannerTemp=BigDecimal.valueOf(100);
+		}
+		else {
+			this.mannerTemp = this.getMannerTemp().add(BigDecimal.valueOf(0.1));
+		}
+	}
+	public void decreaseMannerTemperature(){
+		BigDecimal temp = this.mannerTemp=this.getMannerTemp().subtract(BigDecimal.valueOf(5.0));
+		if(temp.compareTo(BigDecimal.valueOf(0)) < 0){
+			this.mannerTemp=BigDecimal.valueOf(0);
+		}
+		this.mannerTemp=this.getMannerTemp().subtract(BigDecimal.valueOf(5.0));
+	}
 }
