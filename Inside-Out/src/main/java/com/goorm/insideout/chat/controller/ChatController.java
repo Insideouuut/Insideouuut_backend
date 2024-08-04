@@ -22,16 +22,20 @@ import com.goorm.insideout.chat.service.ChatService;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "CharController", description = "채팅 관련 API")
 public class ChatController {
 	private final ChatService chatService;
 	private final SimpMessageSendingOperations messagingTemplate;
 
 	// 메세지 전송
 	@MessageMapping("/chatRoom/{chatRoomId}")
+	@Operation(summary = "채팅방 메세지 전송 API", description = "채팅방에 메세지를 전송하는 API 입니다.")
 	public ApiResponse messageHandler(@DestinationVariable("chatRoomId") Long roomId,
 		@RequestBody ChatRequestDTO chatRequestDTO, Principal principal) {
 		String email = principal.getName();
@@ -47,6 +51,7 @@ public class ChatController {
 
 	// 채팅방 입장시 메세지 가져오기 (읽은 메세지 + 안읽은 메세지) 자연스러운 흐름을 위해
 	@GetMapping("/api/chat/initial/chatroom/{chatRoomId}")
+	@Operation(summary = "채팅방 초기 메세지 조회 API", description = "채팅방에 입장시 초기 메세지를 조회하는 API 입니다.")
 	public ApiResponse<InitialChatListResponseDTO> getInitialMessages(@PathVariable Long chatRoomId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Long userId = customUserDetails.getUser().getId();
@@ -56,6 +61,7 @@ public class ChatController {
 
 	// 이전 메세지 더 불러오기
 	@GetMapping("/api/chat/previous/chatroom/{chatRoomId}")
+	@Operation(summary = "이전 메세지 조회 API", description = "이전 메세지를 조회하는 API 입니다.")
 	public ApiResponse<List<ChatResponseDTO>> getPreviousMessages(@PathVariable Long chatRoomId,
 		@RequestParam Long messageId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Long userId = customUserDetails.getUser().getId();
@@ -65,6 +71,7 @@ public class ChatController {
 
 	// 이후 메세지 더 불러오기
 	@GetMapping("/api/chat/next/chatroom/{chatRoomId}")
+	@Operation(summary = "이후 메세지 추가 조회 API", description = "이후 메세지를 추가적으로 조회하는 API 입니다.")
 	public ApiResponse<List<ChatResponseDTO>> getNextMessages(@PathVariable Long chatRoomId,
 		@RequestParam Long messageId, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
 		Long userId = customUserDetails.getUser().getId();
