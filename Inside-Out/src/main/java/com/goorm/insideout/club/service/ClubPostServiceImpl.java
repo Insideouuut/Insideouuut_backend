@@ -37,7 +37,7 @@ public class ClubPostServiceImpl implements ClubPostService{
 	public ClubPostResponseDto findClubPost(Long clubPostId) {
 		return null;
 	}
-	
+
 	@Override
 	public Integer passwordVerify(ClubPostDto clubPostDto) {
 		return null;
