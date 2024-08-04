@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @Tag(name = "MeetingController", description = "모임 관련 API")
