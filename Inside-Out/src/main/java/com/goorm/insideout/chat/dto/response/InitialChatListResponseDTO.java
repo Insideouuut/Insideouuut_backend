@@ -14,4 +14,5 @@ import lombok.Setter;
 public class InitialChatListResponseDTO {
 	private List<ChatResponseDTO> readMessages;
 	private List<ChatResponseDTO> unreadMessages;
+
 }

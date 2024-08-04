@@ -3,6 +3,7 @@ package com.goorm.insideout.user.service;
 import static com.goorm.insideout.global.exception.ErrorCode.*;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,7 @@ public class UserJoinService {
 			.name(userJoinRequest.getName())
 			.birthDate(userJoinRequest.getBirthDate())
 			.phoneNumber(userJoinRequest.getPhoneNumber())
+			.mannerTemp(BigDecimal.valueOf(36.5))
 			.interests(stringListToCategorySet(userJoinRequest.getCategory()))
 			.gender(Gender.valueOf(userJoinRequest.getGender()))
 			.location(userJoinRequest.getLocation())
@@ -64,6 +66,7 @@ public class UserJoinService {
 		}
 		user.setBirthDate(socialJoinRequest.getBirthDate());
 		user.setPhoneNumber(socialJoinRequest.getPhoneNumber());
+		user.setMannerTemp(BigDecimal.valueOf(36.5));
 		user.setInterests(stringListToCategorySet(socialJoinRequest.getCategory()));
 		user.setGender(Gender.valueOf(socialJoinRequest.getGender()));
 		user.setLocation(socialJoinRequest.getLocation());

@@ -12,17 +12,21 @@ import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "UserChatRoomController", description = "채팅방 사용자 관련 API")
 public class UserChatRoomController {
 
 	private final UserChatRoomService userChatRoomService;
 
 	// 채팅방 입장
 	@PostMapping("/chatroom/{chatRoomId}/enter")
+	@Operation(summary = "채팅방 입장 API", description = "채팅방에 입장하는 API 입니다.")
 	public ApiResponse enterChatRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable Long chatRoomId) {
 		User user = customUserDetails.getUser();
@@ -36,6 +40,7 @@ public class UserChatRoomController {
 
 	// 채팅방 퇴장
 	@PostMapping("/chatroom/{chatRoomId}/exit")
+	@Operation(summary = "채팅방 퇴장 API", description = "채팅방에서 퇴장하는 API 입니다.")
 	public ApiResponse exitChatRoom(@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		@PathVariable Long chatRoomId) {
 		User user = customUserDetails.getUser();

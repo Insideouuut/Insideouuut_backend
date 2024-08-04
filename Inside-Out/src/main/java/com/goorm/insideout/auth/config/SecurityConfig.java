@@ -55,6 +55,8 @@ public class SecurityConfig {
 		"/api/clubs/{clubId}",
 		"/api/check-email",
 		"/api/check-nickname",
+		"/v3/**",
+		"/swagger-ui/**",
 		"/"
 	};
 

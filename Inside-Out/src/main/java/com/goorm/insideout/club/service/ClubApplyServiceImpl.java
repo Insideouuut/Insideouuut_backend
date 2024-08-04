@@ -33,7 +33,7 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 	private final ClubUserRepository clubUserRepository;
 
 	@Override
-	public ClubApply clubApplyFind(Long userId, Long clubId) {
+	public ClubApply findClubApplyByUserIDAndClubId(Long userId, Long clubId) {
 		return clubApplyRepository.findByUserIdAndClubId(userId,clubId).orElse(null);
 	}
 
@@ -51,9 +51,12 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 			throw new IllegalStateException();
 		}
 
-		if(!getMembers(club.getClubId()).isEmpty() &&
-		getMembers(club.getClubId()).contains(clubUserRepository.findByUserIdAndClubId(user.getId(), club.getClubId()).get())){
-			throw new IllegalStateException();
+		List<ClubUser> members = getMembers(club.getClubId());
+
+		for(ClubUser clubUser : members){
+			if(user.getId().equals(clubUser.getUserId())){
+				throw new IllegalStateException();
+			}
 		}
 
 		ClubApply clubApply = ClubApply.builder()
@@ -64,11 +67,6 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 			//.mannerTemp(user.getMannerTemp)
 			.answer(clubApplyRequestDto.getAnswer())
 			.build();
-
-		List<ClubApply> byClubIdJQL = clubApplyRepository.findByClubIdJQL(club.getClubId());
-		List<ClubUser> members = getMembers(club.getClubId());
-		System.out.println("byClubIdJQL = " + byClubIdJQL);
-		System.out.println("members = " + members);
 
 		return clubApplyRepository.save(clubApply);
 	}
@@ -82,15 +80,10 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 		List<ClubUser> members = getMembers(club.getClubId());
 
 		if(!user.getId().equals(club.getOwner().getId())){
-			System.out.println("user = " + user);
-			System.out.println("club.getOwner() = " + club.getOwner());
-			System.out.println("user.getId() = " + user.getId());
-			System.out.println("club.getOwner().getId() = " + club.getOwner().getId());
 
 			throw new NoSuchElementException();
 		}
-		System.out.println("byClubIdJQL = " + byClubIdJQL);
-		System.out.println("members = " + members);
+
 		for(ClubApply clubApply: byClubIdJQL){
 			ClubApplyResponseDto clubApplyResponseDto = ClubApplyResponseDto.of(clubApply);
 			applyList.add(clubApplyResponseDto);
@@ -99,6 +92,10 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 		return applyList;
 	}
 
+	@Override
+	public ClubApply findClubApplyById(Long applyId) {
+		return clubApplyRepository.findByApplyId(applyId).get();
+	}
 
 	@Transactional(readOnly = true)
 	public List<ClubUser> getMembers(Long clubId) {

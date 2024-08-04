@@ -1,5 +1,6 @@
 package com.goorm.insideout.club.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
+import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.chatroom.domain.ChatRoomType;
+import com.goorm.insideout.chatroom.service.ChatRoomService;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.service.ClubService;
@@ -23,25 +27,39 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Tag(name = "ClubController", description = "동아리 관련 API")
 public class ClubController {
 
 
 	private final ClubService clubService;
+	private final ChatRoomService chatRoomService;
+	private final UserChatRoomService userChatRoomService;
+
+
 
 	@GetMapping("/clubs")
+	@Operation(summary = "동아리 목록 조회 API", description = "동아리 목록을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubListResponseDto>> findByType(@RequestParam(name = "category") String category) {
+
 
 		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
 	}
 
+
+
+
 	@GetMapping("/clubs/{clubId}")
+	@Operation(summary = "동아리 단건 조회 API", description = "동아리를 단건으로 조회하는 API 입니다.")
 	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId) {
 
 
@@ -49,6 +67,7 @@ public class ClubController {
 	}
 
 	@PostMapping("/clubs")
+	@Operation(summary = "동아리 생성 API", description = "동아리를 생성하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> saveClub(@Valid @RequestBody ClubRequestDto clubRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
 		User user;
@@ -59,7 +78,12 @@ public class ClubController {
 			
 			club = clubService.createClub(clubRequestDto, /*clubRequestDto.getClubImg(), */ user);
 
+			ChatRoom chatRoom = chatRoomService.createChatRoom(club.getClubId(), club.getClubName(), ChatRoomType.CLUB);
+			clubService.setChatRoom(club, chatRoom);
+			userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), user);
+
 		} catch (Exception exception) {
+			System.out.println("exception = " + exception);
 			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);
 		}
 		return new ApiResponse<ClubResponseDto>((ClubResponseDto.of(club.getClubId(), "클럽을 성공적으로 생성하였습니다.")));
@@ -67,6 +91,7 @@ public class ClubController {
 
 
 	@PutMapping("/clubs/{clubId}")
+	@Operation(summary = "동아리 수정 API", description = "동아리를 수정하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> updateClub(@PathVariable Long clubId, @Valid @RequestBody ClubRequestDto clubRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user;
@@ -93,6 +118,7 @@ public class ClubController {
 	}
 
 	@DeleteMapping("/clubs/{clubId}")
+	@Operation(summary = "동아리 삭제 API", description = "동아리를 삭제하는 API 입니다.")
 	public ApiResponse clubDelete(@PathVariable Long clubId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		try {
 			User user = userDetails.getUser();

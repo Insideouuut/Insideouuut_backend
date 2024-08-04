@@ -10,4 +10,3 @@ import lombok.Setter;
 public class ChatRequestDTO {
 	private String content;
 }
-

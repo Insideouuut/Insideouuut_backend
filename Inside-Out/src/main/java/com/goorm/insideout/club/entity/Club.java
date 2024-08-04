@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -17,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -66,9 +70,24 @@ public class Club {
 	@Builder.Default
 	List<ClubUser> members = new ArrayList<>();
 
+
+	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
+	@JsonIgnore
+	List<ClubPost> posts;
+
+
+
 	private String clubImg;
 
+
 	///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "club")
+	ChatRoom chatRoom;
+
+	private Long chat_room_id;
+
+
 
 	public void increaseMemberCount() {
 		this.memberCount++;

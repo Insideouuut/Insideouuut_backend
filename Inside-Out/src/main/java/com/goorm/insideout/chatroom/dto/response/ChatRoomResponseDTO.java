@@ -24,4 +24,5 @@ public class ChatRoomResponseDTO {
 	private Long userCount;
 
 	private Long unreadMessageCnt;
+
 }
