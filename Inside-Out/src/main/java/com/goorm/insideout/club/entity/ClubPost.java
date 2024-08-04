@@ -38,6 +38,8 @@ public class ClubPost {
 	@Column(name = "clubPost_Id")
 	private Long Id;
 
+	private Long clubId;
+
 	private String postTitle;
 
 	private String writer;
@@ -63,7 +65,8 @@ public class ClubPost {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	Club club;
 
-	public void update(String postTitle, String postContent){
+	public void update(Long clubId, String postTitle, String postContent){
+		this.clubId=clubId;
 		this.postTitle=postTitle;
 		this.postContent = postContent;
 	}
