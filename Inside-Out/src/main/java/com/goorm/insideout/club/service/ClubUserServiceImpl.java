@@ -16,6 +16,8 @@ import com.goorm.insideout.club.repository.ClubApplyRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.club.entity.ClubUser;
+import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
 
 import lombok.RequiredArgsConstructor;
@@ -31,9 +33,19 @@ public class ClubUserServiceImpl implements ClubUserService {
 	private final ClubRepository clubRepository;
 	private final ClubApplyRepository clubApplyRepository;
 
+	/*
 	@Override
 	public ClubUser clubUserFind(Long userId, Long clubId) {
 		return clubUserRepository.findByUserIdAndClubId(userId,clubId).orElse(null);
+	}
+
+	 */
+
+	@Override
+	public ClubUser clubUserFind(Long userId, Long clubId) {
+
+		return clubUserRepository.findByUserIdAndClubId(userId, clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
 
 	@Modifying(clearAutomatically = true)
@@ -46,7 +58,8 @@ public class ClubUserServiceImpl implements ClubUserService {
 	@Override
 	@Transactional
 	public ClubUser clubUserAccept(Club club, User user, Long applyId) {
-		ClubApply clubApply = clubApplyRepository.findByApplyId(applyId).get();
+		ClubApply clubApply = clubApplyRepository.findByApplyId(applyId).orElseThrow(()-> ModongException.from(
+			ErrorCode.USER_NOT_FOUND));
 		Integer memberLimit = club.getMemberLimit();
 		Integer memberCount = club.getMemberCount();
 

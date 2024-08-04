@@ -23,6 +23,7 @@ public interface ClubUserRepository extends JpaRepository<ClubUser,Long> {
 
 	Optional<ClubUser> findByClubUserId(Long clubUserId);
 
+	@Query("SELECT cu FROM ClubUser cu JOIN FETCH cu.user WHERE cu.userId = :userId AND cu.clubId = :clubId")
 	Optional<ClubUser> findByUserIdAndClubId(Long userId, Long clubId);
 
 	@Query(value = "select * from club_user " +

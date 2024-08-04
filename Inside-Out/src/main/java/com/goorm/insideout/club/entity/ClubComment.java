@@ -1,9 +1,9 @@
-package com.goorm.insideout.userchatroom.domain;
+package com.goorm.insideout.club.entity;
 
 import java.time.LocalDateTime;
 
-import com.goorm.insideout.chatroom.domain.ChatRoom;
-import com.goorm.insideout.user.domain.User;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,30 +20,34 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "UserChatRooms")
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class UserChatRoom {
+@AllArgsConstructor
+public class ClubComment {
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "comment_Id")
 	private Long id;
 
-	@Column(name = "invitation_time")
-	private LocalDateTime invitationTime;
+	@Column(name = "comment_content")
+	private String content;
 
-	@Column(name = "config_time")
-	private LocalDateTime configTime;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
-	private User user;
+	private LocalDateTime dateTime;
+	private LocalDateTime updateDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "chat_room_id", nullable = false)
-	private ChatRoom chatRoom;
+	@JoinColumn(name = "clubPost_Id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private ClubPost clubPost;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "clubUser_Id")
+	private ClubUser clubUser;
+
 
 
 }

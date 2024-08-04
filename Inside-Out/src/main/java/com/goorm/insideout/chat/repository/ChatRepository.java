@@ -56,5 +56,5 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 	List<Chat> findNextMessagesAfterId(@Param("chatRoomId") Long chatRoomId,
 		@Param("lastMessageId") Long lastMessageId,
 		@Param("invitationTime") LocalDateTime invitationTime);
-}
 
+}

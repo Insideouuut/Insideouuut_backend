@@ -115,4 +115,5 @@ public class ChatRoomService {
 			.unreadMessageCnt(unreadMessageCount)
 			.build();
 	}
+
 }

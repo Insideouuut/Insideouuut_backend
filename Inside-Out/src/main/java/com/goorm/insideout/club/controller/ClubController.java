@@ -1,5 +1,6 @@
 package com.goorm.insideout.club.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
+import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.chatroom.domain.ChatRoomType;
+import com.goorm.insideout.chatroom.service.ChatRoomService;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.service.ClubService;
@@ -23,6 +27,7 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +39,20 @@ public class ClubController {
 
 
 	private final ClubService clubService;
+	private final ChatRoomService chatRoomService;
+	private final UserChatRoomService userChatRoomService;
+
+
 
 	@GetMapping("/clubs")
 	public ApiResponse<List<ClubListResponseDto>> findByType(@RequestParam(name = "category") String category) {
 
+
 		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
 	}
+
+
+
 
 	@GetMapping("/clubs/{clubId}")
 	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId) {
@@ -59,7 +72,12 @@ public class ClubController {
 			
 			club = clubService.createClub(clubRequestDto, /*clubRequestDto.getClubImg(), */ user);
 
+			ChatRoom chatRoom = chatRoomService.createChatRoom(club.getClubId(), club.getClubName(), ChatRoomType.CLUB);
+			clubService.setChatRoom(club, chatRoom);
+			userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), user);
+
 		} catch (Exception exception) {
+			System.out.println("exception = " + exception);
 			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);
 		}
 		return new ApiResponse<ClubResponseDto>((ClubResponseDto.of(club.getClubId(), "클럽을 성공적으로 생성하였습니다.")));

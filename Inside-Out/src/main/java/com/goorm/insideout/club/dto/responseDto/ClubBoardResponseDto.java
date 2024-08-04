@@ -33,6 +33,7 @@ public class ClubBoardResponseDto {
 	private Integer ageLimit;
 
 	private String clubImgUrl;
+	private Long chatRoomId;
 
 
 	Boolean isRecruiting = false;
@@ -55,6 +56,7 @@ public class ClubBoardResponseDto {
 		res.setMemberCount(club.getMemberCount());
 		res.setPrice(club.getPrice());
 		res.setAgeLimit(club.getAgeLimit());
+		res.setChatRoomId(club.getChat_room_id());
 
 		if(club.getMemberLimit() > club.getMemberCount()){
 			res.setIsRecruiting(true);

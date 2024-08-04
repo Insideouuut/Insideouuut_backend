@@ -16,12 +16,16 @@ import com.goorm.insideout.club.dto.requestDto.ClubApplyRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubApplyResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubMembersResponseDto;
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.entity.ClubApply;
+import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.service.ClubApplyService;
 import com.goorm.insideout.club.service.ClubService;
 import com.goorm.insideout.club.service.ClubUserService;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.service.UserService;
+import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,8 @@ public class ClubUserController {
 	private final ClubService clubService;
 	private final ClubUserService clubUserService;
 	private final ClubApplyService clubApplyService;
+	private final UserChatRoomService userChatRoomService;
+	private final UserService userService;
 
 	@DeleteMapping("/{clubId}/members")
 	public ApiResponse clubUserLeave(
@@ -69,12 +75,35 @@ public class ClubUserController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
+	/*
 	@PostMapping("/{clubId}/apply/{applyId}/accept")
 	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
 		User owner = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
+		ClubApply clubApply = clubApplyService.findClubApplyById(applyId);
 
 		clubUserService.clubUserAccept(club, owner, applyId);
+
+		ClubUser clubUser = clubUserService.clubUserFind(clubApply.getUserId(), clubId);
+		userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), clubUser.getUser());
+
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
+	 */
+
+	@PostMapping("/{clubId}/apply/{applyId}/accept")
+	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails,
+		@PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
+		User owner = userDetails.getUser();
+		Club club = clubService.findByClubId(clubId);
+		ClubApply clubApply = clubApplyService.findClubApplyById(applyId);
+
+		clubUserService.clubUserAccept(club, owner, applyId);
+
+		ClubUser clubUser = clubUserService.clubUserFind(clubApply.getUserId(), clubId);
+
+		userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), clubUser.getUser());
+
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 

@@ -3,6 +3,8 @@ package com.goorm.insideout.user.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.repository.UserRepository;
 
