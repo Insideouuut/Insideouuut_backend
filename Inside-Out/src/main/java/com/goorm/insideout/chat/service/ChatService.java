@@ -1,3 +1,4 @@
+
 package com.goorm.insideout.chat.service;
 
 import java.time.LocalDateTime;
@@ -75,12 +76,7 @@ public class ChatService {
 
 	// Chat 엔티티를 ChatResponseDTO로 변환
 	private ChatResponseDTO convertToChatResponseDTO(Chat chat) {
-		return ChatResponseDTO.builder()
-			.id(chat.getId())
-			.content(chat.getContent())
-			.sendTime(chat.getSendTime())
-			.sender(chat.getUser().getName())
-			.build();
+		return ChatResponseDTO.of(chat);
 	}
 
 	// 초기 메시지 조회
@@ -136,13 +132,15 @@ public class ChatService {
 	// 마지막 메시지 ID 이후의 메시지 가져오기
 	@Transactional(readOnly = true)
 	public List<ChatResponseDTO> getNextMessagesAfterId(Long chatRoomId, Long lastMessageId, Long userId) {
-		LocalDateTime invitationTime = userChatRoomRepository.findInvitationTime(userId, chatRoomId);
+		LocalDateTime firstVisitedTime = userChatRoomRepository.findConfigTime(userId, chatRoomId);
 
 		// 채팅 메시지 조회
-		List<Chat> nextChats = chatRepository.findNextMessagesAfterId(chatRoomId, lastMessageId, invitationTime);
+		List<Chat> nextChats = chatRepository.findNextMessagesAfterId(chatRoomId, lastMessageId, firstVisitedTime);
 		return nextChats.stream()
 			.map(this::convertToChatResponseDTO)
 			.collect(Collectors.toList());
 	}
-
 }
+
+
+

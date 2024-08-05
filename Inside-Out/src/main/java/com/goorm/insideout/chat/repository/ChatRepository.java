@@ -1,3 +1,4 @@
+
 package com.goorm.insideout.chat.repository;
 
 import java.time.LocalDateTime;
@@ -50,11 +51,10 @@ public interface ChatRepository extends JpaRepository<Chat, Long> {
 
 	// 마지막 메시지 ID 이후의 메시지 조회
 	@Query(value = "SELECT * FROM CHATS c WHERE c.chat_room_id = :chatRoomId " +
-		"AND c.send_time > :invitationTime " +
+		"AND c.send_time <= :configTime " + // configTime 기준으로 필터링
 		"AND c.chat_id > :lastMessageId " +
 		"ORDER BY c.send_time ASC LIMIT 30", nativeQuery = true)
 	List<Chat> findNextMessagesAfterId(@Param("chatRoomId") Long chatRoomId,
 		@Param("lastMessageId") Long lastMessageId,
-		@Param("invitationTime") LocalDateTime invitationTime);
-
+		@Param("configTime") LocalDateTime configTime);
 }
