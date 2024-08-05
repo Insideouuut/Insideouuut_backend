@@ -13,28 +13,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ClubPostResponseDto {
-	private Long Id;
 
-	private Long clubId;
-
-	private String postTitle;
-
-	private String writer;
-
-	private LocalDateTime createTime;
-	private String postContent;
+	private Long ClubPostId;
+	private String message;
 
 
-	public static ClubPostResponseDto of(ClubPost clubPost){
+	public static ClubPostResponseDto of(Long clubPostId, String message){
 		ClubPostResponseDto res = new ClubPostResponseDto();
-
-		res.setId(clubPost.getId());
-		res.setClubId(clubPost.getClubId());
-		res.setPostTitle(clubPost.getPostTitle());
-		res.setWriter(clubPost.getWriter());
-		res.setCreateTime(clubPost.getCreateTime());
-		res.setPostContent(clubPost.getPostContent());
-
+		res.setClubPostId(clubPostId);
+		res.setMessage(message);
 		return res;
 	}
 }
