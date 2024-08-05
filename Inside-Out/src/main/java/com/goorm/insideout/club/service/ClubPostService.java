@@ -1,32 +1,23 @@
 package com.goorm.insideout.club.service;
 
-import java.awt.print.Pageable;
-import java.io.IOException;
 import java.util.List;
 
-import org.hibernate.query.Page;
-
 import com.goorm.insideout.club.dto.ClubPostDto;
-import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
-import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
+import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostListResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostResponseDto;
-import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.user.domain.User;
 
 public interface ClubPostService {
-	ClubPost save(ClubPostDto clubPostDto);
+	ClubPost saveClubPost(ClubPostRequestDto clubPostRequestDto, User user);
 
 	ClubPost findByClubPostId(Long clubPostId);
 
-	List<ClubPostListResponseDto> findAllClubPost(ClubPost clubPost);
+	List<ClubPostListResponseDto> findClubPostByType(Long clubId, String type);
 
-	boolean deleteClubPost(ClubPostDto clubPostDto);
+	void deleteClubPost(Long clubPostId);
 
-	ClubPost updateClubPost(ClubPostDto clubPostDto);
+	ClubPost updateClubPost(ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId);
 
-	ClubPostResponseDto findClubPost(Long clubPostId);
-
-	Integer passwordVerify(ClubPostDto clubPostDto);
 }
