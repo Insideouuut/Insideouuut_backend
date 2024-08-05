@@ -141,9 +141,12 @@ public class ChatServiceTest {
 		);
 
 		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(lastVisitedTime);
-		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(invitationTime);
-		when(chatRepository.findUnreadMessages(testChatRoom.getId(), lastVisitedTime, invitationTime)).thenReturn(unreadChats);
-		when(chatRepository.findPreviousMessages(testChatRoom.getId(), lastVisitedTime, invitationTime)).thenReturn(readChats);
+		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(
+			invitationTime);
+		when(chatRepository.findUnreadMessages(testChatRoom.getId(), lastVisitedTime, invitationTime)).thenReturn(
+			unreadChats);
+		when(chatRepository.findPreviousMessages(testChatRoom.getId(), lastVisitedTime, invitationTime)).thenReturn(
+			readChats);
 
 		// Expected DTO 리스트 생성
 		List<ChatResponseDTO> unreadChatDTOs = unreadChats.stream()
@@ -176,6 +179,7 @@ public class ChatServiceTest {
 		// Assert
 		assertEquals(expectedResponse, result);
 	}
+
 	@Test
 	public void testGetPreviousMessagesBeforeId() {
 		Long firstMessageId = 1L;
@@ -192,8 +196,10 @@ public class ChatServiceTest {
 				.build()
 		);
 
-		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(invitationTime);
-		when(chatRepository.findPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId, invitationTime)).thenReturn(previousChats);
+		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(
+			invitationTime);
+		when(chatRepository.findPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId,
+			invitationTime)).thenReturn(previousChats);
 
 		// Expected DTO 리스트 생성
 		List<ChatResponseDTO> expectedDTOs = previousChats.stream()
@@ -207,7 +213,8 @@ public class ChatServiceTest {
 			.toList();
 
 		// Act
-		List<ChatResponseDTO> result = chatService.getPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId, testUser.getId());
+		List<ChatResponseDTO> result = chatService.getPreviousMessagesBeforeId(testChatRoom.getId(), firstMessageId,
+			testUser.getId());
 
 		// Assert
 		assertEquals(expectedDTOs.size(), result.size());
@@ -221,10 +228,11 @@ public class ChatServiceTest {
 			assertEquals(expected.getSender(), actual.getSender());
 		}
 	}
+
 	@Test
 	public void testGetNextMessagesAfterId() {
 		Long lastMessageId = 1L;
-		LocalDateTime invitationTime = LocalDateTime.now().minusDays(7);
+		LocalDateTime firstVisitedTime = LocalDateTime.now().minusDays(7);
 
 		// Mock 데이터 설정
 		List<Chat> nextChats = Collections.singletonList(
@@ -237,8 +245,10 @@ public class ChatServiceTest {
 				.build()
 		);
 
-		when(userChatRoomRepository.findInvitationTime(testUser.getId(), testChatRoom.getId())).thenReturn(invitationTime);
-		when(chatRepository.findNextMessagesAfterId(testChatRoom.getId(), lastMessageId, invitationTime)).thenReturn(nextChats);
+		when(userChatRoomRepository.findConfigTime(testUser.getId(), testChatRoom.getId())).thenReturn(
+			firstVisitedTime);
+		when(chatRepository.findNextMessagesAfterId(testChatRoom.getId(), lastMessageId, firstVisitedTime)).thenReturn(
+			nextChats);
 
 		// Expected DTO 리스트 생성
 		List<ChatResponseDTO> expectedDTOs = nextChats.stream()
@@ -251,7 +261,8 @@ public class ChatServiceTest {
 			.toList();
 
 		// Act
-		List<ChatResponseDTO> result = chatService.getNextMessagesAfterId(testChatRoom.getId(), lastMessageId, testUser.getId());
+		List<ChatResponseDTO> result = chatService.getNextMessagesAfterId(testChatRoom.getId(), lastMessageId,
+			testUser.getId());
 
 		// Assert
 		assertEquals(expectedDTOs.size(), result.size());
@@ -259,7 +270,7 @@ public class ChatServiceTest {
 			ChatResponseDTO expected = expectedDTOs.get(i);
 			ChatResponseDTO actual = result.get(i);
 
-			assertEquals(expected.getId(), actual.getId() );
+			assertEquals(expected.getId(), actual.getId());
 			assertEquals(expected.getContent(), actual.getContent());
 			assertEquals(expected.getSendTime(), actual.getSendTime());
 			assertEquals(expected.getSender(), actual.getSender());
