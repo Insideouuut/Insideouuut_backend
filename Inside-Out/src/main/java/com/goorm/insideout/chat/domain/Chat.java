@@ -4,6 +4,9 @@ import static jakarta.persistence.FetchType.*;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.user.domain.User;
 
@@ -43,6 +46,7 @@ public class Chat {
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "chat_room_id", nullable = false)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ChatRoom chatRoom;
 
 	@ManyToOne(fetch = LAZY)
