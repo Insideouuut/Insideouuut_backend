@@ -106,14 +106,7 @@ public class ChatRoomService {
 	// ChatRoom을 ChatRoomResponseDTO로 변환
 	private ChatRoomResponseDTO convertToChatRoomResponseDTO(ChatRoom chatRoom, Long userCount,
 		Long unreadMessageCount) {
-		return ChatRoomResponseDTO.builder()
-			.title(chatRoom.getTitle())
-			.type(chatRoom.getType())
-			.lastMessageContent(chatRoom.getLastMessageContent())
-			.lastMessageTime(chatRoom.getLastMessageTime())
-			.userCount(userCount)
-			.unreadMessageCnt(unreadMessageCount)
-			.build();
+		return ChatRoomResponseDTO.of(chatRoom, userCount, unreadMessageCount);
 	}
 
 }
