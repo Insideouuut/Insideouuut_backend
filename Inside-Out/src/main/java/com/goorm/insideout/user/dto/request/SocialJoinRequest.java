@@ -11,8 +11,6 @@ public class SocialJoinRequest {
 
 	private String phoneNumber;
 
-	private String location;
-
 	private String gender;
 
 	private List<String> category;
