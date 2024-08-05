@@ -2,20 +2,19 @@ package com.goorm.insideout.chatroom.domain;
 
 import java.time.LocalDateTime;
 
-import com.goorm.insideout.club.entity.Club;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import com.goorm.insideout.club.entity.Club;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,6 +30,7 @@ import lombok.Setter;
 @Getter
 @Table(name = "CHAT_ROOMS")
 public class ChatRoom {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "chat_room_id")
@@ -46,13 +46,13 @@ public class ChatRoom {
 	@Column(name = "associated_id", nullable = false)
 	private Long associatedId; // 동아리 또는 모임의 ID
 
-
 	@Column(name = "last_message_content") // 데이터베이스와 매핑됨
 	private String lastMessageContent;
 
 	@Column(name = "last_message_time") // 데이터베이스와 매핑됨
 	private LocalDateTime lastMessageTime;
 
-	@OneToOne(mappedBy = "chatRoom",fetch = FetchType.LAZY)
+	@OneToOne(mappedBy = "chatRoom")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	Club club;
 }
