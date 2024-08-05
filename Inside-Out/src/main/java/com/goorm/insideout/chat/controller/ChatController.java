@@ -21,6 +21,7 @@ import com.goorm.insideout.chat.dto.response.InitialChatListResponseDTO;
 import com.goorm.insideout.chat.service.ChatService;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.user.dto.response.HostResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +43,7 @@ public class ChatController {
 		Chat chat = chatService.createChat(roomId, chatRequestDTO, email);
 		ChatResponseDTO chatResponseDTO = ChatResponseDTO.builder()
 			.content(chat.getContent())
-			.sender(chat.getUser().getName())
+			.sender(HostResponse.fromEntity(chat.getUser()))
 			.sendTime(chat.getSendTime())
 			.build();
 		messagingTemplate.convertAndSend("/sub/chatRoom/" + roomId, chatResponseDTO);
