@@ -64,12 +64,6 @@ public class User {
 
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
-  
-	@OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
-	private List<Meeting> runningMeetings = new ArrayList<>();
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
 	public void increaseMannerTemperature(){
 		BigDecimal temp = this.getMannerTemp().add(BigDecimal.valueOf(0.1));
