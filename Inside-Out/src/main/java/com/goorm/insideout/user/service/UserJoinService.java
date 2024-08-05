@@ -42,8 +42,8 @@ public class UserJoinService {
 			.phoneNumber(userJoinRequest.getPhoneNumber())
 			.mannerTemp(BigDecimal.valueOf(36.5))
 			.interests(stringListToCategorySet(userJoinRequest.getCategory()))
+			.isLocationVerified(false)
 			.gender(Gender.valueOf(userJoinRequest.getGender()))
-			.location(userJoinRequest.getLocation())
 			.nickname(userJoinRequest.getNickName())
 			.build();
 		userRepository.save(joinUser);
@@ -68,8 +68,8 @@ public class UserJoinService {
 		user.setPhoneNumber(socialJoinRequest.getPhoneNumber());
 		user.setMannerTemp(BigDecimal.valueOf(36.5));
 		user.setInterests(stringListToCategorySet(socialJoinRequest.getCategory()));
+		user.setLocationVerified(false);
 		user.setGender(Gender.valueOf(socialJoinRequest.getGender()));
-		user.setLocation(socialJoinRequest.getLocation());
 		user.setNickname(socialJoinRequest.getNickName());
 		userRepository.save(user);
 	}
