@@ -29,6 +29,7 @@ public class DatabaseInitializer {
 					.email("system@insideout.com")
 					.password("systempass") // 시스템 사용자이므로, 안전한 비밀번호를 사용하세요.
 					.name("SYSTEM")
+					.nickname("SYSTEM")
 					.build();
 
 				userRepository.save(systemUser);
