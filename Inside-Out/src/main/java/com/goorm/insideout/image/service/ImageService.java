@@ -13,6 +13,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.image.domain.Image;
 import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.image.dto.StoreImageDto;
 import com.goorm.insideout.image.dto.response.ImageResponse;
@@ -78,6 +79,35 @@ public class ImageService {
 				return ImageResponse.from(meetingImage.getImage(), url);
 			})
 			.toList();
+	}
+
+	public ImageResponse findProfileImage(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+
+		Image profileImage = user.getProfileImage().getImage();
+		String url = amazonS3Client.getUrl(bucket, profileImage.getStoreName()).toString();
+
+		return ImageResponse.from(profileImage, url);
+	}
+
+	@Transactional
+	public void deleteMeetingImages(Long meetingId) {
+		List<MeetingImage> meetingImages = meetingImageRepository.findByMeetingId(meetingId);
+
+		meetingImages.forEach(meetingImage -> {
+			String storeName = meetingImage.getImage().getStoreName();
+			amazonS3Client.deleteObject(bucket, storeName);
+		});
+	}
+
+	@Transactional
+	public void deleteProfileImages(Long userId) {
+		User user = userRepository.findById(userId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+
+		String storeName = user.getProfileImage().getImage().getStoreName();
+		amazonS3Client.deleteObject(bucket, storeName);
 	}
 
 	private void uploadImageFile(List<MultipartFile> multipartFiles, List<StoreImageDto> storeImageDtos) {
