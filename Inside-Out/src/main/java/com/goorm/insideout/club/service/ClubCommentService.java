@@ -3,18 +3,19 @@ package com.goorm.insideout.club.service;
 import java.util.List;
 
 import com.goorm.insideout.club.dto.ClubCommentDto;
+import com.goorm.insideout.club.dto.requestDto.ClubCommentRequestDto;
+import com.goorm.insideout.club.dto.responseDto.ClubCommentListResponseDto;
 import com.goorm.insideout.club.entity.ClubComment;
+import com.goorm.insideout.user.domain.User;
 
 public interface ClubCommentService {
-	ClubComment save(ClubCommentDto clubCommentDto);
+	ClubComment saveComment(ClubCommentRequestDto clubCommentRequestDto, Long clubPostId, User user);
 
-	List<ClubComment> findAllComment(Long clubPostId);
+	List<ClubCommentListResponseDto> findCommentsByClubPostId(Long clubPostId);
 
-	void deleteComment(ClubCommentDto clubCommentDto);
+	void deleteComment(Long clubCommentId, User user);
 
-	void deleteClubPostID(Long clubPostId);
+	void updateComment(Long clubCommentId,ClubCommentRequestDto clubCommentRequestDto, User user);
 
-	Integer countComment(Long clubPostId);
-
-	void updateComment(ClubCommentDto clubCommentDto);
+	ClubComment findByCommentId(Long clubCommentId);
 }
