@@ -1,11 +1,15 @@
 package com.goorm.insideout.image.domain;
 
+import com.goorm.insideout.user.domain.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,7 +29,18 @@ public class ProfileImage {
 	@Embedded
 	private Image image;
 
-	public ProfileImage(String uploadName, String storeName) {
-		this.image = new Image(uploadName, storeName);
+	@OneToOne(fetch = FetchType.LAZY)
+	private User user;
+
+	/**
+	 * 생성 메서드
+	 */
+	public static ProfileImage createProfileImage(String uploadName, String storeName, User user) {
+		ProfileImage profileImage = new ProfileImage();
+
+		profileImage.image = Image.createImage(uploadName, storeName);
+		profileImage.user = user;
+
+		return profileImage;
 	}
 }
