@@ -13,13 +13,13 @@ public class ChatUserResponse {
 	private String nickname;
 	private ImageResponse profileImage;
 
-	public static ChatUserResponse of(User host, ImageResponse profileImage) {
-		ChatUserResponse hostResponse = new ChatUserResponse();
+	public static ChatUserResponse from(User user) {
+		ChatUserResponse response = new ChatUserResponse();
 
-		hostResponse.id = host.getId();
-		hostResponse.nickname = host.getNickname();
-		hostResponse.profileImage = profileImage;
+		response.id = user.getId();
+		response.nickname = user.getNickname();
+		response.profileImage = ImageResponse.from(user.getProfileImage().getImage());
 
-		return hostResponse;
+		return response;
 	}
 }
