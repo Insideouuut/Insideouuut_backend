@@ -8,6 +8,7 @@ import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.querydsl.core.annotations.QueryProjection;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,10 +45,6 @@ public class MeetingResponse {
 		// User 엔티티를 구현하지 않았으므로 임시 주석 처리
 		// this.user = new UserResponse(meeting.getAuthor());
 		this.description = meeting.getDescription();
-		this.images = meeting.getImages()
-			.stream()
-			.map(ImageResponse::new)
-			.toList();
 		this.rule = meeting.getRule();
 		this.joinQuestion = meeting.getJoinQuestion();
 		this.view = meeting.getView();
@@ -72,6 +69,11 @@ public class MeetingResponse {
 		return new MeetingResponse(meeting);
 	}
 
+	public void addImages(List<ImageResponse> imageResponses) {
+		this.images = imageResponses;
+	}
+
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class MeetingPlaceResponse {
 		private String name;
 
