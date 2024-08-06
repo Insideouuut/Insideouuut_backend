@@ -15,4 +15,16 @@ public class Image {
 	private String uploadName;
 
 	private String storeName;
+
+	/**
+	 * 생성 메서드
+	 */
+	public static Image createImage(String uploadName, String storeName) {
+		Image image = new Image();
+
+		image.uploadName = uploadName;
+		image.storeName = storeName;
+
+		return image;
+	}
 }
