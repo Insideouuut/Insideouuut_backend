@@ -16,7 +16,7 @@ public interface ClubPostService {
 
 	List<ClubPostListResponseDto> findClubPostByType(Long clubId, String type);
 
-	void deleteClubPost(Long clubPostId);
+	void deleteClubPost(Long clubPostId, User user);
 
 	ClubPost updateClubPost(ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId);
 

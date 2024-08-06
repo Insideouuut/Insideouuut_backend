@@ -60,15 +60,18 @@ public class ClubCommentController {
 	public ApiResponse<ClubCommentResponseDto> updateClubComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user;
-		ClubComment clubComment;
+		//ClubComment clubComment;
 
 		try {
 			user = userDetails.getUser();
-			clubComment = clubCommentService.findByCommentId(commentId);
+			//clubComment = clubCommentService.findByCommentId(commentId);
 
+			/*
 			if(clubComment==null) {
 				return new ApiResponse<>(ErrorCode.CLUB_NOT_FOUND);
 			}
+
+			 */
 
 			clubCommentService.updateComment(commentId, clubCommentRequestDto, user);
 		} catch (Exception exception) {
@@ -82,11 +85,14 @@ public class ClubCommentController {
 	public ApiResponse deleteClubComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		try {
 			User user = userDetails.getUser();
-			ClubComment clubComment = clubCommentService.findByCommentId(commentId);
+			//ClubComment clubComment = clubCommentService.findByCommentId(commentId);
 
+			/*
 			if(clubComment==null) {
 				return new ApiResponse<>(ErrorCode.CLUB_NOT_FOUND);
 			}
+
+			 */
 
 			clubCommentService.deleteComment(commentId, user);
 		} catch (Exception exception) {
