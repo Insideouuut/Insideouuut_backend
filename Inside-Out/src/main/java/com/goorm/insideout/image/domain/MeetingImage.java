@@ -1,7 +1,5 @@
 package com.goorm.insideout.image.domain;
 
-import java.util.IdentityHashMap;
-
 import com.goorm.insideout.meeting.domain.Meeting;
 
 import jakarta.persistence.Column;
@@ -13,8 +11,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@EqualsAndHashCode(of = "id")
 public class MeetingImage {
 
 	@Id
@@ -29,8 +34,20 @@ public class MeetingImage {
 	@JoinColumn(name = "meeting_id")
 	private Meeting meeting;
 
-	public MeetingImage(String uploadName, String storeName) {
-		this.image = new Image(uploadName, storeName);
+	/**
+	 * 생성 메서드
+	 */
+	public static MeetingImage createMeetingImage(
+		String uploadName,
+		String storeName,
+		Meeting meeting
+	) {
+		MeetingImage meetingImage = new MeetingImage();
+
+		meetingImage.image = new Image(uploadName, storeName);
+		meetingImage.setMeeting(meeting);
+
+		return meetingImage;
 	}
 
 	/**
@@ -38,5 +55,6 @@ public class MeetingImage {
 	 */
 	public void setMeeting(Meeting meeting) {
 		this.meeting = meeting;
+		meeting.getImages().add(this);
 	}
 }
