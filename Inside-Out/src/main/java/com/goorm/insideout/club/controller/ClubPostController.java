@@ -78,27 +78,26 @@ public class ClubPostController {
 	@PutMapping("/{clubId}/post/{postId}")
 	public ApiResponse<ClubPostResponseDto> updateClubPost(@PathVariable Long clubId, @PathVariable Long postId, @Valid @RequestBody ClubPostRequestDto clubPostRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		User user;
+		User user = userDetails.getUser();
 		ClubPost clubPost;
 
+		/*
 		try {
-			user = userDetails.getUser();
 			clubPost = clubPostService.findByClubPostId(postId);
 
 			if(clubPost==null) {
 				return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
 			}
 
-			/*
-			if (!clubPost.getClubUser().getClubUserId().equals(clubUserService.clubUserFind(user.getId(), clubId).getClubUserId())) {
-				return new ApiResponse<>(ErrorCode.USER_NOT_AUTHENTICATED);
-			}
-
-			 */
 			clubPostService.updateClubPost(clubPostRequestDto, user, postId);
 		} catch (Exception exception) {
 			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
 		}
+
+		 */
+
+		clubPostService.updateClubPost(clubPostRequestDto, user, postId);
+
 		return new ApiResponse<ClubPostResponseDto>(ClubPostResponseDto.of(postId, "게시글 상세 정보 수정이 완료되었습니다."));
 
 	}
@@ -109,6 +108,7 @@ public class ClubPostController {
 			User user = userDetails.getUser();
 			ClubPost clubPost = clubPostService.findByClubPostId(postId);
 
+			/*
 			if(clubPost==null) {
 				return new ApiResponse<>(ErrorCode.CLUB_NOT_FOUND);
 			}
@@ -116,7 +116,9 @@ public class ClubPostController {
 			if (!clubPost.getClubUser().getClubUserId().equals(clubUserService.clubUserFind(user.getId(), clubId).getClubUserId())) {
 				return new ApiResponse<>(ErrorCode.USER_NOT_AUTHENTICATED);
 			}
-			clubPostService.deleteClubPost(postId);
+
+			 */
+			clubPostService.deleteClubPost(postId, user);
 		} catch (Exception exception) {
 			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
 		}

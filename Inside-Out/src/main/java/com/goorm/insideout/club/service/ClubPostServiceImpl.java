@@ -52,7 +52,16 @@ public class ClubPostServiceImpl implements ClubPostService{
 	}
 
 	@Override
-	public void deleteClubPost(Long clubPostId) {
+	public void deleteClubPost(Long clubPostId, User user) {
+		ClubPost clubPost = clubPostRepository.findById(clubPostId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+
+		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+
+		if(!clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
+			throw new IllegalStateException();
+		}
 
 		clubPostRepository.deleteById(clubPostId);
 	}
