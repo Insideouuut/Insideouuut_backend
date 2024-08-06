@@ -147,7 +147,6 @@ public class Meeting {
 		meeting.genderRatio = genderRatio;
 		meeting.hasMembershipFee = hasMembershipFee;
 		meeting.membershipFee = membershipFee;
-		meeting.hobby = hobby;
 		meeting.host = user;
 		meeting.meetingPlace = meetingPlace;
 
@@ -173,7 +172,6 @@ public class Meeting {
 		this.genderRatio = meeting.genderRatio;
 		this.hasMembershipFee = meeting.hasMembershipFee;
 		this.membershipFee = meeting.membershipFee;
-		this.hobby = meeting.hobby;
 		this.meetingPlace = meeting.getMeetingPlace();
 	}
 

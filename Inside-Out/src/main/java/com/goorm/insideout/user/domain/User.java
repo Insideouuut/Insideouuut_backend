@@ -2,12 +2,12 @@ package com.goorm.insideout.user.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.meeting.domain.Category;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -92,5 +92,14 @@ public class User {
 			this.mannerTemp=BigDecimal.valueOf(0);
 		}
 		this.mannerTemp=this.getMannerTemp().subtract(BigDecimal.valueOf(5.0));
+	}
+
+	public void initDefaultProfileImage() {
+		this.profileImage = ProfileImage.createProfileImage(
+			"default_profile_image.png",
+			"default_profile_image.png",
+			"https://w7.pngwing.com/pngs/665/132/png-transparent-user-defult-avatar.png",
+			this
+		);
 	}
 }

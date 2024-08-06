@@ -43,7 +43,7 @@ public class ChatController {
 		Chat chat = chatService.createChat(roomId, chatRequestDTO, email);
 		ChatResponseDTO chatResponseDTO = ChatResponseDTO.builder()
 			.content(chat.getContent())
-			.sender(HostResponse.fromEntity(chat.getUser()))
+			.sender(HostResponse.of(chat.getUser()))
 			.sendTime(chat.getSendTime())
 			.build();
 		messagingTemplate.convertAndSend("/sub/chatRoom/" + roomId, chatResponseDTO);

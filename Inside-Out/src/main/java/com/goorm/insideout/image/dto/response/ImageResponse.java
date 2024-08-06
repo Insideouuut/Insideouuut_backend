@@ -12,11 +12,11 @@ public class ImageResponse {
 	private String name;
 	private String url;
 
-	public static ImageResponse from(Image image, String url) {
+	public static ImageResponse from(Image image) {
 		ImageResponse imageResponse = new ImageResponse();
 
 		imageResponse.name = image.getUploadName();
-		imageResponse.url = url;
+		imageResponse.url = image.getUrl();
 
 		return imageResponse;
 	}

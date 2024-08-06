@@ -40,11 +40,12 @@ public class MeetingImage {
 	public static MeetingImage createMeetingImage(
 		String uploadName,
 		String storeName,
+		String url,
 		Meeting meeting
 	) {
 		MeetingImage meetingImage = new MeetingImage();
 
-		meetingImage.image = new Image(uploadName, storeName);
+		meetingImage.image = Image.of(uploadName, storeName, url);
 		meetingImage.setMeeting(meeting);
 
 		return meetingImage;

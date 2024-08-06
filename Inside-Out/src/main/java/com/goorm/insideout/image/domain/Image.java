@@ -2,13 +2,11 @@ package com.goorm.insideout.image.domain;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter
 public class Image {
 
@@ -16,14 +14,17 @@ public class Image {
 
 	private String storeName;
 
+	private String url;
+
 	/**
 	 * 생성 메서드
 	 */
-	public static Image createImage(String uploadName, String storeName) {
+	public static Image of(String uploadName, String storeName, String url) {
 		Image image = new Image();
 
 		image.uploadName = uploadName;
 		image.storeName = storeName;
+		image.url = url;
 
 		return image;
 	}

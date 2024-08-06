@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,7 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.goorm.insideout.image.service.ImageService;
+import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
@@ -47,7 +48,8 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		User user = customUserDetails.getUser();
-		meetingService.save(request, user);
+		Long meetingId = meetingService.save(request, user);
+		imageService.saveMeetingImages(multipartFiles, meetingId);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
@@ -61,10 +63,7 @@ public class MeetingController {
 	@GetMapping("/meetings/{meetingId}")
 	@Operation(summary = "모임 단건 조회 API", description = "모임을 단건으로 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findById(@PathVariable Long meetingId) {
-		MeetingResponse meetingResponse = meetingService.findById(meetingId);
-		meetingResponse.addImages(imageService.findMeetingImages(meetingId));
-
-		return new ApiResponse<>(meetingResponse);
+		return new ApiResponse<>(meetingService.findById(meetingId));
 	}
 
 	@GetMapping("/meetings/pending")
@@ -73,7 +72,7 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		Pageable pageable
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(customUserDetails, pageable);
+		Page<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(customUserDetails.getUser(), pageable);
 
 		return new ApiResponse<>(pendingMeetings);
 	}
@@ -84,7 +83,7 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		Pageable pageable
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails, pageable);
+		Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser(), pageable);
 
 		return new ApiResponse<>(pendingMeetings);
 	}
@@ -95,7 +94,7 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		Pageable pageable
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findEndedMeetings(customUserDetails, pageable);
+		Page<MeetingResponse> pendingMeetings = meetingService.findEndedMeetings(customUserDetails.getUser(), pageable);
 
 		return new ApiResponse<>(pendingMeetings);
 	}
@@ -106,7 +105,7 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		Pageable pageable
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findRunningMeetings(customUserDetails, pageable);
+		Page<MeetingResponse> pendingMeetings = meetingService.findRunningMeetings(customUserDetails.getUser(), pageable);
 
 		return new ApiResponse<>(pendingMeetings);
 	}
@@ -119,7 +118,7 @@ public class MeetingController {
 		@RequestPart(value = "meetingImageFiles", required = false) List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		meetingService.updateById(customUserDetails, meetingId, request);
+		meetingService.updateById(customUserDetails.getUser(), meetingId, request);
 		imageService.deleteMeetingImages(meetingId);
 		imageService.saveMeetingImages(multipartFiles, meetingId);
 
@@ -132,7 +131,7 @@ public class MeetingController {
 		@PathVariable Long meetingId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		meetingService.deleteById(customUserDetails, meetingId);
+		meetingService.deleteById(customUserDetails.getUser(), meetingId);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
@@ -143,7 +142,7 @@ public class MeetingController {
 		@PathVariable Long meetingId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		meetingService.endMeeting(customUserDetails, meetingId);
+		meetingService.endMeeting(customUserDetails.getUser(), meetingId);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}

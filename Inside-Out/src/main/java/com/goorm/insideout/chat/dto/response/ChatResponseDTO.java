@@ -25,7 +25,7 @@ public class ChatResponseDTO {
 			.id(chat.getId())
 			.content(chat.getContent())
 			.sendTime(chat.getSendTime())
-			.sender(HostResponse.fromEntity(chat.getUser()))
+			.sender(HostResponse.of(chat.getUser()))
 			.build();
 	}
 

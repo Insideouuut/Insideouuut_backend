@@ -15,6 +15,7 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.image.domain.Image;
 import com.goorm.insideout.image.domain.MeetingImage;
+import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.dto.StoreImageDto;
 import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.goorm.insideout.image.repository.MeetingImageRepository;
@@ -49,11 +50,12 @@ public class ImageService {
 
 		List<StoreImageDto> storeImageDtos = imageStoreProcessor.storeImageFiles(imageFiles);
 
-		storeImageDtos.stream()
-			.map(storeImageDto -> storeImageDto.toMeetingImageEntity(meeting))
-			.forEach(meetingImageRepository::save);
+		for (int i = 0; i < imageFiles.size(); i++) {
+			String imageUrl = uploadImageFile(imageFiles.get(i), storeImageDtos.get(i));
 
-		uploadImageFile(imageFiles, storeImageDtos);
+			MeetingImage meetingImage = storeImageDtos.get(i).toMeetingImageEntity(meeting, imageUrl);
+			meetingImageRepository.save(meetingImage);
+		}
 	}
 
 	@Transactional
@@ -63,39 +65,39 @@ public class ImageService {
 
 		List<StoreImageDto> storeImageDtos = imageStoreProcessor.storeImageFiles(imageFiles);
 
-		storeImageDtos.stream()
-			.map(storeImageDto -> storeImageDto.toProfileImageEntity(user))
-			.forEach(profileImageRepository::save);
+		for (int i = 0; i < imageFiles.size(); i++) {
+			String imageUrl = uploadImageFile(imageFiles.get(i), storeImageDtos.get(i));
 
-		uploadImageFile(imageFiles, storeImageDtos);
+			ProfileImage profileImage = storeImageDtos.get(i).toProfileImageEntity(user, imageUrl);
+			profileImageRepository.save(profileImage);
+		}
+
 	}
 
-	public List<ImageResponse> findMeetingImages(Long meetingId) {
-		List<MeetingImage> meetingImages = meetingImageRepository.findByMeetingId(meetingId);
-
-		return meetingImages.stream()
-			.map(meetingImage -> {
-				String url = amazonS3Client.getUrl(bucket, meetingImage.getImage().getUploadName()).toString();
-				return ImageResponse.from(meetingImage.getImage(), url);
-			})
-			.toList();
-	}
-
-	public ImageResponse findProfileImage(Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
-
-		Image profileImage = user.getProfileImage().getImage();
-		String url = amazonS3Client.getUrl(bucket, profileImage.getStoreName()).toString();
-
-		return ImageResponse.from(profileImage, url);
-	}
+	// 만들긴 했는데 필요없을 것 같은 느낌이 강하게 들어서 일단 주석처리
+	// public List<ImageResponse> findMeetingImages(Long meetingId) {
+	// 	List<MeetingImage> meetingImages = meetingImageRepository.findByMeetingId(meetingId);
+	//
+	// 	return meetingImages.stream()
+	// 		.map(meetingImage -> ImageResponse.from(meetingImage.getImage()))
+	// 		.toList();
+	// }
+	//
+	// public ImageResponse findProfileImage(Long userId) {
+	// 	User user = userRepository.findById(userId)
+	// 		.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+	// 	Image profileImage = user.getProfileImage().getImage();
+	//
+	// 	return ImageResponse.from(profileImage);
+	// }
 
 	@Transactional
 	public void deleteMeetingImages(Long meetingId) {
 		List<MeetingImage> meetingImages = meetingImageRepository.findByMeetingId(meetingId);
 
 		meetingImages.forEach(meetingImage -> {
+			meetingImageRepository.delete(meetingImage);
+
 			String storeName = meetingImage.getImage().getStoreName();
 			amazonS3Client.deleteObject(bucket, storeName);
 		});
@@ -106,31 +108,32 @@ public class ImageService {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
+		profileImageRepository.delete(user.getProfileImage());
+
 		String storeName = user.getProfileImage().getImage().getStoreName();
 		amazonS3Client.deleteObject(bucket, storeName);
 	}
 
-	private void uploadImageFile(List<MultipartFile> multipartFiles, List<StoreImageDto> storeImageDtos) {
-		for (int i = 0; i < multipartFiles.size(); i++) {
-			MultipartFile multipartFile = multipartFiles.get(i);
-			String storeName = storeImageDtos.get(i).storeName();
+	private String uploadImageFile(MultipartFile multipartFile, StoreImageDto storeImageDto) {
+		String storeName = storeImageDto.storeName();
+		try {
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setContentType(multipartFile.getContentType());
+			objectMetadata.setContentLength(multipartFile.getSize());
+			objectMetadata.setContentDisposition("inline");
 
-			try {
-				ObjectMetadata objectMetadata = new ObjectMetadata();
-				objectMetadata.setContentType(multipartFile.getContentType());
-				objectMetadata.setContentLength(multipartFile.getSize());
+			PutObjectRequest putObjectRequest = new PutObjectRequest(
+				bucket,
+				storeName,
+				multipartFile.getInputStream(),
+				objectMetadata
+			);
 
-				PutObjectRequest putObjectRequest = new PutObjectRequest(
-					bucket,
-					storeName,
-					multipartFile.getInputStream(),
-					objectMetadata
-				);
+			amazonS3Client.putObject(putObjectRequest);
 
-				amazonS3Client.putObject(putObjectRequest);
-			} catch (IOException e) {
-				throw ModongException.from(ErrorCode.S3_UPLOAD_FAILURE);
-			}
+			return amazonS3Client.getUrl(bucket, storeName).toString();
+		} catch (IOException e) {
+			throw ModongException.from(ErrorCode.S3_UPLOAD_FAILURE);
 		}
 	}
 }

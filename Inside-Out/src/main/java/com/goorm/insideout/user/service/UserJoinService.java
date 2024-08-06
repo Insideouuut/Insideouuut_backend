@@ -46,6 +46,8 @@ public class UserJoinService {
 			.gender(Gender.valueOf(userJoinRequest.getGender()))
 			.nickname(userJoinRequest.getNickName())
 			.build();
+		joinUser.initDefaultProfileImage();
+
 		userRepository.save(joinUser);
 	}
 

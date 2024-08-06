@@ -8,17 +8,17 @@ import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode
-public class HostResponse {
+public class ChatUserResponse {
 	private Long id;
 	private String nickname;
 	private ImageResponse profileImage;
 
-	public static HostResponse of(User host) {
-		HostResponse hostResponse = new HostResponse();
+	public static ChatUserResponse of(User host, ImageResponse profileImage) {
+		ChatUserResponse hostResponse = new ChatUserResponse();
 
 		hostResponse.id = host.getId();
 		hostResponse.nickname = host.getNickname();
-		hostResponse.profileImage = ImageResponse.from(host.getProfileImage().getImage());
+		hostResponse.profileImage = profileImage;
 
 		return hostResponse;
 	}

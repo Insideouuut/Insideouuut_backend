@@ -35,10 +35,15 @@ public class ProfileImage {
 	/**
 	 * 생성 메서드
 	 */
-	public static ProfileImage createProfileImage(String uploadName, String storeName, User user) {
+	public static ProfileImage createProfileImage(
+		String uploadName,
+		String storeName,
+		String url,
+		User user
+	) {
 		ProfileImage profileImage = new ProfileImage();
 
-		profileImage.image = Image.createImage(uploadName, storeName);
+		profileImage.image = Image.of(uploadName, storeName, url);
 		profileImage.user = user;
 
 		return profileImage;

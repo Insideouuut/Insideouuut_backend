@@ -7,11 +7,11 @@ import com.goorm.insideout.user.domain.User;
 
 public record StoreImageDto(String uploadName, String storeName) {
 
-	public ProfileImage toProfileImageEntity(User user) {
-		return ProfileImage.createProfileImage(uploadName, storeName, user);
+	public ProfileImage toProfileImageEntity(User user, String url) {
+		return ProfileImage.createProfileImage(uploadName, storeName, url, user);
 	}
 
-	public MeetingImage toMeetingImageEntity(Meeting meeting) {
-		return MeetingImage.createMeetingImage(uploadName, storeName, meeting);
+	public MeetingImage toMeetingImageEntity(Meeting meeting, String url) {
+		return MeetingImage.createMeetingImage(uploadName, storeName, url, meeting);
 	}
 }
