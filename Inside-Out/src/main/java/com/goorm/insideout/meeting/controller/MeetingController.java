@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.image.service.ImageService;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
@@ -31,24 +32,25 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api")
 public class MeetingController {
 	private final MeetingService meetingService;
-
+	private final ImageService imageService;
 
 	// 모임 생성
 	@PostMapping("/meetings")
 	public ApiResponse<String> createMeeting(
-		@RequestBody MeetingCreateRequest request,
-		@RequestPart(value = "meetingImage", required = false) List<MultipartFile> multipartFiles,
+		@RequestPart MeetingCreateRequest request,
+		@RequestPart("meetingImageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		meetingService.save(request, customUserDetails);
 
-		return new ApiResponse<>("성공성공성공");
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
 	// 모임 단건 조회
 	@GetMapping("/meetings/{meetingId}")
 	public ApiResponse<MeetingResponse> findById(@PathVariable Long meetingId) {
 		MeetingResponse meetingResponse = meetingService.findById(meetingId);
+		meetingResponse.addImages(imageService.findMeetingImages(meetingId));
 
 		return new ApiResponse<>(meetingResponse);
 	}
@@ -102,10 +104,12 @@ public class MeetingController {
 	public ApiResponse updateMeeting(
 		@PathVariable Long meetingId,
 		@RequestBody MeetingUpdateRequest request,
-		@RequestPart(value = "meetingImage", required = false) List<MultipartFile> multipartFiles,
+		@RequestPart(value = "meetingImageFiles", required = false) List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		meetingService.updateById(customUserDetails, meetingId, request);
+		imageService.deleteMeetingImages(meetingId);
+		imageService.saveMeetingImages(multipartFiles, meetingId);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
