@@ -63,7 +63,7 @@ class UserJoinControllerTest {
 		UserJoinRequestDTO requestDTO = new UserJoinRequestDTO();
 		requestDTO.setEmail("test@example.com");
 		requestDTO.setName("테스트");
-		requestDTO.setPassword("test1234");
+		requestDTO.setPassword("test1234!");
 
 		doNothing().when(userJoinService).join(any(UserJoinRequestDTO.class));
 
@@ -87,7 +87,7 @@ class UserJoinControllerTest {
 		UserJoinRequestDTO requestDTO = new UserJoinRequestDTO();
 		requestDTO.setEmail("testExample.com"); // 올바르지 않은 이메일 형식
 		requestDTO.setName("테스트");
-		requestDTO.setPassword("test1234");
+		requestDTO.setPassword("test1234!");
 
 		doNothing().when(userJoinService).join(any(UserJoinRequestDTO.class));
 
@@ -111,7 +111,7 @@ class UserJoinControllerTest {
 		UserJoinRequestDTO requestDTO = new UserJoinRequestDTO();
 		requestDTO.setEmail("test@example.com");
 		requestDTO.setName("테스트");
-		requestDTO.setPassword("test1234");
+		requestDTO.setPassword("test1234!");
 
 		doThrow(ModongException.from(ErrorCode.DUPLICATE_USER_EMAIL))
 			.when(userJoinService).join(any(UserJoinRequestDTO.class));

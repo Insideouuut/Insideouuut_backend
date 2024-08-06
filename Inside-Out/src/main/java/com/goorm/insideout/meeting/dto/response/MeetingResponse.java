@@ -6,6 +6,7 @@ import java.util.List;
 import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
+import com.goorm.insideout.user.dto.response.HostResponse;
 import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.AccessLevel;
@@ -19,9 +20,7 @@ public class MeetingResponse {
 	// User 엔티티를 구현하지 않았으므로 임시 주석 처리
 	// private UserResponse user;
 	private String description;
-	private List<ImageResponse> images;
 	private String rule;
-	private String joinQuestion;
 	private int view;
 	private int like;
 	private boolean hasMembershipFee;
@@ -30,7 +29,6 @@ public class MeetingResponse {
 	private String level;
 	private String categoryDetail;
 	private String category;
-	private MeetingPlaceResponse place;
 	private LocalDateTime schedule;
 	private int participantsNumber;
 	private int participantLimit;
@@ -38,6 +36,10 @@ public class MeetingResponse {
 	private int femaleRatio;
 	private int minimumAge;
 	private int maximumAge;
+	private String joinQuestion;
+	private HostResponse host;
+	private MeetingPlaceResponse place;
+	private List<ImageResponse> images;
 
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
@@ -55,7 +57,6 @@ public class MeetingResponse {
 		this.level = meeting.getLevel().name();
 		this.categoryDetail = meeting.getCategoryDetail();
 		this.category = meeting.getCategory().name();
-		this.place = new MeetingPlaceResponse().toDto(meeting.getMeetingPlace());
 		this.schedule = meeting.getSchedule();
 		this.participantsNumber = meeting.getParticipantsNumber();
 		this.participantLimit = meeting.getParticipantLimit();
@@ -63,6 +64,12 @@ public class MeetingResponse {
 		this.femaleRatio = meeting.getGenderRatio().getFemaleRatio();
 		this.minimumAge = meeting.getMinimumAge();
 		this.maximumAge = meeting.getMaximumAge();
+		this.host = HostResponse.fromEntity(meeting.getHost());
+		this.place = MeetingPlaceResponse.fromEntity(meeting.getMeetingPlace());
+		this.images = meeting.getImages()
+			.stream()
+			.map(ImageResponse::new)
+			.toList();
 	}
 
 	public static MeetingResponse from(Meeting meeting) {
@@ -73,32 +80,27 @@ public class MeetingResponse {
 		this.images = imageResponses;
 	}
 
+	@Getter
 	@NoArgsConstructor(access = AccessLevel.PROTECTED)
 	public static class MeetingPlaceResponse {
 		private String name;
-
 		private String placeUrl;
-
 		private Long kakaoMapId;
-
 		private String addressName;
-
 		private String roadAddressName;
-
 		private Double latitude;
-
 		private Double longitude;
 
-		private MeetingPlaceResponse toDto(MeetingPlace meetingPlace) {
-			this.name = meetingPlace.getName();
-			this.placeUrl = meetingPlace.getPlaceUrl();
-			this.kakaoMapId = meetingPlace.getKakaoMapId();
-			this.addressName = meetingPlace.getAddressName();
-			this.roadAddressName = meetingPlace.getRoadAddressName();
-			this.latitude = meetingPlace.getLatitude();
-			this.longitude = meetingPlace.getLongitude();
+		private static MeetingPlaceResponse fromEntity(MeetingPlace meetingPlace) {
+			MeetingPlaceResponse meetingPlaceResponse = new MeetingPlaceResponse();
 
-			return this;
+			meetingPlaceResponse.name = meetingPlace.getName();
+			meetingPlaceResponse.placeUrl = meetingPlace.getPlaceUrl();
+			meetingPlaceResponse.kakaoMapId = meetingPlace.getKakaoMapId();
+			meetingPlaceResponse.latitude = meetingPlace.getLatitude();
+			meetingPlaceResponse.longitude = meetingPlace.getLongitude();
+
+			return meetingPlaceResponse;
 		}
 	}
 }

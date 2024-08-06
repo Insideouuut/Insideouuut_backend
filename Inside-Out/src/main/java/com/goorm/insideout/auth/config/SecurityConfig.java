@@ -49,11 +49,15 @@ public class SecurityConfig {
 		"/api/login/**",
 		"/api/join",
 		"/api/reissue",
-    	"/api/clubs",
-    	"/api/clubs/{clubId}",
-		"/api/meetings",
+		"/api/clubs",
+		"/api/clubs/{clubId}",
+    "/api/meetings",
 		"/api/meetings/{meetingId}",
-		"/api/",
+		"/api/check-email",
+		"/api/check-nickname",
+		"/v3/**",
+		"/swagger-ui/**",
+		"/ws-stomp",
 		"/"
 	};
 
@@ -78,7 +82,8 @@ public class SecurityConfig {
 					@Override
 					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 						CorsConfiguration configuration = new CorsConfiguration();
-						configuration.setAllowedOrigins(List.of("https://localhost:3000"));
+						configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:3000","https://modong-backend.site"));
+
 						configuration.setAllowedMethods(Collections.singletonList("*"));
 						configuration.setAllowCredentials(true);
 						configuration.setAllowedHeaders(Collections.singletonList("*"));

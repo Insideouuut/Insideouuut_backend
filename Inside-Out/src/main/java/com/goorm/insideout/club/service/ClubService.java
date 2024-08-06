@@ -3,10 +3,9 @@ package com.goorm.insideout.club.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
-import com.goorm.insideout.club.dto.ClubInfo;
+import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
+import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.user.domain.User;
@@ -26,8 +25,9 @@ public interface ClubService {
 
 	Club ownClub(Long clubId, Long userId);
 
-	Club belongToClub(String selectedClub,Long userId);
+	Club belongToClub(Long userId);
 
 	List<ClubListResponseDto> findByCategory(String category);
 
+	public void setChatRoom(Club club, ChatRoom chatRoom);
 }

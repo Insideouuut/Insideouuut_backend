@@ -1,8 +1,5 @@
 package com.goorm.insideout.club.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,24 +14,26 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class ClubUser {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "clubUser_id")
+	private Long clubUserId;
+
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -56,4 +55,7 @@ public class ClubUser {
 	@Column(name = "club_id")
 	Long clubId;
 
+	private String userName;
+	private String profileImgUrl;
+	private String mannerTemp;
 }
