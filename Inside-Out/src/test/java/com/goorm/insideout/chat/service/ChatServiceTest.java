@@ -27,7 +27,7 @@ import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.user.domain.User;
-import com.goorm.insideout.user.dto.response.HostResponse;
+import com.goorm.insideout.user.dto.response.ChatUserResponse;
 import com.goorm.insideout.user.repository.UserRepository;
 import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
@@ -154,7 +154,7 @@ public class ChatServiceTest {
 				.id(chat.getId())
 				.content(chat.getContent())
 				.sendTime(chat.getSendTime())
-				.sender(HostResponse.of(chat.getUser()))
+				.sender(ChatUserResponse.from(chat.getUser()))
 				.build())
 			.collect(Collectors.toList());
 
@@ -164,7 +164,7 @@ public class ChatServiceTest {
 				.id(chat.getId())
 				.content(chat.getContent())
 				.sendTime(chat.getSendTime())
-				.sender(HostResponse.of(chat.getUser()))
+				.sender(ChatUserResponse.from(chat.getUser()))
 				.build())
 			.collect(Collectors.toList());
 
@@ -208,7 +208,7 @@ public class ChatServiceTest {
 				.id(chat.getId())
 				.content(chat.getContent())
 				.sendTime(chat.getSendTime())
-				.sender(HostResponse.of(chat.getUser()))
+				.sender(ChatUserResponse.from(chat.getUser()))
 				.build())
 			.toList();
 
@@ -256,7 +256,7 @@ public class ChatServiceTest {
 				.id(chat.getId())
 				.content(chat.getContent())
 				.sendTime(chat.getSendTime())
-				.sender(HostResponse.of(chat.getUser()))
+				.sender(ChatUserResponse.from(chat.getUser()))
 				.build())
 			.toList();
 
