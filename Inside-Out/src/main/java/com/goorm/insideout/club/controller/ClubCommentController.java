@@ -25,22 +25,27 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
+@Tag(name = "ClubCommentController", description = "동아리 게시판 댓글 관련 API")
 public class ClubCommentController {
 
 	private final ClubCommentService clubCommentService;
 
 	@GetMapping("/{clubId}/post/{postId}/comment")
+	@Operation(summary = "동아리 게시글 댓글 조회 API", description = "동아리 게시글 댓글을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubCommentListResponseDto>> findByClubPostId(@PathVariable Long postId) {
 		return new ApiResponse<List<ClubCommentListResponseDto>>(clubCommentService.findCommentsByClubPostId(postId));
 	}
 
 	@PostMapping("/{clubId}/post/{postId}/comment")
+	@Operation(summary = "동아리 게시글 댓글 생성 API", description = "동아리 게시글 댓글을 생성하는 API 입니다.")
 	public ApiResponse<ClubCommentResponseDto> saveClubComment(@PathVariable Long postId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
 		User user = userDetails.getUser();
@@ -53,6 +58,7 @@ public class ClubCommentController {
 
 
 	@PutMapping("/{clubId}/post/{postId}/comment/{commentId}")
+	@Operation(summary = "동아리 게시글 댓글 수정 API", description = "동아리 게시글 댓글을 수정하는 API 입니다.")
 	public ApiResponse<ClubCommentResponseDto> updateClubComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user;
@@ -66,6 +72,7 @@ public class ClubCommentController {
 	}
 
 	@DeleteMapping("/{clubId}/post/{postId}/comment/{commentId}")
+	@Operation(summary = "동아리 게시글 댓글 삭제 API", description = "동아리 게시글 댓글을 삭제하는 API 입니다.")
 	public ApiResponse deleteClubComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user = userDetails.getUser();

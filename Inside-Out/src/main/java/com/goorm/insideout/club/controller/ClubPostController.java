@@ -32,18 +32,22 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
+@Tag(name = "ClubPostController", description = "동아리 게시판 관련 API")
 public class ClubPostController {
 
 	private final ClubPostService clubPostService;
 	private final ClubUserService clubUserService;
 
 	@GetMapping("/{clubId}/post")
+	@Operation(summary = "동아리 게시글 목록 조회 API", description = "동아리 게시글 목록을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubPostListResponseDto>> findByPostType(@PathVariable Long clubId, @RequestParam(name = "category") String category) {
 
 		return new ApiResponse<List<ClubPostListResponseDto>>(clubPostService.findClubPostByType(clubId, category));
@@ -53,6 +57,7 @@ public class ClubPostController {
 
 
 	@GetMapping("/{clubId}/post/{postId}")
+	@Operation(summary = "동아리 게시글 단건 조회 API", description = "동아리 게시글을 조회하는 API 입니다.")
 	public ApiResponse<ClubPostDto> findClubPost(@PathVariable Long postId) {
 
 
@@ -60,6 +65,7 @@ public class ClubPostController {
 	}
 
 	@PostMapping("/{clubId}/post")
+	@Operation(summary = "동아리 게시글 생성 API", description = "동아리 게시글을 생성하는 API 입니다.")
 	public ApiResponse<ClubPostResponseDto> saveClubPost(@Valid @RequestBody ClubPostRequestDto clubPostRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
 		User user = userDetails.getUser();
@@ -76,25 +82,10 @@ public class ClubPostController {
 
 
 	@PutMapping("/{clubId}/post/{postId}")
+	@Operation(summary = "동아리 게시글 수정 API", description = "동아리 게시글을 수정하는 API 입니다.")
 	public ApiResponse<ClubPostResponseDto> updateClubPost(@PathVariable Long clubId, @PathVariable Long postId, @Valid @RequestBody ClubPostRequestDto clubPostRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user = userDetails.getUser();
-		ClubPost clubPost;
-
-		/*
-		try {
-			clubPost = clubPostService.findByClubPostId(postId);
-
-			if(clubPost==null) {
-				return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
-			}
-
-			clubPostService.updateClubPost(clubPostRequestDto, user, postId);
-		} catch (Exception exception) {
-			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
-		}
-
-		 */
 
 		clubPostService.updateClubPost(clubPostRequestDto, user, postId);
 
@@ -103,21 +94,12 @@ public class ClubPostController {
 	}
 
 	@DeleteMapping("/{clubId}/post/{postId}")
+	@Operation(summary = "동아리 게시글 삭제 API", description = "동아리 게시글을 삭제하는 API 입니다.")
 	public ApiResponse deleteClubPost(@PathVariable Long clubId, @PathVariable Long postId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 		try {
 			User user = userDetails.getUser();
 			ClubPost clubPost = clubPostService.findByClubPostId(postId);
 
-			/*
-			if(clubPost==null) {
-				return new ApiResponse<>(ErrorCode.CLUB_NOT_FOUND);
-			}
-
-			if (!clubPost.getClubUser().getClubUserId().equals(clubUserService.clubUserFind(user.getId(), clubId).getClubUserId())) {
-				return new ApiResponse<>(ErrorCode.USER_NOT_AUTHENTICATED);
-			}
-
-			 */
 			clubPostService.deleteClubPost(postId, user);
 		} catch (Exception exception) {
 			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
