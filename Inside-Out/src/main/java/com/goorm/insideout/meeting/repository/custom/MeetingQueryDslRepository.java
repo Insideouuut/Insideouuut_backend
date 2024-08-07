@@ -1,14 +1,15 @@
 package com.goorm.insideout.meeting.repository.custom;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
 
 import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 
 public interface MeetingQueryDslRepository {
 
-	Page<MeetingResponse> findAllByCondition(MeetingSearchRequest condition, Pageable pageable);
+	List<MeetingResponse> findAllByCondition(MeetingSearchRequest condition);
 
-	Page<MeetingResponse> findAllBySortType(MeetingSearchRequest condition, Pageable pageable);
+	List<MeetingResponse> findByConditionAndSortType(MeetingSearchRequest condition);
+
+	List<MeetingResponse> findBySortType(MeetingSearchRequest condition);
 }
