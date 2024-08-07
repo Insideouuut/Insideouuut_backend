@@ -2,6 +2,7 @@ package com.goorm.insideout.meeting.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.ApprovalStatus;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
+import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
@@ -70,13 +72,31 @@ public class MeetingService {
 	}
 
 	public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING, Progress.ONGOING, pageable)
+		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING,
+				Progress.ONGOING, pageable)
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
 	}
 
+	public List<MeetingResponse> findPendingMeetings(User user) {
+		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
+			ApprovalStatus.PENDING, Progress.ONGOING);
+		return meetingUsers.stream()
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
+			.collect(Collectors.toList());
+	}
+
 	public Page<MeetingResponse> findParticipatingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.APPROVED, Progress.ONGOING, pageable)
+		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.APPROVED,
+				Progress.ONGOING, pageable)
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
+	}
+
+	public List<MeetingResponse> findParticipatingMeetings(User user) {
+		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
+			ApprovalStatus.APPROVED, Progress.ONGOING);
+		return meetingUsers.stream()
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
+			.collect(Collectors.toList());
 	}
 
 	public Page<MeetingResponse> findRunningMeetings(User user, Pageable pageable) {
@@ -87,6 +107,14 @@ public class MeetingService {
 	public Page<MeetingResponse> findEndedMeetings(User user, Pageable pageable) {
 		return meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED, Progress.ENDED, pageable)
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
+	}
+
+	public List<MeetingResponse> findEndedMeetings(User user) {
+		List<MeetingUser> meetingUsers = meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED,
+			Progress.ENDED);
+		return meetingUsers.stream()
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
+			.collect(Collectors.toList());
 	}
 
 	@Transactional
