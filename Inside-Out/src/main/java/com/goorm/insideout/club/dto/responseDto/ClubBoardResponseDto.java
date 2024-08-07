@@ -1,8 +1,10 @@
 package com.goorm.insideout.club.dto.responseDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.image.dto.response.ImageResponse;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +34,7 @@ public class ClubBoardResponseDto {
 	private Integer price;
 	private Integer ageLimit;
 
-	private String clubImgUrl;
+	private List<ImageResponse> images;
 	private Long chatRoomId;
 
 
@@ -44,7 +46,10 @@ public class ClubBoardResponseDto {
 
 		res.setClubId(club.getClubId());
 		res.setClubName(club.getClubName());
-		res.setClubImgUrl(club.getClubImg());
+		res.images = club.getImages()
+			.stream()
+			.map(image -> ImageResponse.from(image.getImage()))
+			.toList();
 		res.setCategory(club.getCategory());
 		res.setCreatedAt(club.getCreatedAt());
 		res.setContent(club.getContent());
