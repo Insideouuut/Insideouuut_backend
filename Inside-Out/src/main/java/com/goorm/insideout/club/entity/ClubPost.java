@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,6 +41,8 @@ public class ClubPost {
 
 	private String postTitle;
 
+	private String category;
+
 	private String writer;
 
 	private LocalDateTime createTime;
@@ -59,13 +62,14 @@ public class ClubPost {
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "club_id",insertable = false,updatable = false)
+	@JoinColumn(name = "club_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	Club club;
 
-	public void update(String postTitle, String postContent){
-		this.postTitle=postTitle;
-		this.postContent = postContent;
+	public void update(ClubPostRequestDto clubPostRequestDto){
+		this.postTitle=clubPostRequestDto.getPostTitle();
+		this.category =clubPostRequestDto.getCategory();
+		this.postContent = clubPostRequestDto.getPostContent();
 	}
 
 

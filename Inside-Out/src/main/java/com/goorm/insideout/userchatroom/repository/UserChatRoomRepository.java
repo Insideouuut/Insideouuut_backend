@@ -13,6 +13,7 @@ import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.userchatroom.domain.UserChatRoom;
 
 public interface UserChatRoomRepository extends JpaRepository<UserChatRoom, Long> {
+	boolean existsByUserAndChatRoom(User user, ChatRoom chatRoom);
 	List<UserChatRoom> findByUserId(Long userId); // User 엔티티의 ID로 조회
 
 	void deleteByUserIdAndChatRoomId(Long userId, Long chatRoomId);

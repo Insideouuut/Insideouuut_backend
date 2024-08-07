@@ -15,13 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ClubCommentDto {
 	private Long id;
+	private String writer;
 	private String comment;
 
 	private LocalDateTime dateTime;
 
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private ClubPostDto clubPostDto;
-
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private ClubUserDto clubUserDto;
 }

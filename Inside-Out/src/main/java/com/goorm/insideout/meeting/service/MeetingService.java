@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.ApprovalStatus;
@@ -16,6 +15,7 @@ import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
+import com.goorm.insideout.meeting.dto.request.MeetingPlaceRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
@@ -48,7 +48,7 @@ public class MeetingService {
 	public List<MeetingResponse> findAll() {
 		return meetingRepository.findAll()
 			.stream()
-			.map(MeetingResponse::from)
+			.map(MeetingResponse::of)
 			.toList();
 	}
 
@@ -56,80 +56,72 @@ public class MeetingService {
 		Meeting meeting = meetingRepository.findById(id)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
 
-		return new MeetingResponse(meeting);
+		return MeetingResponse.of(meeting);
 	}
 
-	// 검색
-	public Page<MeetingResponse> findByCondition(MeetingSearchRequest condition, Pageable pageable) {
-		return meetingRepository.findAllByCondition(condition, pageable);
+	// 검색 조건에 따른 조회
+	public List<MeetingResponse> findByCondition(MeetingSearchRequest condition) {
+		return meetingRepository.findAllByCondition(condition);
 	}
 
-	// 검색 및 정렬
-	public Page<MeetingResponse> findBySortType(MeetingSearchRequest condition, Pageable pageable) {
-		return meetingRepository.findAllBySortType(condition, pageable);
+	// 정렬 타입에 따른 조회
+	public List<MeetingResponse> findBySortType(MeetingSearchRequest condition) {
+		return meetingRepository.findBySortType(condition);
 	}
 
-	public Page<MeetingResponse> findPendingMeetings(CustomUserDetails customUserDetails, Pageable pageable) {
-		Long userId = customUserDetails.getUser().getId();
-
-		return meetingUserRepository.findOngoingMeetingsByProgress(userId, ApprovalStatus.PENDING, Progress.ONGOING, pageable)
-			.map(meetingUser -> MeetingResponse.from(meetingUser.getMeeting()));
+	// 검색 조건 및 정렬 타입에 따른 조회
+	public List<MeetingResponse> findByConditionAndSortType(MeetingSearchRequest condition) {
+		return meetingRepository.findByConditionAndSortType(condition);
 	}
 
-	public Page<MeetingResponse> findParticipatingMeetings(CustomUserDetails customUserDetails, Pageable pageable) {
-		Long userId = customUserDetails.getUser().getId();
 
-		return meetingUserRepository.findOngoingMeetingsByProgress(userId, ApprovalStatus.APPROVED, Progress.ONGOING, pageable)
-			.map(meetingUser -> MeetingResponse.from(meetingUser.getMeeting()));
+
+	public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
+		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING, Progress.ONGOING, pageable)
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
 	}
 
-	public Page<MeetingResponse> findRunningMeetings(CustomUserDetails customUserDetails, Pageable pageable) {
-		Long hostId = customUserDetails.getUser().getId();
-
-		return meetingRepository.findRunningMeetings(hostId, Progress.ONGOING, pageable)
-			.map(MeetingResponse::from);
+	public Page<MeetingResponse> findParticipatingMeetings(User user, Pageable pageable) {
+		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.APPROVED, Progress.ONGOING, pageable)
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
 	}
 
-	public Page<MeetingResponse> findEndedMeetings(CustomUserDetails customUserDetails, Pageable pageable) {
-		Long userId = customUserDetails.getUser().getId();
+	public Page<MeetingResponse> findRunningMeetings(User user, Pageable pageable) {
+		return meetingRepository.findRunningMeetings(user.getId(), Progress.ONGOING, pageable)
+			.map(MeetingResponse::of);
+	}
 
-		return meetingUserRepository.findEndedMeetings(userId, ApprovalStatus.APPROVED, Progress.ENDED, pageable)
-			.map(meetingUser -> MeetingResponse.from(meetingUser.getMeeting()));
+	public Page<MeetingResponse> findEndedMeetings(User user, Pageable pageable) {
+		return meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED, Progress.ENDED, pageable)
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
 	}
 
 	@Transactional
-	public void updateById(CustomUserDetails customUserDetails, Long meetingId, MeetingUpdateRequest request) {
+	public void updateById(User user, Long meetingId, MeetingUpdateRequest request) {
 		// 수정할 모임 조회 후, 수정을 요청한 유저가 호스트인지 검증
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
-
-		User user = userRepository.findById(customUserDetails.getUser().getId())
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 		validateIsHost(user, meeting);
 
-		meeting.updateMeeting(request.toEntity(user));
+		MeetingPlace meetingPlace = findOrCreatePlace(request.getMeetingPlace());
+
+		meeting.updateMeeting(request.toEntity(user, meetingPlace));
 	}
 
 	@Transactional
-	public void deleteById(CustomUserDetails customUserDetails, Long meetingId) {
+	public void deleteById(User user, Long meetingId) {
 		// 삭제할 모임 조회 후, 삭제를 요청한 유저가 호스트인지 검증
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
-
-		User user = userRepository.findById(customUserDetails.getUser().getId())
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 		validateIsHost(user, meeting);
 
 		meetingRepository.deleteById(meetingId);
 	}
 
 	@Transactional
-	public void endMeeting(CustomUserDetails customUserDetails, Long meetingId) {
+	public void endMeeting(User user, Long meetingId) {
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
-
-		User user = userRepository.findById(customUserDetails.getUser().getId())
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 		validateIsHost(user, meeting);
 
 		meeting.changeProgress(Progress.ENDED);
@@ -141,7 +133,7 @@ public class MeetingService {
 		}
 	}
 
-	private MeetingPlace findOrCreatePlace(MeetingCreateRequest.MeetingPlaceRequest request) {
+	private MeetingPlace findOrCreatePlace(MeetingPlaceRequest request) {
 		Optional<MeetingPlace> meetingPlace = placeRepository.findPlaceByNameAndLocation(
 			request.getName(),
 			request.getLatitude(),

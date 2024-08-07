@@ -1,9 +1,6 @@
 package com.goorm.insideout.club.dto.responseDto;
 
-import com.goorm.insideout.club.dto.ClubDetailOwnerDto;
 import com.goorm.insideout.club.entity.Club;
-import com.goorm.insideout.club.entity.ClubApply;
-import com.goorm.insideout.user.domain.User;
 
 import lombok.Getter;
 

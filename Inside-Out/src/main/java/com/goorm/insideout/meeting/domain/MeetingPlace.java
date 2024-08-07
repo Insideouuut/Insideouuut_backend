@@ -27,6 +27,12 @@ public class MeetingPlace {
 	@Column(name = "map_id")
 	private Long kakaoMapId;
 
+	@Column(name = "address_name")
+	private String addressName;
+
+	@Column(name = "road_address_name")
+	private String roadAddressName;
+
 	@Column(name = "latitude")
 	private Double latitude;
 
@@ -40,6 +46,8 @@ public class MeetingPlace {
 		String name,
 		String placeUrl,
 		Long mapId,
+		String addressName,
+		String roadAddressName,
 		Double latitude,
 		Double longitude
 	) {
@@ -48,6 +56,8 @@ public class MeetingPlace {
 		meetingPlace.name = name;
 		meetingPlace.placeUrl = placeUrl;
 		meetingPlace.kakaoMapId = mapId;
+		meetingPlace.addressName = addressName;
+		meetingPlace.roadAddressName = roadAddressName;
 		meetingPlace.latitude = latitude;
 		meetingPlace.longitude = longitude;
 

@@ -1,45 +1,96 @@
 package com.goorm.insideout.club.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.goorm.insideout.club.dto.ClubPostDto;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostListResponseDto;
-import com.goorm.insideout.club.dto.responseDto.ClubPostResponseDto;
 import com.goorm.insideout.club.entity.ClubPost;
+import com.goorm.insideout.club.entity.ClubUser;
+import com.goorm.insideout.club.repository.ClubPostRepository;
+import com.goorm.insideout.club.repository.ClubUserRepository;
+import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.user.domain.User;
 
+import lombok.RequiredArgsConstructor;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class ClubPostServiceImpl implements ClubPostService{
+
+	private final ClubPostRepository clubPostRepository;
+	private final ClubUserRepository clubUserRepository;
+
 	@Override
-	public ClubPost save(ClubPostDto clubPostDto) {
-		return null;
+	public ClubPost saveClubPost(ClubPostRequestDto clubPostRequestDto, User user) {
+		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+
+		ClubPost clubPost = clubPostBuilder(clubPostRequestDto, clubUser);
+
+		return clubPostRepository.save(clubPost);
 	}
 
 	@Override
 	public ClubPost findByClubPostId(Long clubPostId) {
-		return null;
+
+		return clubPostRepository.findById(clubPostId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
 	}
 
 	@Override
-	public List<ClubPostListResponseDto> findAllClubPost(ClubPost clubPost) {
-		return null;
+	public List<ClubPostListResponseDto> findClubPostByType(Long clubId, String category) {
+		return clubPostRepository.findByClubIdAndTypeJQL(clubId, category).stream()
+			.map(ClubPostListResponseDto::new)
+			.collect(Collectors.toList());
 	}
 
 	@Override
-	public boolean deleteClubPost(ClubPostDto clubPostDto) {
-		return false;
+	public void deleteClubPost(Long clubPostId, User user) {
+		ClubPost clubPost = clubPostRepository.findById(clubPostId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+
+		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+
+		if(!clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
+			throw new IllegalStateException();
+		}
+
+		clubPostRepository.deleteById(clubPostId);
 	}
 
 	@Override
-	public ClubPost updateClubPost(ClubPostDto clubPostDto) {
-		return null;
+	public ClubPost updateClubPost(ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId) {
+		ClubPost clubPost = clubPostRepository.findById(clubPostId).orElseThrow(()->ModongException.from(ErrorCode.INVALID_REQUEST));
+		ClubUser clubUser = clubUserRepository.findByUserId(user.getId()).orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
+
+		if(!clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
+			throw new IllegalStateException();
+		}
+		clubPost.update(clubRequestPostDto);
+
+		return clubPostRepository.save(clubPost);
 	}
 
-	@Override
-	public ClubPostResponseDto findClubPost(Long clubPostId) {
-		return null;
-	}
+	public ClubPost clubPostBuilder(ClubPostRequestDto clubPostRequestDto, ClubUser clubUser) {
 
-	@Override
-	public Integer passwordVerify(ClubPostDto clubPostDto) {
-		return null;
+		return ClubPost.builder()
+			.postTitle(clubPostRequestDto.getPostTitle())
+			.postContent(clubPostRequestDto.getPostContent())
+			//.clubImg(clubImgUrl)
+			.category(clubPostRequestDto.getCategory())
+			.writer(clubUser.getUserName())
+			.createTime(LocalDateTime.now())
+			.clubUser(clubUser)
+			.club(clubUser.getClub())
+			.build();
+
 	}
 }

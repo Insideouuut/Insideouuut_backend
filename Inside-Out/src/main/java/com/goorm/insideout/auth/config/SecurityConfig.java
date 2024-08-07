@@ -51,6 +51,8 @@ public class SecurityConfig {
 		"/api/reissue",
 		"/api/clubs",
 		"/api/clubs/{clubId}",
+    "/api/meetings",
+		"/api/meetings/{meetingId}",
 		"/api/check-email",
 		"/api/check-nickname",
 		"/v3/**",

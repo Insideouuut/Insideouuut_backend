@@ -3,13 +3,16 @@ package com.goorm.insideout.meeting.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import com.goorm.insideout.image.domain.Image;
+import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.like.domain.MeetingLike;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,11 +45,15 @@ public class Meeting {
 	@Column(name = "description", nullable = false)
 	private String description;
 
-	@Column(name = "rule", nullable = false)
-	private String rule;
+	@ElementCollection
+	@CollectionTable(name = "meeting_rules", joinColumns = @JoinColumn(name = "meeting_id"))
+	@Column(name = "rule")
+	private Set<String> rules;
 
-	@Column(name = "join_question", nullable = false)
-	private String joinQuestion;
+	@ElementCollection
+	@CollectionTable(name = "meeting_join_questions", joinColumns = @JoinColumn(name = "meeting_id"))
+	@Column(name = "join_question")
+	private Set<String> joinQuestions;
 
 	@Column(name = "schedule", nullable = false)
 	private LocalDateTime schedule;
@@ -58,9 +65,6 @@ public class Meeting {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "level", nullable = false)
 	private Level level;
-
-	@Column(name = "hobby", nullable = false)
-	private String hobby;
 
 	@Column(name = "participants_number", columnDefinition = "integer default 0", nullable = false)
 	private int participantsNumber;
@@ -88,11 +92,14 @@ public class Meeting {
 	@Column(name = "category", nullable = false)
 	private Category category;
 
+	@Column(name = "category_detail", nullable = false)
+	private String categoryDetail;
+
 	@Column(name = "view", columnDefinition = "integer default 0", nullable = false)
 	private int view;
 
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
-	private List<Image> images = new ArrayList<>();
+	private List<MeetingImage> images = new ArrayList<>();
 
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
 	private List<MeetingLike> likes = new ArrayList<>();
@@ -105,7 +112,7 @@ public class Meeting {
 	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "place_id")
+	@JoinColumn(name = "meeting_place_id")
 	private MeetingPlace meetingPlace;
 
 	/**
@@ -115,9 +122,9 @@ public class Meeting {
 		String title,
 		String description,
 		Category category,
+		String categoryDetail,
 		int participantLimit,
-		String rule,
-		String joinQuestion,
+		Set<String> joinQuestions,
 		LocalDateTime schedule,
 		Level level,
 		int minimumAge,
@@ -125,19 +132,20 @@ public class Meeting {
 		GenderRatio genderRatio,
 		boolean hasMembershipFee,
 		int membershipFee,
-		String hobby,
 		User user,
-		MeetingPlace meetingPlace
+		MeetingPlace meetingPlace,
+		Set<String> rules
 	) {
 		Meeting meeting = new Meeting();
 
 		meeting.title = title;
 		meeting.description = description;
 		meeting.category = category;
+		meeting.categoryDetail = categoryDetail;
 		meeting.participantsNumber = 1;
 		meeting.participantLimit = participantLimit;
-		meeting.rule = rule;
-		meeting.joinQuestion = joinQuestion;
+		meeting.rules = rules;
+		meeting.joinQuestions = joinQuestions;
 		meeting.schedule = schedule;
 		meeting.progress = Progress.ONGOING;
 		meeting.level = level;
@@ -146,7 +154,6 @@ public class Meeting {
 		meeting.genderRatio = genderRatio;
 		meeting.hasMembershipFee = hasMembershipFee;
 		meeting.membershipFee = membershipFee;
-		meeting.hobby = hobby;
 		meeting.host = user;
 		meeting.meetingPlace = meetingPlace;
 
@@ -160,10 +167,10 @@ public class Meeting {
 		this.title = meeting.title;
 		this.description = meeting.description;
 		this.category = meeting.category;
+		this.categoryDetail = meeting.categoryDetail;
 		this.participantsNumber = meeting.participantsNumber;
 		this.participantLimit = meeting.participantLimit;
-		this.rule = meeting.rule;
-		this.joinQuestion = meeting.joinQuestion;
+		this.joinQuestions = meeting.joinQuestions;
 		this.schedule = meeting.schedule;
 		this.level = meeting.level;
 		this.minimumAge = meeting.minimumAge;
@@ -171,8 +178,8 @@ public class Meeting {
 		this.genderRatio = meeting.genderRatio;
 		this.hasMembershipFee = meeting.hasMembershipFee;
 		this.membershipFee = meeting.membershipFee;
-		this.hobby = meeting.hobby;
-		this.meetingPlace = meeting.getMeetingPlace();
+		this.meetingPlace = meeting.meetingPlace;
+		this.rules = meeting.rules;
 	}
 
 	/**
