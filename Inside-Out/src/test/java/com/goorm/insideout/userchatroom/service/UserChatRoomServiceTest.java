@@ -49,7 +49,9 @@ public class UserChatRoomServiceTest {
 
 		ChatRoom chatRoom = ChatRoom.builder().id(chatRoomId).build();
 		User user = User.builder().id(userId).name("Test User").build();
+		user.initDefaultProfileImage();
 		User systemUser = User.builder().email("system@insideout.com").build();
+		systemUser.initDefaultProfileImage();
 
 		when(chatRoomRepository.findById(chatRoomId)).thenReturn(Optional.of(chatRoom));
 		when(userRepository.findByEmail("system@insideout.com")).thenReturn(Optional.of(systemUser));
@@ -104,6 +106,7 @@ public class UserChatRoomServiceTest {
 		Long userId = 1L;
 
 		User user = User.builder().id(userId).build();
+		user.initDefaultProfileImage();
 		ChatRoom chatRoom = ChatRoom.builder().id(chatRoomId).build();
 
 		when(chatRoomRepository.findById(chatRoomId)).thenReturn(Optional.of(chatRoom));

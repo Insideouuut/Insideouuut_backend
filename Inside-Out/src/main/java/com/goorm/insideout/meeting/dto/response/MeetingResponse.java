@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MeetingResponse {
 	private String title;
-	// User 엔티티를 구현하지 않았으므로 임시 주석 처리
-	// private UserResponse user;
 	private String description;
 	private String rule;
 	private int view;
@@ -27,7 +25,7 @@ public class MeetingResponse {
 	private int membershipFee;
 	private String progress;
 	private String level;
-	private String hobby;
+	private String categoryDetail;
 	private String category;
 	private LocalDateTime schedule;
 	private int participantsNumber;
@@ -44,8 +42,6 @@ public class MeetingResponse {
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
 		this.title = meeting.getTitle();
-		// User 엔티티를 구현하지 않았으므로 임시 주석 처리
-		// this.user = new UserResponse(meeting.getAuthor());
 		this.description = meeting.getDescription();
 		this.rule = meeting.getRule();
 		this.joinQuestion = meeting.getJoinQuestion();
@@ -55,7 +51,7 @@ public class MeetingResponse {
 		this.membershipFee = meeting.getMembershipFee();
 		this.progress = meeting.getProgress().name();
 		this.level = meeting.getLevel().name();
-		this.hobby = meeting.getHobby();
+		this.categoryDetail = meeting.getCategoryDetail();
 		this.category = meeting.getCategory().name();
 		this.schedule = meeting.getSchedule();
 		this.participantsNumber = meeting.getParticipantsNumber();
@@ -64,15 +60,14 @@ public class MeetingResponse {
 		this.femaleRatio = meeting.getGenderRatio().getFemaleRatio();
 		this.minimumAge = meeting.getMinimumAge();
 		this.maximumAge = meeting.getMaximumAge();
-		this.host = HostResponse.fromEntity(meeting.getHost());
-		this.place = MeetingPlaceResponse.fromEntity(meeting.getMeetingPlace());
-		this.images = meeting.getImages()
-			.stream()
-			.map(ImageResponse::new)
+		this.host = HostResponse.of(meeting.getHost());
+		this.images = meeting.getImages().stream()
+			.map(meetingImage -> ImageResponse.from(meetingImage.getImage()))
 			.toList();
+		this.place = MeetingPlaceResponse.from(meeting.getMeetingPlace());
 	}
 
-	public static MeetingResponse from(Meeting meeting) {
+	public static MeetingResponse of(Meeting meeting) {
 		return new MeetingResponse(meeting);
 	}
 
@@ -82,15 +77,19 @@ public class MeetingResponse {
 		private String name;
 		private String placeUrl;
 		private Long kakaoMapId;
+		private String addressName;
+		private String roadAddressName;
 		private Double latitude;
 		private Double longitude;
 
-		private static MeetingPlaceResponse fromEntity(MeetingPlace meetingPlace) {
+		private static MeetingPlaceResponse from(MeetingPlace meetingPlace) {
 			MeetingPlaceResponse meetingPlaceResponse = new MeetingPlaceResponse();
 
 			meetingPlaceResponse.name = meetingPlace.getName();
 			meetingPlaceResponse.placeUrl = meetingPlace.getPlaceUrl();
 			meetingPlaceResponse.kakaoMapId = meetingPlace.getKakaoMapId();
+			meetingPlaceResponse.addressName = meetingPlace.getAddressName();
+			meetingPlaceResponse.roadAddressName = meetingPlace.getRoadAddressName();
 			meetingPlaceResponse.latitude = meetingPlace.getLatitude();
 			meetingPlaceResponse.longitude = meetingPlace.getLongitude();
 

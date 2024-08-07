@@ -2,11 +2,12 @@ package com.goorm.insideout.user.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 
+import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.meeting.domain.Category;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -18,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,9 +50,11 @@ public class User {
 	@Column(nullable = false)
 	private String name;
 
-	private String profileImage;
-
 	private String nickname;
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	@JoinColumn(name = "profile_image_id")
+	private ProfileImage profileImage;
 
 	private LocalDate birthDate;
 
@@ -88,5 +92,14 @@ public class User {
 			this.mannerTemp=BigDecimal.valueOf(0);
 		}
 		this.mannerTemp=this.getMannerTemp().subtract(BigDecimal.valueOf(5.0));
+	}
+
+	public void initDefaultProfileImage() {
+		this.profileImage = ProfileImage.createProfileImage(
+			"default_profile_image.png",
+			"default_profile_image.png",
+			"https://w7.pngwing.com/pngs/665/132/png-transparent-user-defult-avatar.png",
+			this
+		);
 	}
 }

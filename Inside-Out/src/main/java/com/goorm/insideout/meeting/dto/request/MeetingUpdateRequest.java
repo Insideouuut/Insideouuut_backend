@@ -21,6 +21,8 @@ public class MeetingUpdateRequest {
 
 	private String category;
 
+	private String categoryDetail;
+
 	private MeetingPlaceRequest meetingPlace;
 
 	private int participantLimit;
@@ -45,13 +47,12 @@ public class MeetingUpdateRequest {
 
 	private int membershipFee;
 
-	private String hobby;
-
 	public Meeting toEntity(User host) {
 		return Meeting.createMeeting(
 			title,
 			description,
 			Category.valueOf(category),
+			categoryDetail,
 			participantLimit,
 			rule,
 			joinQuestion,
@@ -62,7 +63,6 @@ public class MeetingUpdateRequest {
 			GenderRatio.valueOf(maleRatio, femaleRatio),
 			hasMembershipFee,
 			membershipFee,
-			hobby,
 			host,
 			meetingPlace.toEntity()
 		);
@@ -77,6 +77,10 @@ public class MeetingUpdateRequest {
 
 		private Long kakaoMapId;
 
+		private String addressName;
+
+		private String roadAddressName;
+
 		private Double latitude;
 
 		private Double longitude;
@@ -86,6 +90,8 @@ public class MeetingUpdateRequest {
 				name,
 				placeUrl,
 				kakaoMapId,
+				addressName,
+				roadAddressName,
 				latitude,
 				longitude
 			);

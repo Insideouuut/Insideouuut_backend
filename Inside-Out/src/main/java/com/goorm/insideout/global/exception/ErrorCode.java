@@ -58,6 +58,13 @@ public enum ErrorCode {
 	CHAT_NOT_AVAILABLE(HttpStatus.FORBIDDEN, "메시지를 보낼 수 없습니다."),
 	NOT_ALLOWED_TO_DELETE_CHATROOM(HttpStatus.FORBIDDEN, "채팅방을 삭제할 수 없습니다."),
 
+	// file
+	EMPTY_IMAGE(HttpStatus.BAD_REQUEST, "이미지 파일이 비어있습니다."),
+	UNSUPPORTED_IMAGE_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 이미지 파일 확장자입니다."),
+	IMAGE_STORE_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 저장에 실패했습니다."),
+	IMAGE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "이미지 파일 크기가 너무 큽니다."),
+	S3_UPLOAD_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "S3 버킷에 파일을 업로드하는 중 에러가 발생했습니다."),
+
 	// stomp
 	INVALID_STOMP_MESSAGE_HEADER(HttpStatus.NOT_FOUND,"유효한 헤더가 아닙니다"),
 
