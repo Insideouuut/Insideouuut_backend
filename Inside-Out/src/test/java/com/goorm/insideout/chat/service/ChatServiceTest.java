@@ -63,6 +63,7 @@ public class ChatServiceTest {
 			.password("password")
 			.name("Test User")
 			.build();
+		testUser.initDefaultProfileImage();
 
 		testChatRoom = ChatRoom.builder()
 			.id(1L)

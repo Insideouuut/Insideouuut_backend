@@ -3,11 +3,13 @@ package com.goorm.insideout.image.dto.response;
 import com.goorm.insideout.image.domain.Image;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
 public class ImageResponse {
 	private String name;
 	private String url;
