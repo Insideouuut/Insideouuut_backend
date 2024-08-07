@@ -1,6 +1,8 @@
 package com.goorm.insideout.meeting.dto.request;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import com.goorm.insideout.meeting.domain.Category;
 import com.goorm.insideout.meeting.domain.GenderRatio;
@@ -15,56 +17,63 @@ import lombok.NoArgsConstructor;
 
 @Getter
 public class MeetingUpdateRequest {
-	private String title;
+	private String name;
 
-	private String description;
+	private String introduction;
 
 	private String category;
 
 	private String categoryDetail;
 
-	private MeetingPlaceRequest meetingPlace;
+	private MeetingCreateRequest.MeetingPlaceRequest meetingPlace;
 
 	private int participantLimit;
 
-	private String rule;
+	private Set<String> rules;
 
-	private String joinQuestion;
+	private Set<String> joinQuestions;
 
-	private LocalDateTime schedule;
+	private LocalDateTime date;
 
 	private String level;
 
-	private int minimumAge;
+	private List<Integer> ageRange;
 
-	private int maximumAge;
+	private String hasGenderRatio;
 
-	private int maleRatio;
-
-	private int femaleRatio;
+	private String ratio;
 
 	private boolean hasMembershipFee;
 
-	private int membershipFee;
+	private int membershipFeeAmount;
 
-	public Meeting toEntity(User host) {
+	public Meeting toEntity(User host, MeetingPlace meetingPlace) {
+		int maleRatio = 0;
+		int femaleRatio = 0;
+
+		if (hasGenderRatio.equals("지정")) {
+			String[] tokens = ratio.split(" : ");
+			maleRatio = Integer.parseInt(tokens[0]);
+			femaleRatio = Integer.parseInt(tokens[1]);
+		}
+
 		return Meeting.createMeeting(
-			title,
-			description,
+			name,
+			introduction,
 			Category.valueOf(category),
 			categoryDetail,
 			participantLimit,
-			rule,
-			joinQuestion,
-			schedule,
+			joinQuestions,
+			date,
 			Level.valueOf(level),
-			minimumAge,
-			maximumAge,
+			ageRange.get(0),
+			ageRange.get(1),
 			GenderRatio.valueOf(maleRatio, femaleRatio),
 			hasMembershipFee,
-			membershipFee,
+			membershipFeeAmount,
 			host,
-			meetingPlace.toEntity()
+			meetingPlace,
+			rules
 		);
 	}
 
