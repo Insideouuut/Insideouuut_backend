@@ -2,6 +2,7 @@ package com.goorm.insideout.club.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,8 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
+import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
+import com.goorm.insideout.club.entity.ClubApply;
 import com.goorm.insideout.club.entity.ClubUser;
+import com.goorm.insideout.club.repository.ClubApplyRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.entity.Club;
@@ -32,6 +36,7 @@ public class ClubServiceImpl implements ClubService{
 	private final ChatRoomRepository chatRoomRepository;
 	private final UserChatRoomRepository userChatRoomRepository;
 	private final ClubUserRepository clubUserRepository;
+	private final ClubApplyRepository clubApplyRepository;
 
 	String domainPrefix = "https://insideout.site:8082/resources/upload/images/club_image/";
 
@@ -74,9 +79,16 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
-	public Club findByClubId(Long ClubId) {
+	public Club findByClubId(Long clubId) {
 
-		return clubRepository.findById(ClubId).orElseThrow(null);
+		return clubRepository.findById(clubId).orElseThrow(null);
+	}
+
+	@Override
+	public ClubBoardResponseDto findClubBoard(Long clubId, User user) {
+		Club byClubId = findByClubId(clubId);
+
+		return ClubBoardResponseDto.of(byClubId, user);
 	}
 
 	@Override
@@ -132,10 +144,13 @@ public class ClubServiceImpl implements ClubService{
 			.collect(Collectors.toList());
 	}
 
+	/*
 	@Override
 	public Club belongToClub(Long userId) {
-		return clubRepository.belongToTeam(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
+		return clubRepository.belongToClub(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 	}
+
+	 */
 
 
 	@Override
@@ -147,6 +162,27 @@ public class ClubServiceImpl implements ClubService{
 			.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<ClubListResponseDto> findMyClub(Long userId) {
+		return clubRepository.belongToClub(userId).stream()
+			.map(ClubListResponseDto::new)
+			.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ClubListResponseDto> findMyApplyClub(Long userId) {
+		List<ClubApply> byUserIdJQL = clubApplyRepository.findByUserIdJQL(userId);
+		List<Club> clubList = new ArrayList<>();
+
+		for(ClubApply clubApply : byUserIdJQL){
+			Long clubId = clubApply.getClubId();
+			clubList.add(findByClubId(clubId));
+		}
+
+		return clubList.stream()
+			.map(ClubListResponseDto::new)
+			.collect(Collectors.toList());
+	}
 
 
 	/*

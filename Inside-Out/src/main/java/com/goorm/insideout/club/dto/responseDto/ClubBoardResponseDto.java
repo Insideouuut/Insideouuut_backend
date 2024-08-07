@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.image.dto.response.ImageResponse;
+import com.goorm.insideout.user.domain.User;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,11 +38,12 @@ public class ClubBoardResponseDto {
 	private List<ImageResponse> images;
 	private Long chatRoomId;
 
+	Boolean isHost = false;
 
 	Boolean isRecruiting = false;
 
 
-	public static ClubBoardResponseDto of(Club club){
+	public static ClubBoardResponseDto of(Club club, User user){
 		ClubBoardResponseDto res = new ClubBoardResponseDto();
 
 		res.setClubId(club.getClubId());
@@ -62,6 +64,10 @@ public class ClubBoardResponseDto {
 		res.setPrice(club.getPrice());
 		res.setAgeLimit(club.getAgeLimit());
 		res.setChatRoomId(club.getChat_room_id());
+
+		if(club.getOwner().getId().equals(user.getId())){
+			res.setIsHost(true);
+		}
 
 		if(club.getMemberLimit() > club.getMemberCount()){
 			res.setIsRecruiting(true);
