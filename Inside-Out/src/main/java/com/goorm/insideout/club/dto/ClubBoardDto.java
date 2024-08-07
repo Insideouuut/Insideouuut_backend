@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.image.dto.response.ImageResponse;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ public class ClubBoardDto {
 	private Integer price;
 	private Integer ageLimit;
 
-	private String clubImgUrl;
+	private List<ImageResponse> images;
 
 
 	Boolean isRecruiting = false;
@@ -49,7 +50,10 @@ public class ClubBoardDto {
 
 			ClubBoardDto.setClubId(Club.getClubId());
 			ClubBoardDto.setClubName(Club.getClubName());
-			ClubBoardDto.setClubImgUrl(Club.getClubImg());
+			ClubBoardDto.images = Club.getImages()
+				.stream()
+				.map(image -> ImageResponse.from(image.getImage()))
+				.toList();
 			ClubBoardDto.setCategory(Club.getCategory());
 			ClubBoardDto.setCreatedAt(Club.getCreatedAt());
 			ClubBoardDto.setContent(Club.getContent());
