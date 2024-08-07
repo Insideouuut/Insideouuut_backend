@@ -12,7 +12,7 @@ public class ProfileMeetingResponse {
 	private final String meetingHostNickName;
 	public ProfileMeetingResponse(MeetingResponse meetingResponse){
 		this.category="MEETING";
-		this.meetingName=meetingResponse.getname();
+		this.meetingName=meetingResponse.geName();
 		this.meetingImage=meetingResponse.getImages().get(0).getUrl();
 		this.meetingHostNickName=meetingResponse.getHost().getNickname();
 	}
