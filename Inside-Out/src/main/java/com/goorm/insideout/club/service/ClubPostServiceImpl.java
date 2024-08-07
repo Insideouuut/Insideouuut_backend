@@ -71,11 +71,10 @@ public class ClubPostServiceImpl implements ClubPostService{
 		ClubPost clubPost = clubPostRepository.findById(clubPostId).orElseThrow(()->ModongException.from(ErrorCode.INVALID_REQUEST));
 		ClubUser clubUser = clubUserRepository.findByUserId(user.getId()).orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
 
-		if(clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
-			clubPost.update(clubRequestPostDto);
-		}else {
+		if(!clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
 			throw new IllegalStateException();
 		}
+		clubPost.update(clubRequestPostDto);
 
 		return clubPostRepository.save(clubPost);
 	}

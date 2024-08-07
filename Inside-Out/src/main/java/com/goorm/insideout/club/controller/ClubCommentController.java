@@ -46,12 +46,8 @@ public class ClubCommentController {
 		User user = userDetails.getUser();
 		ClubComment clubComment;
 
-		try {
-			clubComment = clubCommentService.saveComment(clubCommentRequestDto, postId, user);
+		clubComment = clubCommentService.saveComment(clubCommentRequestDto, postId, user);
 
-		} catch (Exception exception) {
-			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
-		}
 		return new ApiResponse<ClubCommentResponseDto>((ClubCommentResponseDto.of(clubComment.getId(), "댓글을 성공적으로 생성하였습니다.")));
 	}
 
@@ -60,44 +56,22 @@ public class ClubCommentController {
 	public ApiResponse<ClubCommentResponseDto> updateClubComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user;
-		//ClubComment clubComment;
 
-		try {
-			user = userDetails.getUser();
-			//clubComment = clubCommentService.findByCommentId(commentId);
+		user = userDetails.getUser();
 
-			/*
-			if(clubComment==null) {
-				return new ApiResponse<>(ErrorCode.CLUB_NOT_FOUND);
-			}
+		clubCommentService.updateComment(commentId, clubCommentRequestDto, user);
 
-			 */
-
-			clubCommentService.updateComment(commentId, clubCommentRequestDto, user);
-		} catch (Exception exception) {
-			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
-		}
 		return new ApiResponse<ClubCommentResponseDto>(ClubCommentResponseDto.of(postId, "댓글 수정이 완료되었습니다."));
 
 	}
 
 	@DeleteMapping("/{clubId}/post/{postId}/comment/{commentId}")
 	public ApiResponse deleteClubComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-		try {
-			User user = userDetails.getUser();
-			//ClubComment clubComment = clubCommentService.findByCommentId(commentId);
 
-			/*
-			if(clubComment==null) {
-				return new ApiResponse<>(ErrorCode.CLUB_NOT_FOUND);
-			}
+		User user = userDetails.getUser();
 
-			 */
+		clubCommentService.deleteComment(commentId, user);
 
-			clubCommentService.deleteComment(commentId, user);
-		} catch (Exception exception) {
-			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
-		}
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 }

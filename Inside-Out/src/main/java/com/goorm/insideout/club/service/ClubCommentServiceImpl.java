@@ -39,9 +39,8 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
-		ClubComment clubComment = clubCommentRepository.save(clubCommentBuilder(clubCommentRequestDto,clubPostId, clubUser));
 
-		return clubCommentRepository.save(clubComment);
+		return clubCommentRepository.save(clubCommentBuilder(clubCommentRequestDto,clubPostId, clubUser));
 	}
 
 	@Override
