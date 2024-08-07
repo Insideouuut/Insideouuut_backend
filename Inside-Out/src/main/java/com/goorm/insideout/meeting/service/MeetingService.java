@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.ApprovalStatus;
@@ -60,15 +59,22 @@ public class MeetingService {
 		return MeetingResponse.of(meeting);
 	}
 
-	// 검색
-	public Page<MeetingResponse> findByCondition(MeetingSearchRequest condition, Pageable pageable) {
-		return meetingRepository.findAllByCondition(condition, pageable);
+	// 검색 조건에 따른 조회
+	public List<MeetingResponse> findByCondition(MeetingSearchRequest condition) {
+		return meetingRepository.findAllByCondition(condition);
 	}
 
-	// 검색 및 정렬
-	public Page<MeetingResponse> findBySortType(MeetingSearchRequest condition, Pageable pageable) {
-		return meetingRepository.findAllBySortType(condition, pageable);
+	// 정렬 타입에 따른 조회
+	public List<MeetingResponse> findBySortType(MeetingSearchRequest condition) {
+		return meetingRepository.findBySortType(condition);
 	}
+
+	// 검색 조건 및 정렬 타입에 따른 조회
+	public List<MeetingResponse> findByConditionAndSortType(MeetingSearchRequest condition) {
+		return meetingRepository.findByConditionAndSortType(condition);
+	}
+
+
 
 	public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
 		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING, Progress.ONGOING, pageable)

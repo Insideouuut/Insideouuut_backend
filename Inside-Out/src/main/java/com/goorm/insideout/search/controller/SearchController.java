@@ -1,7 +1,5 @@
 package com.goorm.insideout.search.controller;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +26,14 @@ public class SearchController {
 	public ApiResponse<MeetingResponse> findAll(
 		@RequestParam("query") String query,
 		@RequestParam("category") String category,
-		@RequestParam("sort") String sortType,
-		@RequestParam("page") int page
+		@RequestParam("sort") String sortType
 	) {
 		MeetingSearchRequest condition = new MeetingSearchRequest(query, category, sortType);
-		PageRequest pageRequest = PageRequest.of(page - 1, 20);
 
-		Page<MeetingResponse> searchResult = meetingService.findBySortType(condition, pageRequest);
+		if (query.equals("all") && category.equals("all")) {
+			return new ApiResponse<>(meetingService.findBySortType(condition));
+		}
 
-		return new ApiResponse<>(searchResult);
+		return new ApiResponse<>(meetingService.findByConditionAndSortType(condition));
 	}
 }
