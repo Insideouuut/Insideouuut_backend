@@ -11,9 +11,7 @@ import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.user.domain.User;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class MeetingCreateRequest {
@@ -75,35 +73,5 @@ public class MeetingCreateRequest {
 			meetingPlace,
 			rules
 		);
-	}
-
-	@Getter
-	@NoArgsConstructor(access = AccessLevel.PRIVATE)
-	public static class MeetingPlaceRequest {
-		private String name;
-
-		private String placeUrl;
-
-		private Long kakaoMapId;
-
-		private String addressName;
-
-		private String roadAddressName;
-
-		private Double latitude;
-
-		private Double longitude;
-
-		public MeetingPlace toEntity() {
-			return MeetingPlace.createMeetingPlace(
-				name,
-				placeUrl,
-				kakaoMapId,
-				addressName,
-				roadAddressName,
-				latitude,
-				longitude
-			);
-		}
 	}
 }

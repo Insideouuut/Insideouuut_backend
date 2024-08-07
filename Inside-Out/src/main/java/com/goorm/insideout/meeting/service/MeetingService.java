@@ -16,6 +16,7 @@ import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
+import com.goorm.insideout.meeting.dto.request.MeetingPlaceRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
@@ -96,7 +97,9 @@ public class MeetingService {
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
 		validateIsHost(user, meeting);
 
-		meeting.updateMeeting(request.toEntity(user));
+		MeetingPlace meetingPlace = findOrCreatePlace(request.getMeetingPlace());
+
+		meeting.updateMeeting(request.toEntity(user, meetingPlace));
 	}
 
 	@Transactional
@@ -124,7 +127,7 @@ public class MeetingService {
 		}
 	}
 
-	private MeetingPlace findOrCreatePlace(MeetingCreateRequest.MeetingPlaceRequest request) {
+	private MeetingPlace findOrCreatePlace(MeetingPlaceRequest request) {
 		Optional<MeetingPlace> meetingPlace = placeRepository.findPlaceByNameAndLocation(
 			request.getName(),
 			request.getLatitude(),
