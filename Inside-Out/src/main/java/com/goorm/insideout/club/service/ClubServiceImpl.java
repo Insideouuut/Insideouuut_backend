@@ -2,19 +2,14 @@ package com.goorm.insideout.club.service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.function.Predicate;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
-import com.goorm.insideout.club.dto.ClubUserDto;
-import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubRepository;
@@ -92,7 +87,7 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
-	public Club modifyClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/ User user, Club club) throws
+	public Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club) throws
 		IOException {
 		Long clubId = club.getClubId();
 
@@ -120,7 +115,7 @@ public class ClubServiceImpl implements ClubService{
 
 		 */
 
-		Club modify_club = clubBuilder(clubRequestDto, /*clubImgUrl,*/ user);
+		Club modify_club = clubBuilder(clubRequestDto, user);
 		modify_club.setMemberCount(club.getMemberCount());
 		modify_club.setCreatedAt(club.getCreatedAt());
 		modify_club.setClubId(clubId);
@@ -190,12 +185,11 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	 */
-	public Club clubBuilder(ClubRequestDto ClubRequestDto,/* String clubImgUrl,*/ User user) {
+	public Club clubBuilder(ClubRequestDto ClubRequestDto, User user) {
 
 		return Club.builder()
 			.clubName(ClubRequestDto.getClubName())
 			.category(ClubRequestDto.getCategory())
-			//.clubImg(clubImgUrl)
 			.content(ClubRequestDto.getContent())
 			.date(ClubRequestDto.getDate())
 			.region(ClubRequestDto.getRegion())
@@ -204,7 +198,6 @@ public class ClubServiceImpl implements ClubService{
 			.memberCount(1)
 			.price(ClubRequestDto.getPrice())
 			.ageLimit(ClubRequestDto.getAgeLimit())
-			.clubImg(ClubRequestDto.getClubImgUrl())
 			.owner(user)
 			.build();
 

@@ -31,4 +31,6 @@ public interface ClubUserRepository extends JpaRepository<ClubUser,Long> {
 		,nativeQuery = true)
 	List<ClubUser> findByClubIdJQL(@Param("club_id") Long clubId);
 
+	@Transactional
+	Optional<ClubUser> findByUserId(Long userId);
 }

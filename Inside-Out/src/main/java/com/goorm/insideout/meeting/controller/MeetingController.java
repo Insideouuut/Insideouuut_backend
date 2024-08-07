@@ -44,7 +44,7 @@ public class MeetingController {
 	@Operation(summary = "모임 생성 API", description = "모임을 생성하는 API 입니다. 아직 이미지 업로드 기능이 준비되지 않았기 때문에, meetingImage 필드는 제외하고 요청 보내주시면 됩니다.")
 	public ApiResponse<String> createMeeting(
 		@RequestPart MeetingCreateRequest request,
-		@RequestPart("meetingImageFiles") List<MultipartFile> multipartFiles,
+		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		User user = customUserDetails.getUser();
@@ -115,7 +115,7 @@ public class MeetingController {
 	public ApiResponse updateMeeting(
 		@PathVariable Long meetingId,
 		@RequestBody MeetingUpdateRequest request,
-		@RequestPart(value = "meetingImageFiles", required = false) List<MultipartFile> multipartFiles,
+		@RequestPart(value = "imageFiles", required = false) List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		meetingService.updateById(customUserDetails.getUser(), meetingId, request);
@@ -131,6 +131,7 @@ public class MeetingController {
 		@PathVariable Long meetingId,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
+		imageService.deleteMeetingImages(meetingId);
 		meetingService.deleteById(customUserDetails.getUser(), meetingId);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);

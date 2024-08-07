@@ -4,14 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.image.domain.ClubImage;
 import com.goorm.insideout.user.domain.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -46,6 +44,7 @@ public class Club {
 	private String category;
 
 	private LocalDateTime createdAt;
+
 	private String content;
 
 	private String date;
@@ -55,12 +54,13 @@ public class Club {
 	@JsonIgnore
 	private String question;
 
-
 	private Integer memberLimit;
-	private Integer memberCount;
-	private Integer price;
-	private Integer ageLimit;
 
+	private Integer memberCount;
+
+	private Integer price;
+
+	private Integer ageLimit;
 
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
@@ -70,15 +70,12 @@ public class Club {
 	@Builder.Default
 	List<ClubUser> members = new ArrayList<>();
 
-
 	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
 	@JsonIgnore
 	List<ClubPost> posts;
 
-
-
-	private String clubImg;
-
+	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+	private List<ClubImage> images = new ArrayList<>();
 
 	///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
 	@OneToOne(fetch = FetchType.LAZY)
@@ -86,8 +83,6 @@ public class Club {
 	ChatRoom chatRoom;
 
 	private Long chat_room_id;
-
-
 
 	public void increaseMemberCount() {
 		this.memberCount++;

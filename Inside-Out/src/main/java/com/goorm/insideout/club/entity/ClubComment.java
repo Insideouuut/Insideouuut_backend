@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.goorm.insideout.club.dto.requestDto.ClubCommentRequestDto;
+import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,8 +39,9 @@ public class ClubComment {
 	@Column(name = "comment_content")
 	private String content;
 
+	private String writer;
+
 	private LocalDateTime dateTime;
-	private LocalDateTime updateDateTime;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "clubPost_Id")
@@ -48,6 +52,9 @@ public class ClubComment {
 	@JoinColumn(name = "clubUser_Id")
 	private ClubUser clubUser;
 
-
+	public void update(ClubCommentRequestDto clubCommentRequestDto){
+		this.content=clubCommentRequestDto.getContent();
+		this.dateTime = LocalDateTime.now();
+	}
 
 }

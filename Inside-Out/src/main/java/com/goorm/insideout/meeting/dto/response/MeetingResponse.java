@@ -2,10 +2,15 @@ package com.goorm.insideout.meeting.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goorm.insideout.image.dto.response.ImageResponse;
+import com.goorm.insideout.meeting.domain.Category;
+import com.goorm.insideout.meeting.domain.Level;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
+import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.user.dto.response.HostResponse;
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -16,50 +21,47 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class MeetingResponse {
-	private String title;
-	private String description;
-	private String rule;
+	private String name;
+	private String introduction;
 	private int view;
 	private int like;
 	private boolean hasMembershipFee;
-	private int membershipFee;
+	private int membershipFeeAmount;
 	private String progress;
 	private String level;
 	private String categoryDetail;
 	private String category;
-	private LocalDateTime schedule;
+	@JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
+	private LocalDateTime date;
 	private int participantsNumber;
 	private int participantLimit;
-	private int maleRatio;
-	private int femaleRatio;
-	private int minimumAge;
-	private int maximumAge;
-	private String joinQuestion;
+	private String ratio;
+	private List<Integer> ageRange;
+	private Set<String> rules;
+	private Set<String> joinQuestions;
 	private HostResponse host;
 	private MeetingPlaceResponse place;
 	private List<ImageResponse> images;
 
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
-		this.title = meeting.getTitle();
-		this.description = meeting.getDescription();
-		this.rule = meeting.getRule();
-		this.joinQuestion = meeting.getJoinQuestion();
+		this.name = meeting.getTitle();
+		this.introduction = meeting.getDescription();
+		this.rules = meeting.getRules();
+		this.joinQuestions = meeting.getJoinQuestions();
 		this.view = meeting.getView();
 		this.like = meeting.getLikes().size();
 		this.hasMembershipFee = meeting.isHasMembershipFee();
-		this.membershipFee = meeting.getMembershipFee();
+		this.membershipFeeAmount = meeting.getMembershipFee();
 		this.progress = meeting.getProgress().name();
-		this.level = meeting.getLevel().name();
+		this.level = meeting.getLevel().getName();
 		this.categoryDetail = meeting.getCategoryDetail();
-		this.category = meeting.getCategory().name();
-		this.schedule = meeting.getSchedule();
+		this.category = meeting.getCategory().getName();
+		this.date = meeting.getSchedule();
 		this.participantsNumber = meeting.getParticipantsNumber();
 		this.participantLimit = meeting.getParticipantLimit();
-		this.maleRatio = meeting.getGenderRatio().getMaleRatio();
-		this.femaleRatio = meeting.getGenderRatio().getFemaleRatio();
-		this.minimumAge = meeting.getMinimumAge();
-		this.maximumAge = meeting.getMaximumAge();
+		this.ratio = meeting.getGenderRatio().getMaleRatio() + " : " + meeting.getGenderRatio().getFemaleRatio();
+		this.ageRange = List.of(meeting.getMinimumAge(), meeting.getMaximumAge());
 		this.host = HostResponse.of(meeting.getHost());
 		this.images = meeting.getImages().stream()
 			.map(meetingImage -> ImageResponse.from(meetingImage.getImage()))
