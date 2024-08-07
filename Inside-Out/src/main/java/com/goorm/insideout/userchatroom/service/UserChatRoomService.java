@@ -56,6 +56,10 @@ public class UserChatRoomService {
 
 	// 유저와 채팅방 관계 저장
 	private void saveUserChatRoom(ChatRoom chatRoom, User user) {
+		if (userChatRoomRepository.existsByUserAndChatRoom(user, chatRoom)) {
+			throw ModongException.from(ErrorCode.CHAT_ALREADY_JOINED);
+		}
+
 		UserChatRoom userChatRoom = UserChatRoom.builder()
 			.user(user)
 			.chatRoom(chatRoom)
