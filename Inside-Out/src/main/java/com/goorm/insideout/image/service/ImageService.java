@@ -11,13 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
-import com.goorm.insideout.image.domain.Image;
+import com.goorm.insideout.image.domain.ClubImage;
 import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.dto.StoreImageDto;
-import com.goorm.insideout.image.dto.response.ImageResponse;
+import com.goorm.insideout.image.repository.ClubImageRepository;
 import com.goorm.insideout.image.repository.MeetingImageRepository;
 import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.image.repository.ImageStoreProcessor;
@@ -33,8 +35,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ImageService {
 
+	private final ClubImageRepository clubImageRepository;
 	private final MeetingImageRepository meetingImageRepository;
 	private final ProfileImageRepository profileImageRepository;
+	private final ClubRepository clubRepository;
 	private final MeetingRepository meetingRepository;
 	private final UserRepository userRepository;
 	private final ImageStoreProcessor imageStoreProcessor;
@@ -42,6 +46,21 @@ public class ImageService {
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
+
+	@Transactional
+	public void saveClubImages(List<MultipartFile> imageFiles, Long clubId) {
+		Club club = clubRepository.findById(clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+
+		List<StoreImageDto> storeImageDtos = imageStoreProcessor.storeImageFiles(imageFiles);
+
+		for (int i = 0; i < imageFiles.size(); i++) {
+			String imageUrl = uploadImageFile(imageFiles.get(i), storeImageDtos.get(i));
+
+			ClubImage clubImage = storeImageDtos.get(i).toClubImageEntity(club, imageUrl);
+			clubImageRepository.save(clubImage);
+		}
+	}
 
 	@Transactional
 	public void saveMeetingImages(List<MultipartFile> imageFiles, Long meetingId) {
@@ -71,7 +90,6 @@ public class ImageService {
 			ProfileImage profileImage = storeImageDtos.get(i).toProfileImageEntity(user, imageUrl);
 			profileImageRepository.save(profileImage);
 		}
-
 	}
 
 	// 만들긴 했는데 필요없을 것 같은 느낌이 강하게 들어서 일단 주석처리
@@ -92,6 +110,18 @@ public class ImageService {
 	// }
 
 	@Transactional
+	public void deleteClubImages(Long clubId) {
+		List<ClubImage> clubImages = clubImageRepository.findByClubId(clubId);
+
+		clubImages.forEach(clubImage -> {
+			clubImageRepository.delete(clubImage);
+
+			String storeName = clubImage.getImage().getStoreName();
+			amazonS3Client.deleteObject(bucket, storeName);
+		});
+	}
+
+	@Transactional
 	public void deleteMeetingImages(Long meetingId) {
 		List<MeetingImage> meetingImages = meetingImageRepository.findByMeetingId(meetingId);
 
@@ -104,7 +134,7 @@ public class ImageService {
 	}
 
 	@Transactional
-	public void deleteProfileImages(Long userId) {
+	public void deleteProfileImage(Long userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
