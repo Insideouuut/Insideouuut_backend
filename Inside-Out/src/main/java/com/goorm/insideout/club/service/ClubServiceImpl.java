@@ -22,7 +22,10 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.image.domain.ProfileImage;
+import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.repository.UserRepository;
 import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -33,10 +36,10 @@ import lombok.RequiredArgsConstructor;
 public class ClubServiceImpl implements ClubService{
 
 	private final ClubRepository clubRepository;
-	private final ChatRoomRepository chatRoomRepository;
-	private final UserChatRoomRepository userChatRoomRepository;
 	private final ClubUserRepository clubUserRepository;
 	private final ClubApplyRepository clubApplyRepository;
+	private final UserRepository userRepository;
+	private final ProfileImageRepository profileImageRepository;
 
 	String domainPrefix = "https://insideout.site:8082/resources/upload/images/club_image/";
 
@@ -62,6 +65,7 @@ public class ClubServiceImpl implements ClubService{
 
 		Club club = clubRepository.save(clubBuilder(clubRequestDto, /*clubImgUrl,*/ user));
 
+		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
 
 		club.setCreatedAt(LocalDateTime.now());
 
@@ -70,7 +74,8 @@ public class ClubServiceImpl implements ClubService{
 			.clubId(club.getClubId())
 			.userName(user.getName())
 			//.profileImgUrl(user.getProfileImgUrl)
-			//.mannerTemp(user.getMannerTemp)
+			.profileImage(profileImage)
+			.mannerTemp(user.getMannerTemp())
 			.build();
 		clubUserRepository.save(clubUser);
 
@@ -224,16 +229,22 @@ public class ClubServiceImpl implements ClubService{
 	public Club clubBuilder(ClubRequestDto ClubRequestDto, User user) {
 
 		return Club.builder()
-			.clubName(ClubRequestDto.getClubName())
+			.clubName(ClubRequestDto.getName())
 			.category(ClubRequestDto.getCategory())
-			.content(ClubRequestDto.getContent())
+			.categoryDetail(ClubRequestDto.getCategoryDetail())
+			.level(ClubRequestDto.getLevel())
+			.content(ClubRequestDto.getIntroduction())
 			.date(ClubRequestDto.getDate())
-			.region(ClubRequestDto.getRegion())
-			.question(ClubRequestDto.getQuestion())
-			.memberLimit(ClubRequestDto.getMemberLimit())
+			.region(ClubRequestDto.getActivityRegion())
+			.joinQuestions(ClubRequestDto.getJoinQuestions())
+			.memberLimit(ClubRequestDto.getParticipantLimit())
 			.memberCount(1)
-			.price(ClubRequestDto.getPrice())
-			.ageLimit(ClubRequestDto.getAgeLimit())
+			.hasMembershipFee(ClubRequestDto.isHasMembershipFee())
+			.price(ClubRequestDto.getMembershipFeeAmount())
+			.hasGenderRatio(ClubRequestDto.getHasGenderRatio())
+			.ratio(ClubRequestDto.getRatio())
+			.ageRange(ClubRequestDto.getAgeRange())
+			.rules(ClubRequestDto.getRules())
 			.owner(user)
 			.build();
 

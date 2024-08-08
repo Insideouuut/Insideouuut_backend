@@ -1,5 +1,8 @@
 package com.goorm.insideout.image.domain;
 
+import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.entity.ClubApply;
+import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.Column;
@@ -31,6 +34,18 @@ public class ProfileImage {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	private User user;
+
+
+	@OneToOne(fetch = FetchType.LAZY)
+	private ClubUser clubUser;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	private ClubApply clubApply;
+	
+
+
+
+
 
 	/**
 	 * 생성 메서드

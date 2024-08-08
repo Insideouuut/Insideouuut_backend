@@ -18,7 +18,10 @@ import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.image.domain.ProfileImage;
+import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,8 @@ public class ClubUserServiceImpl implements ClubUserService {
 	private final ClubUserRepository clubUserRepository;
 	private final ClubRepository clubRepository;
 	private final ClubApplyRepository clubApplyRepository;
+	private final UserRepository userRepository;
+	private final ProfileImageRepository profileImageRepository;
 
 	/*
 	@Override
@@ -69,12 +74,16 @@ public class ClubUserServiceImpl implements ClubUserService {
 		if(memberCount >= memberLimit){
 			throw new IllegalStateException();
 		}
+
+		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
+
 		ClubUser clubUser = ClubUser.builder()
 			.userId(clubApply.getUserId())
 			.clubId(clubApply.getClubId())
 			.userName(clubApply.getUserName())
 			//.profileImgUrl(user.getProfileImgUrl)
-			//.mannerTemp(user.getMannerTemp)
+			.profileImage(profileImage)
+			.mannerTemp(user.getMannerTemp())
 			.build();
 		club.increaseMemberCount();
 		clubRepository.save(club);

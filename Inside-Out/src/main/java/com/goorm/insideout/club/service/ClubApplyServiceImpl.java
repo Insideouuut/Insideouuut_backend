@@ -17,7 +17,10 @@ import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubApplyRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.repository.ClubUserRepository;
+import com.goorm.insideout.image.domain.ProfileImage;
+import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +33,8 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 
 	private final ClubApplyRepository clubApplyRepository;
 	private final ClubRepository clubRepository;
-	private final ClubUserRepository clubUserRepository;
+	private final UserRepository userRepository;
+	private final ProfileImageRepository profileImageRepository;
 
 	@Override
 	public ClubApply findClubApplyByUserIDAndClubId(Long userId, Long clubId) {
@@ -58,13 +62,15 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 				throw new IllegalStateException();
 			}
 		}
+		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
 
 		ClubApply clubApply = ClubApply.builder()
 			.userId(user.getId())
 			.clubId(club.getClubId())
 			.userName(user.getName())
 			//.profileImgUrl(user.getProfileImgUrl)
-			//.mannerTemp(user.getMannerTemp)
+			.profileImage(profileImage)
+			.mannerTemp(user.getMannerTemp())
 			.answer(clubApplyRequestDto.getAnswer())
 			.build();
 

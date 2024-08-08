@@ -2,6 +2,7 @@ package com.goorm.insideout.club.dto.responseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.image.dto.response.ImageResponse;
@@ -17,52 +18,78 @@ import lombok.Setter;
 public class ClubBoardResponseDto {
 	private Long clubId;
 
-	private String clubName;
-
 	private String category;
+	private String categoryDetail;//
+	private String level;//
 
-	private LocalDateTime createdAt;
-	private String content;
+	private Boolean hasMembershipFee;//
+	private Integer membershipFeeAmount;
 
 	private String date;
 
-	private String region;
-	private String question;
-
-
-	private Integer memberLimit;
+	private Integer participantLimit;
 	private Integer memberCount;
-	private Integer price;
-	private Integer ageLimit;
+
+	private String hasGenderRatio;//
+	private String ratio;//
+
+	private List<Integer> ageRange;//
+
+	private String name;
+
+	private String introduction;
+
+	private Set<String> rules;//
+
 
 	private List<ImageResponse> images;
+
+
+	private Set<String> joinQuestions;//
+
+
+	private LocalDateTime createdAt;
+
+
+	private String activityRegion;
+
+
+
 	private Long chatRoomId;
 
-	Boolean isHost = false;
+	private Boolean isHost = false;
 
-	Boolean isRecruiting = false;
+	private Boolean isRecruiting = false;
 
 
 	public static ClubBoardResponseDto of(Club club, User user){
 		ClubBoardResponseDto res = new ClubBoardResponseDto();
 
 		res.setClubId(club.getClubId());
-		res.setClubName(club.getClubName());
+		res.setName(club.getClubName());
 		res.images = club.getImages()
 			.stream()
 			.map(image -> ImageResponse.from(image.getImage()))
 			.toList();
 		res.setCategory(club.getCategory());
-		res.setCreatedAt(club.getCreatedAt());
-		res.setContent(club.getContent());
+		res.setCategoryDetail(club.getCategoryDetail());
+		res.setLevel(club.getLevel());
+		res.setHasMembershipFee(club.getHasMembershipFee());
+		res.setMembershipFeeAmount(club.getPrice());
 		res.setDate(club.getDate());
-		res.setRegion(club.getRegion());
-		res.setQuestion(club.getQuestion());
-		res.setMemberLimit(club.getMemberLimit());
-
+		res.setParticipantLimit(club.getMemberLimit());
 		res.setMemberCount(club.getMemberCount());
-		res.setPrice(club.getPrice());
-		res.setAgeLimit(club.getAgeLimit());
+		res.setHasGenderRatio(club.getHasGenderRatio());
+		res.setRatio(club.getRatio());
+		res.setAgeRange(club.getAgeRange());
+		res.setName(club.getClubName());
+		res.setIntroduction(club.getContent());
+		res.setRules(club.getRules());
+		res.setJoinQuestions(club.getJoinQuestions());
+		res.setCreatedAt(club.getCreatedAt());
+		res.setActivityRegion(club.getRegion());
+
+
 		res.setChatRoomId(club.getChat_room_id());
 
 		if(club.getOwner().getId().equals(user.getId())){
@@ -75,32 +102,5 @@ public class ClubBoardResponseDto {
 		return res;
 	}
 
-	/*
-	public static ClubBoardResponseDto of (Club club){
 
-		ClubBoardResponseDto clubBoardResponseDto = new ClubBoardResponseDto();
-
-		clubBoardResponseDto.setClubId(club.getClubId());
-		clubBoardResponseDto.setClubName(club.getClubName());
-		clubBoardResponseDto.setClubImgUrl(club.getClubImg());
-		clubBoardResponseDto.setCategory(club.getCategory());
-		clubBoardResponseDto.setCreatedAt(club.getCreatedAt());
-		clubBoardResponseDto.setContent(club.getContent());
-		clubBoardResponseDto.setDate(club.getDate());
-		clubBoardResponseDto.setRegion(club.getRegion());
-		clubBoardResponseDto.setQuestion(club.getQuestion());
-		clubBoardResponseDto.setMemberLimit(club.getMemberLimit());
-
-		clubBoardResponseDto.setMemberCunt(club.getMemberCunt());
-		clubBoardResponseDto.setPrice(club.getPrice());
-		clubBoardResponseDto.setAgeLimit(club.getAgeLimit());
-
-		if(club.getMemberLimit() > club.getMemberCunt()){
-			clubBoardResponseDto.setIsRecruiting(true);
-		}
-
-		return clubBoardResponseDto;
-	}
-
-	 */
 }
