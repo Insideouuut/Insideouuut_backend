@@ -65,6 +65,7 @@ public class MeetingController {
 	@Operation(summary = "모임 단건 조회 API", description = "모임을 단건으로 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findById(@PathVariable Long meetingId) {
 			return new ApiResponse<>(meetingService.findById(meetingId));
+
 	}
 
 	@GetMapping("/meetings/pending")
