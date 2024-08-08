@@ -47,6 +47,7 @@ public class ClubServiceImpl implements ClubService{
 
 	@Override
 	public Club createClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/ User user) throws IOException {
+
 		String clubImgUrl;
 		/*
 		if (multipartFile == null || multipartFile.isEmpty()) {
@@ -73,11 +74,16 @@ public class ClubServiceImpl implements ClubService{
 			.userId(user.getId())
 			.clubId(club.getClubId())
 			.userName(user.getName())
-			//.profileImgUrl(user.getProfileImgUrl)
-			.profileImage(profileImage)
+			.profileImgUrl(profileImage.getImage().getUrl())
+			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.build();
+		System.out.println("clubUser.getProfileImgUrl() = " + clubUser.getProfileImgUrl());
+
+
 		clubUserRepository.save(clubUser);
+
+		System.out.println("clubUser.getProfileImgUrl() = " + clubUser.getProfileImgUrl());
 
 
 		return club;

@@ -49,14 +49,16 @@ public class ClubApply {
 	Long clubId;
 
 	private String userName;
-	//private String profileImgUrl;
+	private String profileImgUrl;
 	private BigDecimal mannerTemp;
 	private String answer;
 
-
+/*
 	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinColumn(name = "profile_image_id")
 	private ProfileImage profileImage;
+
+ */
 
 
 

@@ -35,13 +35,15 @@ public class ProfileImage {
 	@OneToOne(fetch = FetchType.LAZY)
 	private User user;
 
-
+/*
 	@OneToOne(fetch = FetchType.LAZY)
 	private ClubUser clubUser;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	private ClubApply clubApply;
-	
+
+ */
+
 
 
 

@@ -81,10 +81,13 @@ public class ClubUserServiceImpl implements ClubUserService {
 			.userId(clubApply.getUserId())
 			.clubId(clubApply.getClubId())
 			.userName(clubApply.getUserName())
-			//.profileImgUrl(user.getProfileImgUrl)
-			.profileImage(profileImage)
+			.profileImgUrl(profileImage.getImage().getUrl())
+			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.build();
+
+		System.out.println("clubUser.getProfileImgUrl() = " + clubUser.getProfileImgUrl());
+
 		club.increaseMemberCount();
 		clubRepository.save(club);
 		clubApplyRepository.deleteByApplyId(applyId);

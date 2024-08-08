@@ -68,8 +68,8 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 			.userId(user.getId())
 			.clubId(club.getClubId())
 			.userName(user.getName())
-			//.profileImgUrl(user.getProfileImgUrl)
-			.profileImage(profileImage)
+			.profileImgUrl(profileImage.getImage().getUrl())
+			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.answer(clubApplyRequestDto.getAnswer())
 			.build();

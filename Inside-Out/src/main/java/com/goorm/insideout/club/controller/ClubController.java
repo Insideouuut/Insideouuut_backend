@@ -87,6 +87,7 @@ public class ClubController {
 			System.out.println("exception = " + exception);
 			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);
 		}
+		
 		return new ApiResponse<>((ClubResponseDto.of(club.getClubId(), "클럽을 성공적으로 생성하였습니다.")));
 	}
 
