@@ -25,9 +25,15 @@ public interface ClubService {
 
 	Club ownClub(Long clubId, Long userId);
 
-	Club belongToClub(Long userId);
+	//Club belongToClub(Long userId);
 
 	List<ClubListResponseDto> findByCategory(String category);
 
 	public void setChatRoom(Club club, ChatRoom chatRoom);
+
+	public List<ClubListResponseDto> findMyClub(Long userId);
+
+	public List<ClubListResponseDto> findMyApplyClub(Long userId);
+
+	public ClubBoardResponseDto findClubBoard(Long ClubId, User user);
 }
