@@ -27,4 +27,9 @@ public interface ClubApplyRepository extends JpaRepository<ClubApply, Long> {
 		"where club_id = :club_id "
 		,nativeQuery = true)
 	List<ClubApply> findByClubIdJQL(@Param("club_id") Long clubId);
+
+	@Query(value = "select * from club_apply " +
+		"where user_id = :user_id "
+		,nativeQuery = true)
+	List<ClubApply> findByUserIdJQL(@Param("user_id") Long userId);
 }

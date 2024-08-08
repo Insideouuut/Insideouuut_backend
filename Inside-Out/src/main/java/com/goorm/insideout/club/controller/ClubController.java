@@ -53,11 +53,14 @@ public class ClubController {
 		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
 	}
 
+
 	@GetMapping("/clubs/{clubId}")
 	@Operation(summary = "동아리 단건 조회 API", description = "동아리를 단건으로 조회하는 API 입니다.")
-	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId) {
+	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		return new ApiResponse<>(ClubBoardResponseDto.of(clubService.findByClubId(clubId)));
+		User user = userDetails.getUser();
+
+		return new ApiResponse<>(clubService.findClubBoard(clubId, user));
 	}
 
 	@PostMapping("/clubs")
@@ -84,6 +87,7 @@ public class ClubController {
 			System.out.println("exception = " + exception);
 			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);
 		}
+		
 		return new ApiResponse<>((ClubResponseDto.of(club.getClubId(), "클럽을 성공적으로 생성하였습니다.")));
 	}
 

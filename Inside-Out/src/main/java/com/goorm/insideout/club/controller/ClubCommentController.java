@@ -25,52 +25,59 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.user.domain.User;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
+@Tag(name = "ClubCommentController", description = "동아리 게시판 댓글 관련 API")
 public class ClubCommentController {
 
 	private final ClubCommentService clubCommentService;
 
 	@GetMapping("/{clubId}/post/{postId}/comment")
+	@Operation(summary = "동아리 게시글 댓글 조회 API", description = "동아리 게시글의 댓글을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubCommentListResponseDto>> findByClubPostId(@PathVariable Long postId) {
 		return new ApiResponse<List<ClubCommentListResponseDto>>(clubCommentService.findCommentsByClubPostId(postId));
 	}
 
 	@PostMapping("/{clubId}/post/{postId}/comment")
-	public ApiResponse<ClubCommentResponseDto> saveClubComment(@PathVariable Long postId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
+	@Operation(summary = "동아리 게시글 댓글 생성 API", description = "동아리 게시글의 댓글을 생성하는 API 입니다.")
+	public ApiResponse<ClubCommentResponseDto> saveClubComment(@PathVariable Long clubId, @PathVariable Long postId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
 		User user = userDetails.getUser();
 		ClubComment clubComment;
 
-		clubComment = clubCommentService.saveComment(clubCommentRequestDto, postId, user);
+		clubComment = clubCommentService.saveComment(clubId, clubCommentRequestDto, postId, user);
 
 		return new ApiResponse<ClubCommentResponseDto>((ClubCommentResponseDto.of(clubComment.getId(), "댓글을 성공적으로 생성하였습니다.")));
 	}
 
 
 	@PutMapping("/{clubId}/post/{postId}/comment/{commentId}")
-	public ApiResponse<ClubCommentResponseDto> updateClubComment(@PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	@Operation(summary = "동아리 게시글 댓글 수정 API", description = "동아리 게시글의 댓글을 수정하는 API 입니다.")
+	public ApiResponse<ClubCommentResponseDto> updateClubComment(@PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user;
 
 		user = userDetails.getUser();
 
-		clubCommentService.updateComment(commentId, clubCommentRequestDto, user);
+		clubCommentService.updateComment(clubId, commentId, clubCommentRequestDto, user);
 
 		return new ApiResponse<ClubCommentResponseDto>(ClubCommentResponseDto.of(postId, "댓글 수정이 완료되었습니다."));
 
 	}
 
 	@DeleteMapping("/{clubId}/post/{postId}/comment/{commentId}")
-	public ApiResponse deleteClubComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+	@Operation(summary = "동아리 게시글 댓글 삭제 API", description = "동아리 게시글의 댓글을 삭제하는 API 입니다.")
+	public ApiResponse deleteClubComment(@PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		User user = userDetails.getUser();
 
-		clubCommentService.deleteComment(commentId, user);
+		clubCommentService.deleteComment(clubId, commentId, user);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}

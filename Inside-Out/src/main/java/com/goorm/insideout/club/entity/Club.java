@@ -3,6 +3,7 @@ package com.goorm.insideout.club.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.chatroom.domain.ChatRoom;
@@ -42,6 +43,8 @@ public class Club {
 	private String clubName;
 
 	private String category;
+	private String categoryDetail;//
+	private String level;//
 
 	private LocalDateTime createdAt;
 
@@ -51,16 +54,23 @@ public class Club {
 
 	private String region;
 
-	@JsonIgnore
-	private String question;
+	private Set<String> joinQuestions;//
+
 
 	private Integer memberLimit;
 
 	private Integer memberCount;
 
+	private Boolean hasMembershipFee;//
 	private Integer price;
 
-	private Integer ageLimit;
+	private String hasGenderRatio;//
+	private String ratio;//
+
+	private List<Integer> ageRange;//
+
+	private Set<String> rules;//
+
 
 	@ManyToOne
 	@JoinColumn(name = "owner_id")
@@ -77,7 +87,6 @@ public class Club {
 	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
 	private List<ClubImage> images = new ArrayList<>();
 
-	///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "club")
 	ChatRoom chatRoom;

@@ -2,6 +2,7 @@ package com.goorm.insideout.meeting.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,12 +49,12 @@ public class Meeting {
 	@ElementCollection
 	@CollectionTable(name = "meeting_rules", joinColumns = @JoinColumn(name = "meeting_id"))
 	@Column(name = "rule")
-	private Set<String> rules;
+	private Set<String> rules = new HashSet<>();
 
 	@ElementCollection
 	@CollectionTable(name = "meeting_join_questions", joinColumns = @JoinColumn(name = "meeting_id"))
 	@Column(name = "join_question")
-	private Set<String> joinQuestions;
+	private Set<String> joinQuestions = new HashSet<>();
 
 	@Column(name = "schedule", nullable = false)
 	private LocalDateTime schedule;

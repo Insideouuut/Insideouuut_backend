@@ -1,16 +1,13 @@
 package com.goorm.insideout.meeting.dto.response;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goorm.insideout.image.dto.response.ImageResponse;
-import com.goorm.insideout.meeting.domain.Category;
-import com.goorm.insideout.meeting.domain.Level;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
-import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.user.dto.response.HostResponse;
 import com.querydsl.core.annotations.QueryProjection;
 
@@ -19,36 +16,42 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingResponse {
+	private Long id;
 	private String name;
 	private String introduction;
+	private String type;
+	private boolean isHost;
 	private int view;
 	private int like;
 	private boolean hasMembershipFee;
 	private int membershipFeeAmount;
 	private String progress;
 	private String level;
-	private String categoryDetail;
 	private String category;
+	private String categoryDetail;
 	@JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
 	private LocalDateTime date;
 	private int participantsNumber;
 	private int participantLimit;
 	private String ratio;
 	private List<Integer> ageRange;
-	private Set<String> rules;
-	private Set<String> joinQuestions;
+	private List<String> rules;
+	private List<String> joinQuestions;
 	private HostResponse host;
 	private MeetingPlaceResponse place;
 	private List<ImageResponse> images;
 
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
+		this.id = meeting.getId();
 		this.name = meeting.getTitle();
 		this.introduction = meeting.getDescription();
-		this.rules = meeting.getRules();
-		this.joinQuestions = meeting.getJoinQuestions();
+		this.type = "모임";
+		this.isHost = true;
+		this.rules = new ArrayList<>(meeting.getRules());
+		this.joinQuestions = new ArrayList<>(meeting.getJoinQuestions());
 		this.view = meeting.getView();
 		this.like = meeting.getLikes().size();
 		this.hasMembershipFee = meeting.isHasMembershipFee();
@@ -78,7 +81,7 @@ public class MeetingResponse {
 	public static class MeetingPlaceResponse {
 		private String name;
 		private String placeUrl;
-		private Long kakaoMapId;
+		private String kakaoMapId;
 		private String addressName;
 		private String roadAddressName;
 		private Double latitude;

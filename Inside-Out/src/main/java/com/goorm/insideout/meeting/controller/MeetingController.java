@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.image.service.ImageService;
+import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
@@ -61,7 +64,7 @@ public class MeetingController {
 	@GetMapping("/meetings/{meetingId}")
 	@Operation(summary = "모임 단건 조회 API", description = "모임을 단건으로 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findById(@PathVariable Long meetingId) {
-		return new ApiResponse<>(meetingService.findById(meetingId));
+			return new ApiResponse<>(meetingService.findById(meetingId));
 	}
 
 	// @GetMapping("/meetings/pending")
