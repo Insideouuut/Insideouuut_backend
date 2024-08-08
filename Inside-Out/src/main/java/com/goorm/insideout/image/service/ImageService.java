@@ -1,7 +1,10 @@
 package com.goorm.insideout.image.service;
 
+import static com.goorm.insideout.global.exception.ErrorCode.*;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -88,6 +91,8 @@ public class ImageService {
 			String imageUrl = uploadImageFile(imageFiles.get(i), storeImageDtos.get(i));
 
 			ProfileImage profileImage = storeImageDtos.get(i).toProfileImageEntity(user, imageUrl);
+			user.setProfileImage(profileImage);
+			userRepository.save(user);
 			profileImageRepository.save(profileImage);
 		}
 	}
@@ -134,13 +139,23 @@ public class ImageService {
 	}
 
 	@Transactional
-	public void deleteProfileImage(Long userId) {
-		User user = userRepository.findById(userId)
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
+	public void deleteProfileImages(Long userId) {
+		Optional<ProfileImage> optionalProfileImage = profileImageRepository.findByUserId(userId);
+		Optional<User> optionalUser = userRepository.findById(userId);
+		if (optionalProfileImage.isEmpty()) {
+			throw ModongException.from(EMPTY_IMAGE);
+		}
+		if (optionalUser.isEmpty()) {
+			throw ModongException.from(USER_NOT_FOUND);
+		}
+    
+		User user = optionalUser.get();
+		user.setProfileImage(null);
+		userRepository.save(user);
 
-		profileImageRepository.delete(user.getProfileImage());
-
-		String storeName = user.getProfileImage().getImage().getStoreName();
+		ProfileImage profileImage = optionalProfileImage.get();
+		profileImageRepository.delete(profileImage);
+		String storeName = profileImage.getImage().getStoreName();
 		amazonS3Client.deleteObject(bucket, storeName);
 	}
 

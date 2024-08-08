@@ -57,8 +57,7 @@ public class UserJoinService {
 		}
 		String nickname = user.getNickname();
 		if (nickname == null) {
-			response.sendRedirect("http://localhost:5173/userinfo");
-			//response.sendRedirect("https://modong.link/userinfo");
+			throw ModongException.from(USER_NOT_FOUND,"사용자 정보 입력이 필요합니다");
 		}
 	}
 
