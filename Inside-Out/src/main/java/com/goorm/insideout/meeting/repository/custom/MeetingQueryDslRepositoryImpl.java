@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
+import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.dto.response.QMeetingResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -28,7 +28,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   일반 게시글 검색
    */
   @Override
-  public List<MeetingResponse> findAllByCondition(MeetingSearchRequest condition) {
+  public List<MeetingResponse> findAllByCondition(SearchRequest condition) {
 
     return queryFactory
         .select(new QMeetingResponse(meeting))
@@ -47,7 +47,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   정렬된 전체 모임 조회 + 일반 검색 및 정렬된 모임 검색 결과 조회
    */
   @Override
-  public List<MeetingResponse> findByConditionAndSortType(MeetingSearchRequest condition) {
+  public List<MeetingResponse> findByConditionAndSortType(SearchRequest condition) {
     JPAQuery<MeetingResponse> basicQuery = queryFactory
         .select(new QMeetingResponse(meeting))
         .from(meeting)
@@ -65,7 +65,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   }
 
   @Override
-  public List<MeetingResponse> findBySortType(MeetingSearchRequest condition) {
+  public List<MeetingResponse> findBySortType(SearchRequest condition) {
     JPAQuery<MeetingResponse> basicQuery = queryFactory
         .select(new QMeetingResponse(meeting))
         .from(meeting);
@@ -78,7 +78,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   /*
     pageSize를 구하는 Count 쿼리를 성능 최적화를 위해 따로 구현 + 가독성을 위해 메소드 추출
    */
-  private JPAQuery<Long> getSearchResultCountQuery(MeetingSearchRequest condition) {
+  private JPAQuery<Long> getSearchResultCountQuery(SearchRequest condition) {
 
     return queryFactory
         .select(meeting.count())
