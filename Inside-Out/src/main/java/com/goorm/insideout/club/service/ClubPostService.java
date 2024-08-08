@@ -10,14 +10,14 @@ import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.user.domain.User;
 
 public interface ClubPostService {
-	ClubPost saveClubPost(ClubPostRequestDto clubPostRequestDto, User user);
+	ClubPost saveClubPost(Long clubId, ClubPostRequestDto clubPostRequestDto, User user);
 
 	ClubPost findByClubPostId(Long clubPostId);
 
 	List<ClubPostListResponseDto> findClubPostByType(Long clubId, String type);
 
-	void deleteClubPost(Long clubPostId, User user);
+	void deleteClubPost(Long clubId, Long clubPostId, User user);
 
-	ClubPost updateClubPost(ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId);
+	ClubPost updateClubPost(Long clubId, ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId);
 
 }
