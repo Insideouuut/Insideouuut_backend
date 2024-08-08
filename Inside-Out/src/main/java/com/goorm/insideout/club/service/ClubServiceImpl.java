@@ -137,6 +137,8 @@ public class ClubServiceImpl implements ClubService{
 		modify_club.setMemberCount(club.getMemberCount());
 		modify_club.setCreatedAt(club.getCreatedAt());
 		modify_club.setClubId(clubId);
+		modify_club.setChat_room_id(club.getChat_room_id());
+		modify_club.setChatRoom(club.getChatRoom());
 
 		return clubRepository.save(modify_club);
 
