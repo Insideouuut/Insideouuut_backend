@@ -23,10 +23,6 @@ public class MeetingUser {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "approval_status")
-	private ApprovalStatus approvalStatus;
-
-	@Enumerated(EnumType.STRING)
 	@Column(name = "role")
 	private Role role;
 

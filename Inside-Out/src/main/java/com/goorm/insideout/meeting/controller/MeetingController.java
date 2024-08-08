@@ -64,49 +64,49 @@ public class MeetingController {
 		return new ApiResponse<>(meetingService.findById(meetingId));
 	}
 
-	@GetMapping("/meetings/pending")
-	@Operation(summary = "나의 승인대기 모임 목록 조회 API", description = "나의 승인대기 모임 목록을 조회할 수 있는 API 입니다.")
-	public ApiResponse<MeetingResponse> findPendingMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
-	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(customUserDetails.getUser(), pageable);
-
-		return new ApiResponse<>(pendingMeetings);
-	}
-  
-	@GetMapping("/meetings/participating")
-	@Operation(summary = "나의 참여중인 모임 목록 조회 API", description = "나의 참여중인 모임 목록을 조회할 수 있는 API 입니다.")
-	public ApiResponse<MeetingResponse> findParticipatingMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
-	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser(), pageable);
-
-		return new ApiResponse<>(pendingMeetings);
-	}
-
-	@GetMapping("/meetings/ended")
-	@Operation(summary = "나의 종료된 모임 목록 조회 API", description = "나의 종료된 모임 목록을 조회할 수 있는 API 입니다.")
-	public ApiResponse<MeetingResponse> findClosedMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
-	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findEndedMeetings(customUserDetails.getUser(), pageable);
-
-		return new ApiResponse<>(pendingMeetings);
-	}
-
-	@GetMapping("/meetings/running")
-	@Operation(summary = "나의 운영중인 모임 목록 조회 API", description = "나의 운영중인 모임 목록을 조회할 수 있는 API 입니다.")
-	public ApiResponse<MeetingResponse> findRunningMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
-	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findRunningMeetings(customUserDetails.getUser(), pageable);
-
-		return new ApiResponse<>(pendingMeetings);
-	}
+	// @GetMapping("/meetings/pending")
+	// @Operation(summary = "나의 승인대기 모임 목록 조회 API", description = "나의 승인대기 모임 목록을 조회할 수 있는 API 입니다.")
+	// public ApiResponse<MeetingResponse> findPendingMeetings(
+	// 	@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	// 	Pageable pageable
+	// ) {
+	// 	Page<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(customUserDetails.getUser(), pageable);
+	//
+	// 	return new ApiResponse<>(pendingMeetings);
+	// }
+	//
+	// @GetMapping("/meetings/participating")
+	// @Operation(summary = "나의 참여중인 모임 목록 조회 API", description = "나의 참여중인 모임 목록을 조회할 수 있는 API 입니다.")
+	// public ApiResponse<MeetingResponse> findParticipatingMeetings(
+	// 	@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	// 	Pageable pageable
+	// ) {
+	// 	Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser(), pageable);
+	//
+	// 	return new ApiResponse<>(pendingMeetings);
+	// }
+	//
+	// @GetMapping("/meetings/ended")
+	// @Operation(summary = "나의 종료된 모임 목록 조회 API", description = "나의 종료된 모임 목록을 조회할 수 있는 API 입니다.")
+	// public ApiResponse<MeetingResponse> findClosedMeetings(
+	// 	@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	// 	Pageable pageable
+	// ) {
+	// 	Page<MeetingResponse> pendingMeetings = meetingService.findEndedMeetings(customUserDetails.getUser(), pageable);
+	//
+	// 	return new ApiResponse<>(pendingMeetings);
+	// }
+	//
+	// @GetMapping("/meetings/running")
+	// @Operation(summary = "나의 운영중인 모임 목록 조회 API", description = "나의 운영중인 모임 목록을 조회할 수 있는 API 입니다.")
+	// public ApiResponse<MeetingResponse> findRunningMeetings(
+	// 	@AuthenticationPrincipal CustomUserDetails customUserDetails,
+	// 	Pageable pageable
+	// ) {
+	// 	Page<MeetingResponse> pendingMeetings = meetingService.findRunningMeetings(customUserDetails.getUser(), pageable);
+	//
+	// 	return new ApiResponse<>(pendingMeetings);
+	// }
 
 	@PatchMapping("/meetings/{meetingId}")
 	@Operation(summary = "모임 정보 수정 API", description = "모임 정보를 수정할 수 있는 API 입니다. 아직 이미지 업로드 기능이 준비되지 않았기 때문에, meetingImage 필드는 제외하고 요청 보내주시면 됩니다.")

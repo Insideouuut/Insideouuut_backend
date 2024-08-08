@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
-import com.goorm.insideout.meeting.domain.ApprovalStatus;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.meeting.domain.Progress;
@@ -76,25 +75,25 @@ public class MeetingService {
 
 
 
-	public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING, Progress.ONGOING, pageable)
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
-	}
-
-	public Page<MeetingResponse> findParticipatingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.APPROVED, Progress.ONGOING, pageable)
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
-	}
-
-	public Page<MeetingResponse> findRunningMeetings(User user, Pageable pageable) {
-		return meetingRepository.findRunningMeetings(user.getId(), Progress.ONGOING, pageable)
-			.map(MeetingResponse::of);
-	}
-
-	public Page<MeetingResponse> findEndedMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED, Progress.ENDED, pageable)
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
-	}
+	// public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
+	// 	return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING, Progress.ONGOING, pageable)
+	// 		.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
+	// }
+	//
+	// public Page<MeetingResponse> findParticipatingMeetings(User user, Pageable pageable) {
+	// 	return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.APPROVED, Progress.ONGOING, pageable)
+	// 		.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
+	// }
+	//
+	// public Page<MeetingResponse> findRunningMeetings(User user, Pageable pageable) {
+	// 	return meetingRepository.findRunningMeetings(user.getId(), Progress.ONGOING, pageable)
+	// 		.map(MeetingResponse::of);
+	// }
+	//
+	// public Page<MeetingResponse> findEndedMeetings(User user, Pageable pageable) {
+	// 	return meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED, Progress.ENDED, pageable)
+	// 		.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
+	// }
 
 	@Transactional
 	public void updateById(User user, Long meetingId, MeetingUpdateRequest request) {
