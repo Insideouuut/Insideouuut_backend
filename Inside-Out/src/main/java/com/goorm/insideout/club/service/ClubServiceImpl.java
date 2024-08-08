@@ -78,13 +78,8 @@ public class ClubServiceImpl implements ClubService{
 			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.build();
-		System.out.println("clubUser.getProfileImgUrl() = " + clubUser.getProfileImgUrl());
-
 
 		clubUserRepository.save(clubUser);
-
-		System.out.println("clubUser.getProfileImgUrl() = " + clubUser.getProfileImgUrl());
-
 
 		return club;
 	}
