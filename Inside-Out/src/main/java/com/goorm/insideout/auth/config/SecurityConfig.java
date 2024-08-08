@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
+import com.goorm.insideout.auth.filter.CustomEntryPoint;
 import com.goorm.insideout.auth.filter.CustomLogoutFilter;
 import com.goorm.insideout.auth.filter.CustomOAuthLoginHandler;
 import com.goorm.insideout.auth.filter.JWTFilter;
@@ -42,6 +43,7 @@ public class SecurityConfig {
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final CustomOAuth2UserService customOAuth2UserService;
 	private final CustomOAuthLoginHandler customOAuthLoginHandler;
+	private final CustomEntryPoint customEntryPoint;
 
 	private static final String[] PUBLIC_URLS = {
 		"/actuator/health",
@@ -83,7 +85,6 @@ public class SecurityConfig {
 					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 						CorsConfiguration configuration = new CorsConfiguration();
 						configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:3000","https://modong-backend.site"));
-
 						configuration.setAllowedMethods(Collections.singletonList("*"));
 						configuration.setAllowCredentials(true);
 						configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -110,6 +111,9 @@ public class SecurityConfig {
 			.authorizeHttpRequests((auth) -> auth
 				.requestMatchers(PUBLIC_URLS).permitAll()
 				.anyRequest().authenticated());
+
+		http.exceptionHandling((exceptionHandling)-> exceptionHandling
+			.authenticationEntryPoint(customEntryPoint));
 
 		http
 			//소셜 로그인시 무한 루프 문제 해결을 위해 인가 검증필터는 로그인 필터 이후에 삽입
