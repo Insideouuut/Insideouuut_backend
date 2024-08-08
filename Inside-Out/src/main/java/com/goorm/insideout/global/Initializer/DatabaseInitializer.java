@@ -25,6 +25,7 @@ public class DatabaseInitializer {
 		try {
 			// Check if SYSTEM_USER already exists
 			if (userRepository.findByEmail("system@insideout.com").isEmpty()) {
+
 				User systemUser = User.builder()
 					.email("system@insideout.com")
 					.password("systempass") // 시스템 사용자이므로, 안전한 비밀번호를 사용하세요.
@@ -32,7 +33,9 @@ public class DatabaseInitializer {
 					.nickname("SYSTEM")
 					.build();
 
+				systemUser.initDefaultProfileImage();
 				userRepository.save(systemUser);
+
 				logger.info("SYSTEM_USER has been successfully created.");
 			} else {
 				logger.info("SYSTEM_USER already exists.");
