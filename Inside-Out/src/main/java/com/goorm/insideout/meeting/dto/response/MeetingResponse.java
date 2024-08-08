@@ -22,14 +22,15 @@ public class MeetingResponse {
 	private String name;
 	private String introduction;
 	private String type;
+	private boolean isHost;
 	private int view;
 	private int like;
 	private boolean hasMembershipFee;
 	private int membershipFeeAmount;
 	private String progress;
 	private String level;
-	private String categoryDetail;
 	private String category;
+	private String categoryDetail;
 	@JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
 	private LocalDateTime date;
 	private int participantsNumber;
@@ -48,6 +49,7 @@ public class MeetingResponse {
 		this.name = meeting.getTitle();
 		this.introduction = meeting.getDescription();
 		this.type = "모임";
+		this.isHost = true;
 		this.rules = new ArrayList<>(meeting.getRules());
 		this.joinQuestions = new ArrayList<>(meeting.getJoinQuestions());
 		this.view = meeting.getView();
