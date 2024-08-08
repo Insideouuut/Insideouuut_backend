@@ -59,7 +59,7 @@ public class Meeting {
 	private LocalDateTime schedule;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name="progress", nullable = false)
+	@Column(name = "progress", nullable = false)
 	private Progress progress;
 
 	@Enumerated(EnumType.STRING)
@@ -108,7 +108,7 @@ public class Meeting {
 	@JoinColumn(name = "host_id")
 	private User host;
 
-	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<MeetingUser> meetingUsers = new ArrayList<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -118,7 +118,7 @@ public class Meeting {
 	/**
 	 * 생성 메서드
 	 */
-	public static Meeting createMeeting (
+	public static Meeting createMeeting(
 		String title,
 		String description,
 		Category category,
@@ -191,5 +191,9 @@ public class Meeting {
 
 	public void changeProgress(Progress progress) {
 		this.progress = progress;
+	}
+
+	public void increaseParticipantsNumber() {
+		this.participantsNumber++;
 	}
 }
