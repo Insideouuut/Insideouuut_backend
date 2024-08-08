@@ -1,5 +1,8 @@
 package com.goorm.insideout.club.dto.requestDto;
 
+import java.util.List;
+import java.util.Set;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,21 +10,21 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ClubRequestDto {
 
-	private String clubName;
 
 	private String category;
-
-	//private LocalDateTime createdAt;
-
-	private String content;
-
+	private String categoryDetail;
+	private String level;
+	private boolean hasMembershipFee;
+	private Integer membershipFeeAmount;
 	private String date;
+	private Integer participantLimit;
+	private String hasGenderRatio;
+	private String ratio;
+	private List<Integer> ageRange;
+	private String name;
+	private String introduction;
+	private Set<String> rules;
+	private Set<String> joinQuestions;
+	private String activityRegion;
 
-	private String region;
-	private String question;
-
-
-	private Integer memberLimit;
-	private Integer price;
-	private Integer ageLimit;
 }
