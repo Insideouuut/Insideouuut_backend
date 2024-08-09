@@ -43,7 +43,7 @@ public class ChatController {
 		String email = principal.getName();
 		Chat chat = chatService.createChat(roomId, chatRequestDTO, email);
 		ChatResponseDTO chatResponseDTO = ChatResponseDTO.builder()
-			.content(chat.getContent())
+			.content(chat.getContent()) 
 			.sender(ChatUserResponse.from(chat.getUser()))
 			.sendTime(chat.getSendTime())
 			.build();

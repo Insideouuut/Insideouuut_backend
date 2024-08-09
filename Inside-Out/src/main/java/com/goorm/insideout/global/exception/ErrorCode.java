@@ -11,11 +11,13 @@ public enum ErrorCode {
 	// user
 	USER_NOT_AUTHENTICATED(HttpStatus.UNAUTHORIZED, "로그인하지 않은 사용자입니다"),
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자 정보가 존재하지 않습니다"),
+	AGE_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자의 나이가 존재하지 않습니다"),
 	INCORRECT_AUTH_INFO(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다"),
 	DUPLICATE_USER_EMAIL(HttpStatus.CONFLICT, "중복된 이메일입니다"),
 	DUPLICATE_USER_LOGIN_ID(HttpStatus.CONFLICT, "중복된 로그인 아이디입니다"),
 	DUPLICATE_USER_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임입니다"),
 	DUPLICATE_USER_PHONE_NUMBER(HttpStatus.CONFLICT, "중복된 전화번호입니다"),
+
 
 	// auth
 	NOT_FOUND_REFRESH_TOKEN(HttpStatus.BAD_REQUEST,"쿠키에 refresh token 을 찾아올 수 없습니다"),
@@ -48,7 +50,8 @@ public enum ErrorCode {
 	MEETING_NOT_HOST(HttpStatus.FORBIDDEN, "모임의 호스트가 아닙니다."),
 	MEETING_NOT_MEMBER(HttpStatus.FORBIDDEN, "모임의 멤버가 아닙니다."),
 	MEETING_GENDER_RATIO_INVALID(HttpStatus.BAD_REQUEST, "성별 비율이 올바르지 않습니다."),
-
+	USER_AGE_NOT_IN_RANGE(HttpStatus.FORBIDDEN, "요구 나이에 맞지 않습니다."),
+	MEETING_PARTICIPANT_LIMIT_EXCEEDED(HttpStatus.FORBIDDEN, "최대 수용 인원을 초과하였습니다."),
 	// chat
 	CHAT_NOT_EMPTY(HttpStatus.NOT_FOUND, "빈값을 보낼 수 없습니다."),
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
@@ -65,6 +68,9 @@ public enum ErrorCode {
 	IMAGE_STORE_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 저장에 실패했습니다."),
 	IMAGE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "이미지 파일 크기가 너무 큽니다."),
 	S3_UPLOAD_FAILURE(HttpStatus.INTERNAL_SERVER_ERROR, "S3 버킷에 파일을 업로드하는 중 에러가 발생했습니다."),
+
+	// apply
+	APPLY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 신청입니다."),
 
 	// stomp
 	INVALID_STOMP_MESSAGE_HEADER(HttpStatus.NOT_FOUND,"유효한 헤더가 아닙니다"),
