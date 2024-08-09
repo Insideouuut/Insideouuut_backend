@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MeetingSearchRequest {
+public class SearchRequest {
 	private String query;
 	private String category;
 	private String sortType;

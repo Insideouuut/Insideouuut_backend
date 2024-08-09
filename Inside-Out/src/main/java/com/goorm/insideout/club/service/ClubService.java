@@ -8,6 +8,7 @@ import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.user.domain.User;
 
 public interface ClubService {
@@ -15,6 +16,8 @@ public interface ClubService {
 	Club createClub(ClubRequestDto ClubRequestDto, /*MultipartFile multipartFile,*/ User user) throws IOException;
 
 	Club findByClubId(Long ClubId);
+
+	ClubBoardResponseDto findClubBoard(Long clubId);
 
 	void deleteClub(Long clubId);
 
@@ -25,7 +28,13 @@ public interface ClubService {
 
 	Club ownClub(Long clubId, Long userId);
 
-	//Club belongToClub(Long userId);
+	// 정렬 타입에 따른 조회
+	List<ClubBoardResponseDto> findBySortType(SearchRequest condition);
+
+	// 검색 조건 및 정렬 타입에 따른 조회
+	List<ClubBoardResponseDto> findByConditionAndSortType(SearchRequest condition);
+
+	// Club belongToClub(Long userId);
 
 	List<ClubListResponseDto> findByCategory(String category);
 
@@ -34,6 +43,4 @@ public interface ClubService {
 	public List<ClubListResponseDto> findMyClub(Long userId);
 
 	public List<ClubListResponseDto> findMyApplyClub(Long userId);
-
-	public ClubBoardResponseDto findClubBoard(Long ClubId, User user);
 }

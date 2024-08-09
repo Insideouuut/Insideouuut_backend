@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@Tag(name = "CharRoomController", description = "채팅방 관련 API")
+@Tag(name = "ChatRoomController", description = "채팅방 관련 API")
 public class ChatRoomController {
 
 	private final ChatRoomService chatRoomService;
