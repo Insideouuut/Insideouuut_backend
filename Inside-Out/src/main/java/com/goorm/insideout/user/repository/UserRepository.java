@@ -10,5 +10,12 @@ import com.goorm.insideout.user.domain.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	Boolean existsByEmail(String email);
+
 	Boolean existsByNickname(String nickname);
-	Optional<User> findByEmail(String email);}
+
+	@Query("SELECT u FROM User u LEFT JOIN FETCH u.profileImage WHERE u.id = :userId")
+	User findByIdWithProfileImage(@Param("userId") Long userId);
+
+	Optional<User> findByEmail(String email);
+
+}

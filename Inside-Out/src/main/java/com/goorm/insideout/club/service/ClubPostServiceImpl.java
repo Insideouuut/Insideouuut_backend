@@ -9,9 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostListResponseDto;
+import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubPostRepository;
+import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
@@ -26,10 +28,11 @@ public class ClubPostServiceImpl implements ClubPostService{
 
 	private final ClubPostRepository clubPostRepository;
 	private final ClubUserRepository clubUserRepository;
+	private final ClubRepository clubRepository;
 
 	@Override
-	public ClubPost saveClubPost(ClubPostRequestDto clubPostRequestDto, User user) {
-		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+	public ClubPost saveClubPost(Long clubId, ClubPostRequestDto clubPostRequestDto, User user) {
+		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
 		ClubPost clubPost = clubPostBuilder(clubPostRequestDto, clubUser);
@@ -52,11 +55,11 @@ public class ClubPostServiceImpl implements ClubPostService{
 	}
 
 	@Override
-	public void deleteClubPost(Long clubPostId, User user) {
+	public void deleteClubPost(Long clubId, Long clubPostId, User user) {
 		ClubPost clubPost = clubPostRepository.findById(clubPostId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 
-		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
 		if(!clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
@@ -67,9 +70,9 @@ public class ClubPostServiceImpl implements ClubPostService{
 	}
 
 	@Override
-	public ClubPost updateClubPost(ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId) {
+	public ClubPost updateClubPost(Long clubId, ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId) {
 		ClubPost clubPost = clubPostRepository.findById(clubPostId).orElseThrow(()->ModongException.from(ErrorCode.INVALID_REQUEST));
-		ClubUser clubUser = clubUserRepository.findByUserId(user.getId()).orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
+		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId).orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
 
 		if(!clubPost.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
 			throw new IllegalStateException();

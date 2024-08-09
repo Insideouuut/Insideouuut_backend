@@ -25,7 +25,7 @@ public class MeetingPlace {
 	private String placeUrl;
 
 	@Column(name = "map_id")
-	private Long kakaoMapId;
+	private String kakaoMapId;
 
 	@Column(name = "address_name")
 	private String addressName;
@@ -45,7 +45,7 @@ public class MeetingPlace {
 	public static MeetingPlace createMeetingPlace(
 		String name,
 		String placeUrl,
-		Long mapId,
+		String mapId,
 		String addressName,
 		String roadAddressName,
 		Double latitude,

@@ -1,4 +1,4 @@
-package com.goorm.insideout.meeting.domain;
+package com.goorm.insideout.club.entity;
 
 import java.util.Arrays;
 
@@ -30,8 +30,8 @@ public enum GenderRatio {
 	private final int maleRatio;
 	private final int femaleRatio;
 
-	public static GenderRatio valueOf(int maleRatio, int femaleRatio) {
-		return Arrays.stream(GenderRatio.values())
+	public static com.goorm.insideout.club.entity.GenderRatio valueOf(int maleRatio, int femaleRatio) {
+		return Arrays.stream(com.goorm.insideout.club.entity.GenderRatio.values())
 			.filter(genderRatio -> genderRatio.maleRatio == maleRatio && genderRatio.femaleRatio == femaleRatio)
 			.findFirst()
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_GENDER_RATIO_INVALID));

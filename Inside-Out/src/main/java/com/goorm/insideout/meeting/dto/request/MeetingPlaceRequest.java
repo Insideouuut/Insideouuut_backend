@@ -13,7 +13,7 @@ public class MeetingPlaceRequest {
 
 	private String placeUrl;
 
-	private Long kakaoMapId;
+	private String kakaoMapId;
 
 	private String addressName;
 

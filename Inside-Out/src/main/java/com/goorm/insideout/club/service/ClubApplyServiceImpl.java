@@ -1,6 +1,8 @@
 package com.goorm.insideout.club.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -17,7 +19,12 @@ import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubApplyRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.repository.ClubUserRepository;
+import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.image.domain.ProfileImage;
+import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +37,8 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 
 	private final ClubApplyRepository clubApplyRepository;
 	private final ClubRepository clubRepository;
-	private final ClubUserRepository clubUserRepository;
+	private final UserRepository userRepository;
+	private final ProfileImageRepository profileImageRepository;
 
 	@Override
 	public ClubApply findClubApplyByUserIDAndClubId(Long userId, Long clubId) {
@@ -51,6 +59,18 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 			throw new IllegalStateException();
 		}
 
+		String userBrithYear = Arrays.stream(user.getBirthDate().toString().split("-"))
+			.findFirst()
+			.orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
+		String nowYear = Arrays.stream(LocalDateTime.now().toString().split("-"))
+			.findFirst()
+			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
+		int userAge = Integer.valueOf(nowYear) - Integer.valueOf(userBrithYear);
+
+		if(club.getMinAge() > userAge || userAge > club.getMaxAge()){
+			throw new IllegalStateException();
+		}
+
 		List<ClubUser> members = getMembers(club.getClubId());
 
 		for(ClubUser clubUser : members){
@@ -58,13 +78,15 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 				throw new IllegalStateException();
 			}
 		}
+		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
 
 		ClubApply clubApply = ClubApply.builder()
 			.userId(user.getId())
 			.clubId(club.getClubId())
 			.userName(user.getName())
-			//.profileImgUrl(user.getProfileImgUrl)
-			//.mannerTemp(user.getMannerTemp)
+			.profileImgUrl(profileImage.getImage().getUrl())
+			//.profileImage(profileImage)
+			.mannerTemp(user.getMannerTemp())
 			.answer(clubApplyRequestDto.getAnswer())
 			.build();
 

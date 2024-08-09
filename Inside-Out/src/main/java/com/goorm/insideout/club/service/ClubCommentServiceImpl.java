@@ -34,9 +34,9 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 	private final ClubPostRepository clubPostRepository;
 
 	@Override
-	public ClubComment saveComment(ClubCommentRequestDto clubCommentRequestDto, Long clubPostId, User user) {
+	public ClubComment saveComment(Long clubId, ClubCommentRequestDto clubCommentRequestDto, Long clubPostId, User user) {
 
-		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
 
@@ -53,10 +53,10 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 	}
 
 	@Override
-	public void deleteComment(Long clubCommentId, User user) {
+	public void deleteComment(Long clubId, Long clubCommentId, User user) {
 		ClubComment clubComment = clubCommentRepository.findById(clubCommentId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
-		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
 		if(!clubComment.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
@@ -68,10 +68,10 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 
 
 	@Override
-	public void updateComment(Long clubCommentId, ClubCommentRequestDto clubCommentRequestDto, User user) {
+	public void updateComment(Long clubId, Long clubCommentId, ClubCommentRequestDto clubCommentRequestDto, User user) {
 		ClubComment clubComment = clubCommentRepository.findById(clubCommentId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
-		ClubUser clubUser = clubUserRepository.findByUserId(user.getId())
+		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
 		if(!clubComment.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
