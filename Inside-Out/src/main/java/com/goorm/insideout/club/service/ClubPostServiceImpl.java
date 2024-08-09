@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostListResponseDto;
-import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubPostRepository;
@@ -45,6 +44,14 @@ public class ClubPostServiceImpl implements ClubPostService{
 
 		return clubPostRepository.findById(clubPostId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
+	}
+
+	@Override
+	public List<ClubPostListResponseDto> findAll() {
+		return clubPostRepository.findAll()
+			.stream()
+			.map(ClubPostListResponseDto::new)
+			.toList();
 	}
 
 	@Override
