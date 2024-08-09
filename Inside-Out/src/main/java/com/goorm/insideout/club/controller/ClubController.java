@@ -48,9 +48,9 @@ public class ClubController {
 
 	@GetMapping("/clubs")
 	@Operation(summary = "동아리 목록 조회 API", description = "동아리 목록을 조회하는 API 입니다.")
-	public ApiResponse<List<ClubListResponseDto>> findByType() {
+	public ApiResponse<ClubBoardResponseDto> findByType() {
 
-		return new ApiResponse<List<ClubListResponseDto>>(clubService.findAllClubDesc());
+		return new ApiResponse<>(clubService.findAllClubDesc());
 	}
 
 
