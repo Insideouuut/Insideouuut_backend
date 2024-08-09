@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.like.domain.MeetingLike;
 import com.goorm.insideout.user.domain.User;
@@ -25,6 +26,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,68 +39,50 @@ public class Meeting {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "meeting_id")
 	private Long id;
-
 	@Lob
 	@Column(name = "title", nullable = false)
 	private String title;
-
 	@Lob
 	@Column(name = "description", nullable = false)
 	private String description;
-
 	@ElementCollection
 	@CollectionTable(name = "meeting_rules", joinColumns = @JoinColumn(name = "meeting_id"))
 	@Column(name = "rule")
 	private Set<String> rules = new HashSet<>();
-
 	@ElementCollection
 	@CollectionTable(name = "meeting_join_questions", joinColumns = @JoinColumn(name = "meeting_id"))
 	@Column(name = "join_question")
 	private Set<String> joinQuestions = new HashSet<>();
-
 	@Column(name = "schedule", nullable = false)
 	private LocalDateTime schedule;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "progress", nullable = false)
 	private Progress progress;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "level", nullable = false)
 	private Level level;
-
 	@Column(name = "participants_number", columnDefinition = "integer default 0", nullable = false)
 	private int participantsNumber;
-
 	@Column(name = "participant_limit", nullable = false)
 	private int participantLimit;
-
 	@Column(name = "minimum_age", nullable = false)
 	private int minimumAge;
-
 	@Column(name = "maximum_age", nullable = false)
 	private int maximumAge;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "gender_ratio", nullable = false)
 	private GenderRatio genderRatio;
-
 	@Column(name = "has_membership_fee", nullable = false)
 	private boolean hasMembershipFee;
-
 	@Column(name = "membership_fee", nullable = false)
 	private int membershipFee;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "category", nullable = false)
 	private Category category;
-
 	@Column(name = "category_detail", nullable = false)
 	private String categoryDetail;
-
 	@Column(name = "view", columnDefinition = "integer default 0", nullable = false)
 	private int view;
-
 	@OneToMany(mappedBy = "meeting", cascade = CascadeType.ALL)
 	private List<MeetingImage> images = new ArrayList<>();
 
@@ -115,6 +99,10 @@ public class Meeting {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "meeting_place_id")
 	private MeetingPlace meetingPlace;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "chatroom")
+	ChatRoom chatRoom;
 
 	/**
 	 * 생성 메서드
@@ -196,5 +184,9 @@ public class Meeting {
 
 	public void increaseParticipantsNumber() {
 		this.participantsNumber++;
+	}
+
+	public void updateChatRoom(ChatRoom chatRoom) {
+		this.chatRoom = chatRoom;
 	}
 }
