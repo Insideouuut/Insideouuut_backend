@@ -7,6 +7,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.image.domain.ClubImage;
+import com.goorm.insideout.like.domain.ClubLike;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
@@ -47,7 +48,7 @@ public class Club {
 
 	private String content;
 
-	private String date;
+	private LocalDateTime date;
 
 	private String region;
 
@@ -76,6 +77,9 @@ public class Club {
 
 	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
 	private List<ClubImage> images = new ArrayList<>();
+
+	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+	private List<ClubLike> likes = new ArrayList<>();
 
 	///챗룸 변수만들고 원투원으로 // 클럽서비스의 클럽만들기에 챗룸만들기 추가하고 챗룸아이디를 이 변수로 받기
 	@OneToOne(fetch = FetchType.LAZY)

@@ -25,7 +25,7 @@ public class ClubBoardDto {
 	private LocalDateTime createdAt;
 	private String content;
 
-	private String date;
+	private LocalDateTime date;
 
 	private String region;
 	private String question;
