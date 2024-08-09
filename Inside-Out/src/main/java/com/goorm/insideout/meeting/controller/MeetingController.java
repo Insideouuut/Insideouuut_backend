@@ -48,7 +48,7 @@ public class MeetingController {
 	@PostMapping("/meetings")
 	@Operation(summary = "모임 생성 API", description = "모임을 생성하는 API 입니다. 아직 이미지 업로드 기능이 준비되지 않았기 때문에, meetingImage 필드는 제외하고 요청 보내주시면 됩니다.")
 	public ApiResponse<String> createMeeting(
-		@RequestPart("meetingCreateRequest") MeetingCreateRequest request,
+		@RequestPart("request") MeetingCreateRequest request,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
