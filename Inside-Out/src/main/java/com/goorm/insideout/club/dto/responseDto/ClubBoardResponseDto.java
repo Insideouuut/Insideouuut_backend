@@ -3,8 +3,10 @@ package com.goorm.insideout.club.dto.responseDto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.image.dto.response.ImageResponse;
+import com.querydsl.core.annotations.QueryProjection;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,8 @@ public class ClubBoardResponseDto {
 	private LocalDateTime createdAt;
 	private String content;
 
-	private String date;
+	@JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
+	private LocalDateTime date;
 
 	private String region;
 	private String question;
@@ -40,33 +43,33 @@ public class ClubBoardResponseDto {
 
 	Boolean isRecruiting = false;
 
-
-	public static ClubBoardResponseDto of(Club club){
-		ClubBoardResponseDto res = new ClubBoardResponseDto();
-
-		res.setClubId(club.getClubId());
-		res.setClubName(club.getClubName());
-		res.images = club.getImages()
+	@QueryProjection
+	public ClubBoardResponseDto(Club club) {
+		this.clubId = club.getClubId();
+		this.clubName = club.getClubName();
+		this.category = club.getCategory();
+		this.createdAt = club.getCreatedAt();
+		this.content = club.getContent();
+		this.date = club.getDate();
+		this.region = club.getRegion();
+		this.question = club.getQuestion();
+		this.memberLimit = club.getMemberLimit();
+		this.memberCount = club.getMemberCount();
+		this.price = club.getPrice();
+		this.ageLimit = club.getAgeLimit();
+		this.chatRoomId = club.getChat_room_id();
+		this.images = club.getImages()
 			.stream()
 			.map(image -> ImageResponse.from(image.getImage()))
 			.toList();
-		res.setCategory(club.getCategory());
-		res.setCreatedAt(club.getCreatedAt());
-		res.setContent(club.getContent());
-		res.setDate(club.getDate());
-		res.setRegion(club.getRegion());
-		res.setQuestion(club.getQuestion());
-		res.setMemberLimit(club.getMemberLimit());
-
-		res.setMemberCount(club.getMemberCount());
-		res.setPrice(club.getPrice());
-		res.setAgeLimit(club.getAgeLimit());
-		res.setChatRoomId(club.getChat_room_id());
 
 		if(club.getMemberLimit() > club.getMemberCount()){
-			res.setIsRecruiting(true);
+			this.isRecruiting = true;
 		}
-		return res;
+	}
+
+	public static ClubBoardResponseDto of(Club club){
+		return new ClubBoardResponseDto(club);
 	}
 
 	/*
