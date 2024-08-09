@@ -55,11 +55,13 @@ public class SecurityConfig {
 		"/api/clubs/{clubId}",
     	"/api/meetings",
 		"/api/meetings/{meetingId}",
+		"/api/search/**",
 		"/api/check-email",
 		"/api/check-nickname",
 		"/v3/**",
 		"/swagger-ui/**",
 		"/ws-stomp",
+		"/error",
 		"/"
 	};
 

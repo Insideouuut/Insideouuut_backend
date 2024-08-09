@@ -5,14 +5,15 @@ import java.util.List;
 import com.goorm.insideout.club.dto.ClubPostDto;
 import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostListResponseDto;
-import com.goorm.insideout.club.dto.responseDto.ClubPostResponseDto;
 import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.user.domain.User;
 
 public interface ClubPostService {
 	ClubPost saveClubPost(Long clubId, ClubPostRequestDto clubPostRequestDto, User user);
 
-	ClubPost findByClubPostId(Long clubPostId);
+	ClubPostDto findByClubPostId(Long clubPostId);
+
+	List<ClubPostListResponseDto> findAll();
 
 	List<ClubPostListResponseDto> findClubPostByType(Long clubId, String type);
 

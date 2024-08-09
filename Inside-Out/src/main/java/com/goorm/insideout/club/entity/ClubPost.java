@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
+import com.goorm.insideout.image.domain.ClubPostImage;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -65,6 +66,9 @@ public class ClubPost {
 	@JoinColumn(name = "club_id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	Club club;
+
+	@OneToMany(mappedBy = "clubPost", cascade = CascadeType.ALL)
+	private List<ClubPostImage> images = new ArrayList<>();
 
 	public void update(ClubPostRequestDto clubPostRequestDto){
 		this.postTitle=clubPostRequestDto.getPostTitle();

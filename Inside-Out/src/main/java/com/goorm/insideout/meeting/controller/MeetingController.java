@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
+import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.chatroom.domain.ChatRoomType;
+import com.goorm.insideout.chatroom.service.ChatRoomService;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.image.service.ImageService;
@@ -28,6 +29,7 @@ import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,17 +42,23 @@ import lombok.RequiredArgsConstructor;
 public class MeetingController {
 	private final MeetingService meetingService;
 	private final ImageService imageService;
+	private final ChatRoomService chatRoomService;
+	private final UserChatRoomService userChatRoomService;
 
 	@PostMapping("/meetings")
 	@Operation(summary = "모임 생성 API", description = "모임을 생성하는 API 입니다. 아직 이미지 업로드 기능이 준비되지 않았기 때문에, meetingImage 필드는 제외하고 요청 보내주시면 됩니다.")
 	public ApiResponse<String> createMeeting(
-		@RequestPart MeetingCreateRequest request,
+		@RequestPart("request") MeetingCreateRequest request,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		User user = customUserDetails.getUser();
-		Long meetingId = meetingService.save(request, user);
-		imageService.saveMeetingImages(multipartFiles, meetingId);
+		Meeting meeting = meetingService.save(request, user);
+		imageService.saveMeetingImages(multipartFiles, meeting.getId());
+
+		ChatRoom chatRoom = chatRoomService.createChatRoom(meeting.getId(), meeting.getTitle(), ChatRoomType.MEETING);
+		Meeting saveMeeting = meetingService.injectMeetingChatRoom(meeting.getId(), chatRoom);
+		userChatRoomService.inviteUserToChatRoom(saveMeeting.getChatRoom().getId(), user);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
@@ -64,27 +72,17 @@ public class MeetingController {
 	@GetMapping("/meetings/{meetingId}")
 	@Operation(summary = "모임 단건 조회 API", description = "모임을 단건으로 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findById(@PathVariable Long meetingId) {
-			return new ApiResponse<>(meetingService.findById(meetingId));
+		return new ApiResponse<>(meetingService.findById(meetingId));
 	}
 
-	@GetMapping("/meetings/pending")
-	@Operation(summary = "나의 승인대기 모임 목록 조회 API", description = "나의 승인대기 모임 목록을 조회할 수 있는 API 입니다.")
-	public ApiResponse<MeetingResponse> findPendingMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
-	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(customUserDetails.getUser(), pageable);
-
-		return new ApiResponse<>(pendingMeetings);
-	}
-  
 	@GetMapping("/meetings/participating")
 	@Operation(summary = "나의 참여중인 모임 목록 조회 API", description = "나의 참여중인 모임 목록을 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findParticipatingMeetings(
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		Pageable pageable
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser(), pageable);
+		Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser(),
+			pageable);
 
 		return new ApiResponse<>(pendingMeetings);
 	}
@@ -106,7 +104,8 @@ public class MeetingController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
 		Pageable pageable
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findRunningMeetings(customUserDetails.getUser(), pageable);
+		Page<MeetingResponse> pendingMeetings = meetingService.findRunningMeetings(customUserDetails.getUser(),
+			pageable);
 
 		return new ApiResponse<>(pendingMeetings);
 	}
