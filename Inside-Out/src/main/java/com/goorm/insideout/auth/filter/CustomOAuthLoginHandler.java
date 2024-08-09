@@ -40,8 +40,8 @@ public class CustomOAuthLoginHandler extends SimpleUrlAuthenticationSuccessHandl
 		refreshTokenRepository.save(refreshToken);
 		// reissue 요청으로 리다이렉트하기
 		//response.sendRedirect("http://localhost:3000/?action=reissue");
-		response.sendRedirect("http://localhost:5173/reissue");
-		//response.sendRedirect("https://modong.link/reissue");
+		// response.sendRedirect("http://localhost:5173/reissue");
+		response.sendRedirect("https://modong.link/reissue");
 	}
 	private ResponseCookie createCookie(String key, String value) {
 		return ResponseCookie.from(key, value)

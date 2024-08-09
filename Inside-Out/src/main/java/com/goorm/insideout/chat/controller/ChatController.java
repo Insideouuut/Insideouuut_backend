@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "CharController", description = "채팅 관련 API")
+@Tag(name = "ChatController", description = "채팅 관련 API")
 public class ChatController {
 	private final ChatService chatService;
 	private final SimpMessageSendingOperations messagingTemplate;

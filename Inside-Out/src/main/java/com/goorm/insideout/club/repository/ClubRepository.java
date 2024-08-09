@@ -11,9 +11,11 @@ import org.springframework.stereotype.Repository;
 
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubUser;
+import com.goorm.insideout.club.repository.custom.ClubQueryDslRepository;
+import com.goorm.insideout.meeting.repository.custom.MeetingQueryDslRepository;
 
 @Repository
-public interface ClubRepository extends JpaRepository<Club, Long> {
+public interface ClubRepository extends JpaRepository<Club, Long>, ClubQueryDslRepository {
 
 	List<Club> findAllByOrderByClubIdDesc();
 

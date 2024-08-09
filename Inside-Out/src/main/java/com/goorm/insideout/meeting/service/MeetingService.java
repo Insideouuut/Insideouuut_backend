@@ -18,7 +18,7 @@ import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingPlaceRequest;
-import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
+import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.repository.MeetingRepository;
@@ -58,17 +58,17 @@ public class MeetingService {
 	}
 
 	// 검색 조건에 따른 조회
-	public List<MeetingResponse> findByCondition(MeetingSearchRequest condition) {
+	public List<MeetingResponse> findByCondition(SearchRequest condition) {
 		return meetingRepository.findAllByCondition(condition);
 	}
 
 	// 정렬 타입에 따른 조회
-	public List<MeetingResponse> findBySortType(MeetingSearchRequest condition) {
+	public List<MeetingResponse> findBySortType(SearchRequest condition) {
 		return meetingRepository.findBySortType(condition);
 	}
 
 	// 검색 조건 및 정렬 타입에 따른 조회
-	public List<MeetingResponse> findByConditionAndSortType(MeetingSearchRequest condition) {
+	public List<MeetingResponse> findByConditionAndSortType(SearchRequest condition) {
 		return meetingRepository.findByConditionAndSortType(condition);
 	}
 

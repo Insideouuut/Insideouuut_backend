@@ -9,6 +9,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.image.domain.ClubImage;
+import com.goorm.insideout.like.domain.ClubLike;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
@@ -104,6 +105,9 @@ public class Club {
 
 	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
 	private List<ClubImage> images = new ArrayList<>();
+
+	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+	private List<ClubLike> likes = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "club")

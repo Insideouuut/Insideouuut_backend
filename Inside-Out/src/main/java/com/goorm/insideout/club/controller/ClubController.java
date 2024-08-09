@@ -56,11 +56,8 @@ public class ClubController {
 
 	@GetMapping("/clubs/{clubId}")
 	@Operation(summary = "동아리 단건 조회 API", description = "동아리를 단건으로 조회하는 API 입니다.")
-	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId, @AuthenticationPrincipal CustomUserDetails userDetails) {
-
-		User user = userDetails.getUser();
-
-		return new ApiResponse<>(clubService.findClubBoard(clubId, user));
+	public ApiResponse<ClubBoardResponseDto> findClubBoard(@PathVariable Long clubId) {
+		return new ApiResponse<>(clubService.findClubBoard(clubId));
 	}
 
 	@PostMapping("/clubs")
