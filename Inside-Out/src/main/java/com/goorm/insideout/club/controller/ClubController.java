@@ -63,7 +63,7 @@ public class ClubController {
 	@PostMapping("/clubs")
 	@Operation(summary = "동아리 생성 API", description = "동아리를 생성하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> saveClub(
-		@Valid @RequestPart ClubRequestDto clubRequestDto,
+		@RequestPart("request") ClubRequestDto clubRequestDto,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
