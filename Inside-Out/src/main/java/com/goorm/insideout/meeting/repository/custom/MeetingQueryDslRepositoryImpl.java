@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.meeting.domain.Category;
 import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.dto.response.QMeetingResponse;
@@ -25,7 +26,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   private final JPAQueryFactory queryFactory;
 
   /*
-  일반 게시글 검색
+  일반 모임 검색
    */
   @Override
   public List<MeetingResponse> findAllByCondition(SearchRequest condition) {
@@ -35,8 +36,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
         .from(meeting)
         .leftJoin(meeting.host, user).fetchJoin()
         .where(
-            titleContains(condition.getQuery()),
-            descriptionContains(condition.getQuery()),
+            titleOrDescriptionContains(condition.getQuery()),
             categoryEquals(condition.getCategory())
         )
         .orderBy(meeting.id.desc())
@@ -44,18 +44,16 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   }
 
   /*
-  정렬된 전체 모임 조회 + 일반 검색 및 정렬된 모임 검색 결과 조회
+  키워드에 따른 모임 검색 후 정렬
    */
   @Override
   public List<MeetingResponse> findByConditionAndSortType(SearchRequest condition) {
     JPAQuery<MeetingResponse> basicQuery = queryFactory
         .select(new QMeetingResponse(meeting))
         .from(meeting)
-        // User 엔티티를 구현하지 않았으므로 임시 주석 처리
-        // .leftJoin(meeting.author, user).fetchJoin()
+        .leftJoin(meeting.host, user).fetchJoin()
         .where(
-            titleContains(condition.getQuery()),
-            descriptionContains(condition.getQuery()),
+            titleOrDescriptionContains(condition.getQuery()),
             categoryEquals(condition.getCategory())
         );
 
@@ -64,6 +62,9 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
     return content;
   }
 
+  /*
+  전체 모임 조회 후 정렬
+   */
   @Override
   public List<MeetingResponse> findBySortType(SearchRequest condition) {
     JPAQuery<MeetingResponse> basicQuery = queryFactory
@@ -86,8 +87,7 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
         // User 엔티티를 구현하지 않았으므로 임시 주석 처리
         // .leftJoin(meeting.author, user).fetchJoin()
         .where(
-            titleContains(condition.getQuery()),
-            descriptionContains(condition.getQuery()),
+            titleOrDescriptionContains(condition.getQuery()),
             categoryEquals(condition.getCategory())
         );
   }
@@ -95,6 +95,10 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   /**
    * 제목, 내용, 카테고리 포함 여부 조사 메소드
    */
+  private BooleanExpression titleOrDescriptionContains(String query) {
+    return hasText(query) ? titleContains(query).or(descriptionContains(query)) : null;
+  }
+
   private BooleanExpression titleContains(String name) {
     return hasText(name) ? meeting.title.contains(name) : null;
   }
@@ -104,7 +108,9 @@ public class MeetingQueryDslRepositoryImpl implements MeetingQueryDslRepository 
   }
 
   private BooleanExpression categoryEquals(String category) {
-    return hasText(category) ? meeting.category.stringValue().eq(category) : null;
+    Category findCategory = Category.findByName(category);
+
+    return hasText(category) ? meeting.category.eq(findCategory) : null;
   }
 
   /*
