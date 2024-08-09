@@ -3,9 +3,11 @@ package com.goorm.insideout.club.dto.responseDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.entity.GenderRatio;
+import com.goorm.insideout.club.entity.Level;
 import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.dto.response.HostResponse;
@@ -31,13 +33,13 @@ public class ClubBoardResponseDto {
 	private Boolean hasMembershipFee;
 	private Integer membershipFeeAmount;
 	private Boolean isRecruiting = false;
-	private String level;
-	private String category;
+	private Level level;
+	private Category category;
 	private String categoryDetail;
 	private String date;
 	private Integer participantNumber;
 	private Integer participantLimit;
-	private String ratio;
+	private GenderRatio genderRatio;
 	private List<Integer> ageRange;
 	private List<String> rules;
 	private List<String> joinQuestions;
@@ -62,15 +64,15 @@ public class ClubBoardResponseDto {
 		res.setDate(club.getDate());
 		res.setParticipantLimit(club.getMemberLimit());
 		res.setParticipantNumber(club.getMemberCount());
-		res.setRatio(club.getRatio());
-		res.setAgeRange(club.getAgeRange());
+		res.setGenderRatio(club.getGenderRatio());
+		res.setAgeRange(List.of(club.getMinAge(), club.getMaxAge()));
 		res.setName(club.getClubName());
 		res.setIntroduction(club.getContent());
 		res.setRules(new ArrayList<>(club.getRules()));
 		res.setJoinQuestions(new ArrayList<>(club.getJoinQuestions()));
 		res.setCreatedAt(club.getCreatedAt());
 		res.setActivityRegion(club.getRegion());
-		res.setHost(HostResponse.of(user));
+		res.setHost(HostResponse.of(club.getOwner()));
 
 		res.setChatRoomId(club.getChat_room_id());
 
