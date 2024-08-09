@@ -5,6 +5,8 @@ import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +14,16 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingApply;
+import com.goorm.insideout.meeting.domain.MeetingUser;
+import com.goorm.insideout.meeting.domain.Progress;
+import com.goorm.insideout.meeting.domain.Role;
 import com.goorm.insideout.meeting.dto.response.MeetingApplyResponse;
+import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.repository.MeetingApplyRepository;
 import com.goorm.insideout.meeting.repository.MeetingRepository;
+import com.goorm.insideout.meeting.repository.MeetingUserRepository;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +33,8 @@ import lombok.RequiredArgsConstructor;
 public class MeetingApplyService {
 	private final MeetingApplyRepository meetingApplyRepository;
 	private final MeetingRepository meetingRepository;
+	private final MeetingUserRepository meetingUserRepository;
+	private final UserChatRoomService userChatRoomService;
 
 	// 나이 계산
 	public static int calculateAge(LocalDate birthDate) {
@@ -40,6 +50,13 @@ public class MeetingApplyService {
 	public void meetingApply(User user, Long meetingId) {
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
+
+		// 이미 가입되어있으면 에러 처리
+		List<MeetingUser> existingMeetingUser = meetingUserRepository.findByMeetingIdAndUserId(meetingId,
+			user.getId());
+		if (!existingMeetingUser.isEmpty()) {
+			throw ModongException.from(ErrorCode.MEETING_ALREADY_JOINED);
+		}
 
 		int minimumAge = meeting.getMinimumAge();
 		int maximumAge = meeting.getMaximumAge();
@@ -66,7 +83,7 @@ public class MeetingApplyService {
 
 	// 모임 신청 수락
 	@Transactional
-	public Meeting meetingUserAccept(User host, Long applyId) {
+	public Long meetingUserAccept(User host, Long applyId) {
 		MeetingApply meetingApply = meetingApplyRepository.findById(applyId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.APPLY_NOT_FOUND));
 
@@ -80,12 +97,20 @@ public class MeetingApplyService {
 			throw ModongException.from(ErrorCode.MEETING_PARTICIPANT_LIMIT_EXCEEDED);
 		}
 
+		// 모임 참여자 수 수정
 		meeting.increaseParticipantsNumber();
-		meeting.updateMeeting(meeting);
+		Meeting savedMeeting = meetingRepository.save(meeting);
 
+		// 모임 유저에 등록
+		MeetingUser meetingUser = MeetingUser.of(savedMeeting, meetingApply.getUser(), Role.MEMBER);
 		meetingApplyRepository.delete(meetingApply);
-		return meeting;
+
+		// 채팅방에 초대
+		userChatRoomService.inviteUserToChatRoom(meeting.getChatRoom().getId(), meetingUser.getUser());
+
+		return meetingUserRepository.save(meetingUser).getId();
 	}
+
 	// 모임 신청 거부
 	@Transactional
 	public void meetingUserReject(User host, Long applyId) {
@@ -110,6 +135,24 @@ public class MeetingApplyService {
 
 		return applies.stream()
 			.map(MeetingApplyResponse::of)
+			.collect(Collectors.toList());
+	}
+
+	// 모임 신청 대기 중인 사람 조회
+	public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
+		return meetingApplyRepository.findOngoingMeetingsByProgress(user.getId(), Progress.ONGOING, pageable)
+			.map(meetingUser -> {
+				Meeting meeting = meetingUser.getMeeting();
+				return MeetingResponse.of(meeting);
+			});
+	}
+
+	// 모임 신청 대기 중인 사람 조회
+	public List<MeetingResponse> findPendingMeetings(User user) {
+		List<MeetingApply> meetingUsers = meetingApplyRepository.findOngoingMeetingsByProgress(user.getId(),
+			Progress.ONGOING);
+		return meetingUsers.stream()
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
 			.collect(Collectors.toList());
 	}
 
