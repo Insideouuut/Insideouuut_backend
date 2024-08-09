@@ -2,6 +2,7 @@ package com.goorm.insideout.club.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -11,8 +12,12 @@ import com.goorm.insideout.image.domain.ClubImage;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,6 +25,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +35,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
 public class Club {
@@ -42,9 +48,13 @@ public class Club {
 
 	private String clubName;
 
-	private String category;
+	@Enumerated(EnumType.STRING)
+	private Category category;
+
 	private String categoryDetail;//
-	private String level;//
+
+	@Enumerated(EnumType.STRING)
+	private Level level;//
 
 	private LocalDateTime createdAt;
 
@@ -54,7 +64,10 @@ public class Club {
 
 	private String region;
 
-	private Set<String> joinQuestions;//
+	@ElementCollection
+	@CollectionTable(name = "club_join_questions", joinColumns = @JoinColumn(name = "club_id"))
+	@Column(name = "join_question")
+	private Set<String> joinQuestions = new HashSet<>();//
 
 
 	private Integer memberLimit;
@@ -64,12 +77,17 @@ public class Club {
 	private Boolean hasMembershipFee;//
 	private Integer price;
 
-	private String hasGenderRatio;//
-	private String ratio;//
+	@Enumerated(EnumType.STRING)
+	private GenderRatio genderRatio;//
 
-	private List<Integer> ageRange;//
+	private int minAge;
+	private int maxAge;
+	//private List<Integer> ageRange;//
 
-	private Set<String> rules;//
+	@ElementCollection
+	@CollectionTable(name = "club_rules", joinColumns = @JoinColumn(name = "club_id"))
+	@Column(name = "rule")
+	private Set<String> rules = new HashSet<>();//
 
 
 	@ManyToOne
@@ -96,4 +114,5 @@ public class Club {
 	public void increaseMemberCount() {
 		this.memberCount++;
 	}
+
 }
