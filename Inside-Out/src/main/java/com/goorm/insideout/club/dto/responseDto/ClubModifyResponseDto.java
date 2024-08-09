@@ -24,7 +24,7 @@ public class ClubModifyResponseDto {
 	protected LocalDateTime createdAt;
 	protected String content;
 
-	protected String date;
+	protected LocalDateTime date;
 
 	protected String region;
 	protected String question;

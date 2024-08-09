@@ -1,5 +1,7 @@
 package com.goorm.insideout.club.dto.requestDto;
 
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +17,7 @@ public class ClubRequestDto {
 
 	private String content;
 
-	private String date;
+	private LocalDateTime date;
 
 	private String region;
 	private String question;
