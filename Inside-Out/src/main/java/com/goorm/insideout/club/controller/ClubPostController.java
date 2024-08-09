@@ -53,7 +53,7 @@ public class ClubPostController {
 	@Operation(summary = "동아리 게시글 단건 조회 API", description = "동아리 게시글을 조회하는 API 입니다.")
 	public ApiResponse<ClubPostDto> findClubPost(@PathVariable Long postId) {
 
-		return new ApiResponse<>(ClubPostDto.of(clubPostService.findByClubPostId(postId)));
+		return new ApiResponse<>(clubPostService.findByClubPostId(postId));
 	}
 
 	@PostMapping("/{clubId}/posts")
