@@ -19,6 +19,7 @@ import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.dto.request.ProfileUpdateRequest;
+import com.goorm.insideout.user.dto.response.MyProfileResponse;
 import com.goorm.insideout.user.dto.response.ProfileMeetingResponse;
 import com.goorm.insideout.user.dto.response.ProfileResponse;
 import com.goorm.insideout.user.repository.UserRepository;
@@ -62,6 +63,23 @@ public class UserProfileService {
 	public ProfileResponse getProfile(User user) {
 		User findUser = userRepository.findByIdWithProfileImage(user.getId());
 		ProfileResponse response = new ProfileResponse(findUser);
+
+		List<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(findUser);
+		response.setPendingMeetings(meetingResponseToProfile(pendingMeetings));
+
+		List<MeetingResponse> ParticipatingMeetings = meetingService.findParticipatingMeetings(findUser);
+		response.setAttendedMeetings(meetingResponseToProfile(ParticipatingMeetings));
+
+		List<MeetingResponse> endedMeetings = meetingService.findEndedMeetings(findUser);
+		response.setClosedMeetings(meetingResponseToProfile(endedMeetings));
+
+		return response;
+	}
+
+	@Transactional
+	public MyProfileResponse getMyProfile(User user) {
+		User findUser = userRepository.findByIdWithProfileImage(user.getId());
+		MyProfileResponse response = new MyProfileResponse(findUser);
 
 		List<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(findUser);
 		response.setPendingMeetings(meetingResponseToProfile(pendingMeetings));
