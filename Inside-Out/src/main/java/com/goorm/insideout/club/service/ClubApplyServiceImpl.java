@@ -62,13 +62,10 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 		String userBrithYear = Arrays.stream(user.getBirthDate().toString().split("-"))
 			.findFirst()
 			.orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
-		System.out.println("userBrithYear = " + userBrithYear);
 		String nowYear = Arrays.stream(LocalDateTime.now().toString().split("-"))
 			.findFirst()
 			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
-		System.out.println("nowYear = " + nowYear);
 		int userAge = Integer.valueOf(nowYear) - Integer.valueOf(userBrithYear);
-		System.out.println("userAge = " + userAge);
 
 		if(club.getMinAge() > userAge || userAge > club.getMaxAge()){
 			throw new IllegalStateException();
