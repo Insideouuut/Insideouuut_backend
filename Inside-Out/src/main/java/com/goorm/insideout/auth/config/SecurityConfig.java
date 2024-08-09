@@ -61,6 +61,7 @@ public class SecurityConfig {
 		"/v3/**",
 		"/swagger-ui/**",
 		"/ws-stomp",
+		"/error",
 		"/"
 	};
 
