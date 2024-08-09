@@ -3,16 +3,14 @@ package com.goorm.insideout.user.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.service.ImageService;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
+import com.goorm.insideout.meeting.service.MeetingApplyService;
 import com.goorm.insideout.meeting.service.MeetingService;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.dto.request.ProfileUpdateRequest;
@@ -30,6 +28,7 @@ public class UserProfileService {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 	private final ImageService imageService;
 	private final MeetingService meetingService;
+	private final MeetingApplyService meetingApplyService;
 
 	public void updateMyProfile(ProfileUpdateRequest profileUpdateRequest, User user) {
 		String password = profileUpdateRequest.getPassword();
@@ -56,7 +55,7 @@ public class UserProfileService {
 		User findUser = userRepository.findByIdWithProfileImage(user.getId());
 		ProfileResponse response = new ProfileResponse(findUser);
 
-		List<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(findUser);
+		List<MeetingResponse> pendingMeetings = meetingApplyService.findPendingMeetings(findUser);
 		response.setPendingMeetings(meetingResponseToProfile(pendingMeetings));
 
 		List<MeetingResponse> ParticipatingMeetings = meetingService.findParticipatingMeetings(findUser);
