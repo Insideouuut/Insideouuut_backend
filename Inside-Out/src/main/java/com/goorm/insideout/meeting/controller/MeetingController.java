@@ -57,7 +57,7 @@ public class MeetingController {
 		imageService.saveMeetingImages(multipartFiles, meeting.getId());
 
 		ChatRoom chatRoom = chatRoomService.createChatRoom(meeting.getId(), meeting.getTitle(), ChatRoomType.MEETING);
-		Meeting saveMeeting = meetingService.updateMeetingChatRoom(meeting.getId(), chatRoom);
+		Meeting saveMeeting = meetingService.injectMeetingChatRoom(meeting.getId(), chatRoom);
 		userChatRoomService.inviteUserToChatRoom(saveMeeting.getChatRoom().getId(), user);
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);

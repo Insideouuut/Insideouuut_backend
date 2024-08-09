@@ -102,7 +102,7 @@ public class Meeting {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "chatroom")
-	ChatRoom chatRoom;
+	private ChatRoom chatRoom;
 
 	/**
 	 * 생성 메서드

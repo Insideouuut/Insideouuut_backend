@@ -36,15 +36,6 @@ public class MeetingApplyService {
 	private final MeetingUserRepository meetingUserRepository;
 	private final UserChatRoomService userChatRoomService;
 
-	// 나이 계산
-	public static int calculateAge(LocalDate birthDate) {
-		LocalDate today = LocalDate.now();
-		if (birthDate != null) {
-			return Period.between(birthDate, today).getYears();
-		}
-		throw ModongException.from(ErrorCode.AGE_NOT_FOUND);
-	}
-
 	// 모임 참여 신청
 	@Transactional
 	public void meetingApply(User user, Long meetingId) {
@@ -156,10 +147,20 @@ public class MeetingApplyService {
 			.collect(Collectors.toList());
 	}
 
+	// 호스트인지 검증
 	private void validateIsHost(User user, Meeting meeting) {
 		if (!meeting.isHost(user)) {
 			throw ModongException.from(ErrorCode.MEETING_NOT_HOST);
 		}
+	}
+
+	// 나이 계산
+	private int calculateAge(LocalDate birthDate) {
+		LocalDate today = LocalDate.now();
+		if (birthDate != null) {
+			return Period.between(birthDate, today).getYears();
+		}
+		throw ModongException.from(ErrorCode.AGE_NOT_FOUND);
 	}
 
 }

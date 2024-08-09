@@ -152,7 +152,7 @@ public class MeetingService {
 	}
 
 	@Transactional
-	public Meeting updateMeetingChatRoom(Long meetingId, ChatRoom newChatRoom) {
+	public Meeting injectMeetingChatRoom(Long meetingId, ChatRoom newChatRoom) {
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
 		meeting.updateChatRoom(newChatRoom);
