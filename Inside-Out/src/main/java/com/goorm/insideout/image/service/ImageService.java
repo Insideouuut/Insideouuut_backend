@@ -15,14 +15,18 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.entity.ClubPost;
+import com.goorm.insideout.club.repository.ClubPostRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.image.domain.ClubImage;
+import com.goorm.insideout.image.domain.ClubPostImage;
 import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.dto.StoreImageDto;
 import com.goorm.insideout.image.repository.ClubImageRepository;
+import com.goorm.insideout.image.repository.ClubPostImageRepository;
 import com.goorm.insideout.image.repository.MeetingImageRepository;
 import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.image.repository.ImageStoreProcessor;
@@ -39,9 +43,11 @@ import lombok.RequiredArgsConstructor;
 public class ImageService {
 
 	private final ClubImageRepository clubImageRepository;
+	private final ClubPostImageRepository clubPostImageRepository;
 	private final MeetingImageRepository meetingImageRepository;
 	private final ProfileImageRepository profileImageRepository;
 	private final ClubRepository clubRepository;
+	private final ClubPostRepository clubPostRepository;
 	private final MeetingRepository meetingRepository;
 	private final UserRepository userRepository;
 	private final ImageStoreProcessor imageStoreProcessor;
@@ -62,6 +68,21 @@ public class ImageService {
 
 			ClubImage clubImage = storeImageDtos.get(i).toClubImageEntity(club, imageUrl);
 			clubImageRepository.save(clubImage);
+		}
+	}
+
+	@Transactional
+	public void saveClubPostImages(List<MultipartFile> imageFiles, Long clubPostId) {
+		ClubPost clubPost = clubPostRepository.findById(clubPostId)
+			.orElseThrow(() -> ModongException.from(CLUB_POST_NOT_FOUND));
+
+		List<StoreImageDto> storeImageDtos = imageStoreProcessor.storeImageFiles(imageFiles);
+
+		for (int i = 0; i < imageFiles.size(); i++) {
+			String imageUrl = uploadImageFile(imageFiles.get(i), storeImageDtos.get(i));
+
+			ClubPostImage clubPostImage = storeImageDtos.get(i).toClubPostImageEntity(clubPost, imageUrl);
+			clubPostImageRepository.save(clubPostImage);
 		}
 	}
 
@@ -122,6 +143,18 @@ public class ImageService {
 			clubImageRepository.delete(clubImage);
 
 			String storeName = clubImage.getImage().getStoreName();
+			amazonS3Client.deleteObject(bucket, storeName);
+		});
+	}
+
+	@Transactional
+	public void deleteClubPostImages(Long clubPostId) {
+		List<ClubPostImage> clubPostImages = clubPostImageRepository.findByClubPostId(clubPostId);
+
+		clubPostImages.forEach(clubPostImage -> {
+			clubPostImageRepository.delete(clubPostImage);
+
+			String storeName = clubPostImage.getImage().getStoreName();
 			amazonS3Client.deleteObject(bucket, storeName);
 		});
 	}
