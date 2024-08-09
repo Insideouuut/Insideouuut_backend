@@ -23,8 +23,8 @@ public class MyProfileResponse {
 	private Gender gender;
 	private String phoneNumber;
 	private LocalDate birthDate;
-	private Set<Category> interests;
-	private Set<String> locations;
+	private List<Category> interests;
+	private List<String> locations;
 	private List<ProfileMeetingResponse> pendingMeetings;
 	private List<ProfileMeetingResponse> attendedMeetings;
 	private List<ProfileMeetingResponse> closedMeetings;
@@ -37,7 +37,7 @@ public class MyProfileResponse {
 		this.gender=user.getGender();
 		this.phoneNumber= user.getPhoneNumber();;
 		this.birthDate=user.getBirthDate();
-		this.interests=user.getInterests();
-		this.locations=user.getLocations();
+		this.interests=user.getInterests().stream().toList();
+		this.locations=user.getLocations().stream().toList();
 	}
 }
