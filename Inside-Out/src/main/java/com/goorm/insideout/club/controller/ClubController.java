@@ -81,7 +81,6 @@ public class ClubController {
 			userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), user);
 
 		} catch (Exception exception) {
-			System.out.println("exception = " + exception);
 			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);
 		}
 		

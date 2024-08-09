@@ -1,12 +1,11 @@
 package com.goorm.insideout.club.dto.requestDto;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.Club;
-import com.goorm.insideout.club.entity.GenderRatio;
+import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.Level;
+import com.goorm.insideout.club.entity.GenderRatio;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,11 +3,9 @@ package com.goorm.insideout.club.dto.responseDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.jpa.repository.Query;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.GenderRatio;
