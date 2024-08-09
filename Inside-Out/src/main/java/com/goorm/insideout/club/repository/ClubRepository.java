@@ -21,10 +21,10 @@ public interface ClubRepository extends JpaRepository<Club, Long>, ClubQueryDslR
 
 	// 참여 하고 있는 클럽이 있는 지 조회
 	@Query(value = "select * from club " +
-		"where id in " +
+		"where club_id in " +
 		"(select club_id from club_user where user_id = :userId) "
 		,nativeQuery = true)
-	Optional<Club> belongToTeam(@Param("userId") Long userId);
+	List<Club> belongToClub(@Param("userId") Long userId);
 
 	// 팀 아이디와 유저 아이디로 팀 조회(팀장 인지 확인)
 	@Query(value = "select * from club " +

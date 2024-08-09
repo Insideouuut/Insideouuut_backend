@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.QClubBoardResponseDto;
-import com.goorm.insideout.meeting.domain.Category;
+import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -108,7 +108,7 @@ public class ClubQueryDslRepositoryImpl implements ClubQueryDslRepository {
   private BooleanExpression categoryEquals(String category) {
     Category findCategory = Category.findByName(category);
 
-    return hasText(category) ? club.category.eq(findCategory.toString()) : null;
+    return hasText(category) ? club.category.eq(findCategory) : null;
   }
 
   /*

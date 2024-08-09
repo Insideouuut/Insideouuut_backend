@@ -52,7 +52,7 @@ public class User {
 
 	private String nickname;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinColumn(name = "profile_image_id")
 	private ProfileImage profileImage;
 

@@ -17,6 +17,8 @@ public interface ClubService {
 
 	Club findByClubId(Long ClubId);
 
+	ClubBoardResponseDto findClubBoard(Long clubId);
+
 	void deleteClub(Long clubId);
 
 	Club modifyClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/   User user, Club club) throws
@@ -32,9 +34,13 @@ public interface ClubService {
 	// 검색 조건 및 정렬 타입에 따른 조회
 	List<ClubBoardResponseDto> findByConditionAndSortType(SearchRequest condition);
 
-	Club belongToClub(Long userId);
+	// Club belongToClub(Long userId);
 
 	List<ClubListResponseDto> findByCategory(String category);
 
 	public void setChatRoom(Club club, ChatRoom chatRoom);
+
+	public List<ClubListResponseDto> findMyClub(Long userId);
+
+	public List<ClubListResponseDto> findMyApplyClub(Long userId);
 }

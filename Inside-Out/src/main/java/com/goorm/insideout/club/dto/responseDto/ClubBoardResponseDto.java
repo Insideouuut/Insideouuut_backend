@@ -1,12 +1,21 @@
 package com.goorm.insideout.club.dto.responseDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import org.springframework.data.jpa.repository.Query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.entity.GenderRatio;
+import com.goorm.insideout.club.entity.Level;
 import com.goorm.insideout.image.dto.response.ImageResponse;
 import com.querydsl.core.annotations.QueryProjection;
+import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.dto.response.HostResponse;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,52 +25,59 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ClubBoardResponseDto {
-	private Long clubId;
-
-	private String clubName;
-
-	private String category;
-
-	private LocalDateTime createdAt;
-	private String content;
-
-	@JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
-	private LocalDateTime date;
-
-	private String region;
-	private String question;
-
-
-	private Integer memberLimit;
-	private Integer memberCount;
-	private Integer price;
-	private Integer ageLimit;
-
-	private List<ImageResponse> images;
+	private Long id;
+	private String name;
+	private String introduction;
+	private String type;
 	private Long chatRoomId;
-
-
-	Boolean isRecruiting = false;
+	private String activityRegion;
+	private LocalDateTime createdAt;
+	private int view;
+	private int like;
+	private Boolean hasMembershipFee;
+	private Integer membershipFeeAmount;
+	private Boolean isRecruiting = false;
+	private Level level;
+	private Category category;
+	private String categoryDetail;
+	private String date;
+	private Integer participantNumber;
+	private Integer participantLimit;
+	private GenderRatio genderRatio;
+	private List<Integer> ageRange;
+	private List<String> rules;
+	private List<String> joinQuestions;
+	private HostResponse host;
+	private List<ImageResponse> images;
 
 	@QueryProjection
 	public ClubBoardResponseDto(Club club) {
-		this.clubId = club.getClubId();
-		this.clubName = club.getClubName();
-		this.category = club.getCategory();
-		this.createdAt = club.getCreatedAt();
-		this.content = club.getContent();
-		this.date = club.getDate();
-		this.region = club.getRegion();
-		this.question = club.getQuestion();
-		this.memberLimit = club.getMemberLimit();
-		this.memberCount = club.getMemberCount();
-		this.price = club.getPrice();
-		this.ageLimit = club.getAgeLimit();
-		this.chatRoomId = club.getChat_room_id();
+		this.id = club.getClubId();
+		this.name = club.getClubName();
+		this.introduction = club.getContent();
+		this.type = "동아리";
 		this.images = club.getImages()
 			.stream()
 			.map(image -> ImageResponse.from(image.getImage()))
 			.toList();
+		this.category = club.getCategory();
+		this.categoryDetail = club.getCategoryDetail();
+		this.level = club.getLevel();
+		this.hasMembershipFee = club.getHasMembershipFee();
+		this.membershipFeeAmount = club.getPrice();
+		this.date = club.getDate();
+		this.participantLimit = club.getMemberLimit();
+		this.participantNumber = club.getMemberCount();
+		this.genderRatio = club.getGenderRatio();
+		this.ageRange = List.of(club.getMinAge(), club.getMaxAge());
+		this.name = club.getClubName();
+		this.introduction = club.getContent();
+		this.rules = new ArrayList<>(club.getRules());
+		this.joinQuestions = new ArrayList<>(club.getJoinQuestions());
+		this.createdAt = club.getCreatedAt();
+		this.activityRegion = club.getRegion();
+		this.host = HostResponse.of(club.getOwner());
+		this.chatRoomId = club.getChat_room_id();
 
 		if(club.getMemberLimit() > club.getMemberCount()){
 			this.isRecruiting = true;
@@ -72,32 +88,5 @@ public class ClubBoardResponseDto {
 		return new ClubBoardResponseDto(club);
 	}
 
-	/*
-	public static ClubBoardResponseDto of (Club club){
 
-		ClubBoardResponseDto clubBoardResponseDto = new ClubBoardResponseDto();
-
-		clubBoardResponseDto.setClubId(club.getClubId());
-		clubBoardResponseDto.setClubName(club.getClubName());
-		clubBoardResponseDto.setClubImgUrl(club.getClubImg());
-		clubBoardResponseDto.setCategory(club.getCategory());
-		clubBoardResponseDto.setCreatedAt(club.getCreatedAt());
-		clubBoardResponseDto.setContent(club.getContent());
-		clubBoardResponseDto.setDate(club.getDate());
-		clubBoardResponseDto.setRegion(club.getRegion());
-		clubBoardResponseDto.setQuestion(club.getQuestion());
-		clubBoardResponseDto.setMemberLimit(club.getMemberLimit());
-
-		clubBoardResponseDto.setMemberCunt(club.getMemberCunt());
-		clubBoardResponseDto.setPrice(club.getPrice());
-		clubBoardResponseDto.setAgeLimit(club.getAgeLimit());
-
-		if(club.getMemberLimit() > club.getMemberCunt()){
-			clubBoardResponseDto.setIsRecruiting(true);
-		}
-
-		return clubBoardResponseDto;
-	}
-
-	 */
 }

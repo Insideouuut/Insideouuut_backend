@@ -35,7 +35,6 @@ public class MeetingService {
 	private final MeetingRepository meetingRepository;
 	private final MeetingUserRepository meetingUserRepository;
 	private final PlaceRepository placeRepository;
-	private final UserRepository userRepository;
 
 	@Transactional
 	public Long save(MeetingCreateRequest request, User user) {

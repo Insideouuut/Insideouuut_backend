@@ -27,12 +27,15 @@ import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.service.UserService;
 import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/clubs")
+@Tag(name = "ClubUserController", description = "동아리 멤버 관련 API")
 public class ClubUserController {
 
 	private final ClubService clubService;
@@ -42,6 +45,7 @@ public class ClubUserController {
 	private final UserService userService;
 
 	@DeleteMapping("/{clubId}/members")
+	@Operation(summary = "동아리 멤버 탈퇴 API", description = "동아리 멤버를 탈퇴하는 API 입니다.")
 	public ApiResponse clubUserLeave(
 		@PathVariable final Long clubId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -67,6 +71,7 @@ public class ClubUserController {
 	}
 
 	@PostMapping("/{clubId}/apply")
+	@Operation(summary = "동아리 멤버 지원 API", description = "동아리 멤버로 지원하는 API 입니다.")
 	public ApiResponse apply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @Valid @RequestBody ClubApplyRequestDto clubApplyRequestDto) {
 		User user = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
@@ -75,23 +80,8 @@ public class ClubUserController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
-	/*
 	@PostMapping("/{clubId}/apply/{applyId}/accept")
-	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
-		User owner = userDetails.getUser();
-		Club club = clubService.findByClubId(clubId);
-		ClubApply clubApply = clubApplyService.findClubApplyById(applyId);
-
-		clubUserService.clubUserAccept(club, owner, applyId);
-
-		ClubUser clubUser = clubUserService.clubUserFind(clubApply.getUserId(), clubId);
-		userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), clubUser.getUser());
-
-		return new ApiResponse<>(ErrorCode.REQUEST_OK);
-	}
-	 */
-
-	@PostMapping("/{clubId}/apply/{applyId}/accept")
+	@Operation(summary = "동아리 멤버 지원 승인 API", description = "동아리 멤버 지원을 승인하는 API 입니다.")
 	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
 		User owner = userDetails.getUser();
@@ -108,6 +98,7 @@ public class ClubUserController {
 	}
 
 	@DeleteMapping("/{clubId}/apply/{applyId}/reject")
+	@Operation(summary = "동아리 멤버 지원 거절 API", description = "동아리 멤버 지원을 거절하는 API 입니다.")
 	public ApiResponse rejectApply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
 		User owner = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
@@ -117,6 +108,7 @@ public class ClubUserController {
 	}
 
 	@DeleteMapping("/{clubId}/members/{clubUserId}/expel")
+	@Operation(summary = "동아리 멤버 추방 API", description = "동아리 멤버를 추방하는 API 입니다.")
 	public ApiResponse memberExpel(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @PathVariable("clubUserId") Long clubUserId) {
 		User owner = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
@@ -126,6 +118,7 @@ public class ClubUserController {
 	}
 
 	@GetMapping("/{clubId}/apply")
+	@Operation(summary = "동아리 멤버 지원자 목록 조회 API", description = "동아리 멤버 지원자 목록을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubApplyResponseDto>> findApplyList(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId) {
 		User owner = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
@@ -135,6 +128,7 @@ public class ClubUserController {
 	}
 
 	@GetMapping("/{clubId}/members")
+	@Operation(summary = "동아리 멤버 목록 조회 API", description = "동아리 멤버 목록을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubMembersResponseDto>> findMemberList(@PathVariable("clubId") Long clubId) {
 		Club club = clubService.findByClubId(clubId);
 
