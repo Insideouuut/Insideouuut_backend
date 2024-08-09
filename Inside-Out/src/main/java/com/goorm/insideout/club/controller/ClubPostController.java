@@ -52,7 +52,7 @@ public class ClubPostController {
 	private final ClubRepository clubRepository;
 	private final ImageService imageService;
 
-	@GetMapping("/{clubId}/post")
+	@GetMapping("/{clubId}/posts")
 	@Operation(summary = "동아리 게시글 목록 조회 API", description = "동아리 게시글 목록을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubPostListResponseDto>> findByPostType(@PathVariable Long clubId,
 		@RequestParam(name = "category") String category) {
@@ -60,14 +60,14 @@ public class ClubPostController {
 		return new ApiResponse<List<ClubPostListResponseDto>>(clubPostService.findClubPostByType(clubId, category));
 	}
 
-	@GetMapping("/{clubId}/post/{postId}")
+	@GetMapping("/{clubId}/posts/{postId}")
 	@Operation(summary = "동아리 게시글 단건 조회 API", description = "동아리 게시글을 조회하는 API 입니다.")
 	public ApiResponse<ClubPostDto> findClubPost(@PathVariable Long postId) {
 
 		return new ApiResponse<>(ClubPostDto.of(clubPostService.findByClubPostId(postId)));
 	}
 
-	@PostMapping("/{clubId}/post")
+	@PostMapping("/{clubId}/posts")
 	@Operation(summary = "동아리 게시글 생성 API", description = "동아리 게시글을 생성하는 API 입니다.")
 	public ApiResponse<ClubPostResponseDto> saveClubPost(
 		@PathVariable Long clubId,
@@ -83,7 +83,7 @@ public class ClubPostController {
 		return new ApiResponse<>((ClubPostResponseDto.of(clubPost.getId(), "게시글을 성공적으로 생성하였습니다.")));
 	}
 
-	@PutMapping("/{clubId}/post/{postId}")
+	@PutMapping("/{clubId}/posts/{postId}")
 	@Operation(summary = "동아리 게시글 수정 API", description = "동아리 게시글을 수정하는 API 입니다.")
 	public ApiResponse<ClubPostResponseDto> updateClubPost(
 		@PathVariable Long clubId,
@@ -102,7 +102,7 @@ public class ClubPostController {
 
 	}
 
-	@DeleteMapping("/{clubId}/post/{postId}")
+	@DeleteMapping("/{clubId}/posts/{postId}")
 	@Operation(summary = "동아리 게시글 삭제 API", description = "동아리 게시글을 삭제하는 API 입니다.")
 	public ApiResponse deleteClubPost(@PathVariable Long clubId, @PathVariable Long postId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
