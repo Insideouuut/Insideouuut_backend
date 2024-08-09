@@ -22,6 +22,7 @@ import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.service.ImageService;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.dto.request.ProfileUpdateRequest;
+import com.goorm.insideout.user.dto.response.MyProfileResponse;
 import com.goorm.insideout.user.dto.response.ProfileResponse;
 import com.goorm.insideout.user.repository.UserRepository;
 import com.goorm.insideout.user.service.UserProfileService;
@@ -57,10 +58,10 @@ public class UserProfileController {
 
 	@GetMapping()
 	@Operation(summary = "사용자 프로필 확인 API", description = "사용자 프로필를 확인할 수 있는 API 입니다.")
-	public ApiResponse<ProfileResponse> getMyProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		ProfileResponse profile = userProfileService.getProfile(customUserDetails.getUser());
+	public ApiResponse<MyProfileResponse> getMyProfile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+		MyProfileResponse profile = userProfileService.getMyProfile(customUserDetails.getUser());
 
-		return new ApiResponse<ProfileResponse>(profile);
+		return new ApiResponse<MyProfileResponse>(profile);
 	}
 
 	@PatchMapping("/{userId}")
