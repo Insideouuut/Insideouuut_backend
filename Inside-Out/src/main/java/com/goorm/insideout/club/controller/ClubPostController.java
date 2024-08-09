@@ -54,10 +54,9 @@ public class ClubPostController {
 
 	@GetMapping("/{clubId}/posts")
 	@Operation(summary = "동아리 게시글 목록 조회 API", description = "동아리 게시글 목록을 조회하는 API 입니다.")
-	public ApiResponse<List<ClubPostListResponseDto>> findByPostType(@PathVariable Long clubId,
-		@RequestParam(name = "category") String category) {
+	public ApiResponse<List<ClubPostListResponseDto>> findByPostType(@PathVariable Long clubId) {
 
-		return new ApiResponse<List<ClubPostListResponseDto>>(clubPostService.findClubPostByType(clubId, category));
+		return new ApiResponse<List<ClubPostListResponseDto>>(clubPostService.findAll());
 	}
 
 	@GetMapping("/{clubId}/posts/{postId}")
