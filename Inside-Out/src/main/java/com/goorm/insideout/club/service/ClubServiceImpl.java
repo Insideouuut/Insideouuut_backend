@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.Category;
@@ -29,6 +30,7 @@ import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.repository.UserRepository;
+import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 
