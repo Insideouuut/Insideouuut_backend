@@ -22,7 +22,7 @@ import com.goorm.insideout.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ClubPostServiceImpl implements ClubPostService{
 
@@ -31,6 +31,7 @@ public class ClubPostServiceImpl implements ClubPostService{
 	private final ClubRepository clubRepository;
 
 	@Override
+	@Transactional
 	public ClubPost saveClubPost(Long clubId, ClubPostRequestDto clubPostRequestDto, User user) {
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
@@ -55,6 +56,7 @@ public class ClubPostServiceImpl implements ClubPostService{
 	}
 
 	@Override
+	@Transactional
 	public void deleteClubPost(Long clubId, Long clubPostId, User user) {
 		ClubPost clubPost = clubPostRepository.findById(clubPostId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
@@ -70,6 +72,7 @@ public class ClubPostServiceImpl implements ClubPostService{
 	}
 
 	@Override
+	@Transactional
 	public ClubPost updateClubPost(Long clubId, ClubPostRequestDto clubRequestPostDto, User user, Long clubPostId) {
 		ClubPost clubPost = clubPostRepository.findById(clubPostId).orElseThrow(()->ModongException.from(ErrorCode.INVALID_REQUEST));
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId).orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));

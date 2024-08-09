@@ -25,7 +25,7 @@ import com.goorm.insideout.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ClubCommentServiceImpl implements ClubCommentService{
 
@@ -34,6 +34,7 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 	private final ClubPostRepository clubPostRepository;
 
 	@Override
+	@Transactional
 	public ClubComment saveComment(Long clubId, ClubCommentRequestDto clubCommentRequestDto, Long clubPostId, User user) {
 
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
@@ -53,6 +54,7 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 	}
 
 	@Override
+	@Transactional
 	public void deleteComment(Long clubId, Long clubCommentId, User user) {
 		ClubComment clubComment = clubCommentRepository.findById(clubCommentId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
@@ -68,6 +70,7 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 
 
 	@Override
+	@Transactional
 	public void updateComment(Long clubId, Long clubCommentId, ClubCommentRequestDto clubCommentRequestDto, User user) {
 		ClubComment clubComment = clubCommentRepository.findById(clubCommentId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));

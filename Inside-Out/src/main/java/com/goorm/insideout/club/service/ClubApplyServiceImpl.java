@@ -30,17 +30,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 public class ClubApplyServiceImpl implements ClubApplyService{
 
 	private final ClubApplyRepository clubApplyRepository;
 	private final ClubRepository clubRepository;
-	private final UserRepository userRepository;
 	private final ProfileImageRepository profileImageRepository;
 
 	@Override
+	@Transactional
 	public ClubApply findClubApplyByUserIDAndClubId(Long userId, Long clubId) {
 		return clubApplyRepository.findByUserIdAndClubId(userId,clubId).orElse(null);
 	}
@@ -54,6 +54,7 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 	}
 
 	@Override
+	@Transactional
 	public ClubApply clubApply(Club club, User user, ClubApplyRequestDto clubApplyRequestDto) {
 		if(clubApplyRepository.findByUserIdAndClubId(user.getId(), club.getClubId()).isPresent()){
 			throw new IllegalStateException();

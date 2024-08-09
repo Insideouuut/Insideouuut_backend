@@ -15,8 +15,6 @@ import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.ClubApply;
 import com.goorm.insideout.club.entity.ClubUser;
-import com.goorm.insideout.club.entity.GenderRatio;
-import com.goorm.insideout.club.entity.Level;
 import com.goorm.insideout.club.repository.ClubApplyRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
@@ -32,7 +30,7 @@ import com.goorm.insideout.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ClubServiceImpl implements ClubService{
 
@@ -47,6 +45,7 @@ public class ClubServiceImpl implements ClubService{
 
 
 	@Override
+	@Transactional
 	public Club createClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/ User user) throws IOException {
 
 		String clubImgUrl;
@@ -101,6 +100,7 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
+	@Transactional
 	public void deleteClub(Long clubId) {
 		Club club = clubRepository.getById(clubId);
 
@@ -108,6 +108,7 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
+	@Transactional
 	public Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club) throws
 		IOException {
 		Long clubId = club.getClubId();
@@ -269,7 +270,6 @@ public class ClubServiceImpl implements ClubService{
 
 	}
 
-	@Transactional(readOnly = true)
 	public List<ClubUser> getMembers(Long clubId) {
 
 		Club club = this.clubRepository.findById(clubId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND));

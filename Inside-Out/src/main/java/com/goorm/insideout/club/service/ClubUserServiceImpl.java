@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
 public class ClubUserServiceImpl implements ClubUserService {
@@ -94,6 +94,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 	}
 
 	@Override
+	@Transactional
 	public void clubUserReject(Club club, User user, Long applyId) {
 		Long clubId = club.getClubId();
 		Long userId = user.getId();
@@ -117,6 +118,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 	}
 
 	@Override
+	@Transactional
 	public void clubUserLeave(Club club, User user) {
 		Long clubId = club.getClubId();
 		Long userId = user.getId();
@@ -136,6 +138,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 	}
 
 	@Override
+	@Transactional
 	public void clubUserExpel(Club club, User user, Long clubUserId) {
 		Long clubId = club.getClubId();
 		List<ClubUser> members = getMembers(clubId);
@@ -159,7 +162,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 		return null;
 	}
 
-	@Transactional(readOnly = true)
 	public List<ClubUser> getMembers(Long clubId) {
 		if(!this.clubRepository.findById(clubId).isPresent()){
 			throw new NoSuchElementException();
@@ -171,7 +173,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 		return members;
 	}
 
-	@Transactional
 	public boolean isOwner(Club club, User owner){
 		return club.getOwner().getId().equals(owner.getId());
 	}
