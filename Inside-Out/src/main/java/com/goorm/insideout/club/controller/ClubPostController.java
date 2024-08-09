@@ -77,7 +77,6 @@ public class ClubPostController {
 			clubPost = clubPostService.saveClubPost(clubId, clubPostRequestDto, user);
 
 		} catch (Exception exception) {
-			System.out.println("exception = " + exception);
 			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
 		}
 		return new ApiResponse<ClubPostResponseDto>((ClubPostResponseDto.of(clubPost.getId(), "게시글을 성공적으로 생성하였습니다.")));

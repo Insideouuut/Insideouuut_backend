@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
-import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
+import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.ClubApply;
 import com.goorm.insideout.club.entity.ClubUser;
+import com.goorm.insideout.club.entity.GenderRatio;
+import com.goorm.insideout.club.entity.Level;
 import com.goorm.insideout.club.repository.ClubApplyRepository;
 import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
@@ -26,7 +28,6 @@ import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.repository.ProfileImageRepository;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.repository.UserRepository;
-import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -64,11 +65,13 @@ public class ClubServiceImpl implements ClubService{
 
 		 */
 
-		Club club = clubRepository.save(clubBuilder(clubRequestDto, /*clubImgUrl,*/ user));
+		Club club = clubBuilder(clubRequestDto, /*clubImgUrl,*/ user);
+		clubRequestDto.setEnum(club);
+		club.setCreatedAt(LocalDateTime.now());
+
+		clubRepository.save(club);
 
 		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
-
-		club.setCreatedAt(LocalDateTime.now());
 
 		ClubUser clubUser = ClubUser.builder()
 			.userId(user.getId())
@@ -134,6 +137,8 @@ public class ClubServiceImpl implements ClubService{
 		 */
 
 		Club modify_club = clubBuilder(clubRequestDto, user);
+
+		clubRequestDto.setEnum(modify_club);
 		modify_club.setMemberCount(club.getMemberCount());
 		modify_club.setCreatedAt(club.getCreatedAt());
 		modify_club.setClubId(clubId);
@@ -233,9 +238,7 @@ public class ClubServiceImpl implements ClubService{
 
 		return Club.builder()
 			.clubName(ClubRequestDto.getName())
-			.category(ClubRequestDto.getCategory())
 			.categoryDetail(ClubRequestDto.getCategoryDetail())
-			.level(ClubRequestDto.getLevel())
 			.content(ClubRequestDto.getIntroduction())
 			.date(ClubRequestDto.getDate())
 			.region(ClubRequestDto.getActivityRegion())
@@ -244,9 +247,8 @@ public class ClubServiceImpl implements ClubService{
 			.memberCount(1)
 			.hasMembershipFee(ClubRequestDto.isHasMembershipFee())
 			.price(ClubRequestDto.getMembershipFeeAmount())
-			.hasGenderRatio(ClubRequestDto.getHasGenderRatio())
-			.ratio(ClubRequestDto.getRatio())
-			.ageRange(ClubRequestDto.getAgeRange())
+			.minAge(ClubRequestDto.getMinAge())
+			.maxAge(ClubRequestDto.getMaxAge())
 			.rules(ClubRequestDto.getRules())
 			.owner(user)
 			.build();

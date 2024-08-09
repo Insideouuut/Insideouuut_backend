@@ -86,8 +86,6 @@ public class ClubUserServiceImpl implements ClubUserService {
 			.mannerTemp(user.getMannerTemp())
 			.build();
 
-		System.out.println("clubUser.getProfileImgUrl() = " + clubUser.getProfileImgUrl());
-
 		club.increaseMemberCount();
 		clubRepository.save(club);
 		clubApplyRepository.deleteByApplyId(applyId);
