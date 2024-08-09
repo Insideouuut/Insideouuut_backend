@@ -80,7 +80,7 @@ public class UserProfileService {
 		User findUser = userRepository.findByIdWithProfileImage(user.getId());
 		MyProfileResponse response = new MyProfileResponse(findUser);
 
-		List<MeetingResponse> pendingMeetings = meetingService.findPendingMeetings(findUser);
+		List<MeetingResponse> pendingMeetings = meetingApplyService.findPendingMeetings(findUser);
 		response.setPendingMeetings(meetingResponseToProfile(pendingMeetings));
 
 		List<MeetingResponse> ParticipatingMeetings = meetingService.findParticipatingMeetings(findUser);
