@@ -38,6 +38,7 @@ public enum ErrorCode {
 	CLUB_ALREADY_JOINED(HttpStatus.CONFLICT, "이미 가입된 동아리입니다."),
 	CLUB_NOT_OWNER(HttpStatus.FORBIDDEN, "동아리의 호스트가 아닙니다."),
 	CLUB_NOT_MEMBER(HttpStatus.FORBIDDEN, "동아리의 멤버가 아닙니다."),
+	CLUB_POST_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 동아리 게시글입니다."),
 	CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 카테고리입니다."),
 
 	// meeting
