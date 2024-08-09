@@ -24,7 +24,7 @@ public interface ClubService {
 	Club modifyClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/   User user, Club club) throws
 		IOException;
 
-	List<ClubListResponseDto> findAllClubDesc();
+	List<ClubBoardResponseDto> findAllClubDesc();
 
 	Club ownClub(Long clubId, Long userId);
 

@@ -157,10 +157,10 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
-	public List<ClubListResponseDto> findAllClubDesc(){
+	public List<ClubBoardResponseDto> findAllClubDesc(){
 
 		return clubRepository.findAllByOrderByClubIdDesc().stream()
-			.map(ClubListResponseDto::new)
+			.map(ClubBoardResponseDto::new)
 			.toList();
 	}
 
