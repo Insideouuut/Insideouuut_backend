@@ -3,13 +3,13 @@ package com.goorm.insideout.club.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
+import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubRepository;
@@ -18,6 +18,7 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
@@ -75,8 +76,8 @@ public class ClubServiceImpl implements ClubService{
 
 	@Override
 	public Club findByClubId(Long ClubId) {
-
-		return clubRepository.findById(ClubId).orElseThrow(null);
+		return clubRepository.findById(ClubId)
+			.orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 	}
 
 	@Override
@@ -129,7 +130,19 @@ public class ClubServiceImpl implements ClubService{
 
 		return clubRepository.findAllByOrderByClubIdDesc().stream()
 			.map(ClubListResponseDto::new)
-			.collect(Collectors.toList());
+			.toList();
+	}
+
+	// 정렬 타입에 따른 조회
+	@Override
+	public List<ClubBoardResponseDto> findBySortType(SearchRequest condition) {
+		return clubRepository.findBySortType(condition);
+	}
+
+	// 검색 조건 및 정렬 타입에 따른 조회
+	@Override
+	public List<ClubBoardResponseDto> findByConditionAndSortType(SearchRequest condition) {
+		return clubRepository.findByConditionAndSortType(condition);
 	}
 
 	@Override
@@ -140,11 +153,9 @@ public class ClubServiceImpl implements ClubService{
 
 	@Override
 	public List<ClubListResponseDto> findByCategory(String category) {
-
-
 		return clubRepository.findByCategoryJQL(category).stream()
 			.map(ClubListResponseDto::new)
-			.collect(Collectors.toList());
+			.toList();
 	}
 
 
