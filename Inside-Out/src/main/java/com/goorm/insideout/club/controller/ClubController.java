@@ -48,9 +48,9 @@ public class ClubController {
 
 	@GetMapping("/clubs")
 	@Operation(summary = "동아리 목록 조회 API", description = "동아리 목록을 조회하는 API 입니다.")
-	public ApiResponse<List<ClubListResponseDto>> findByType(@RequestParam(name = "category") String category) {
+	public ApiResponse<ClubBoardResponseDto> findByType() {
 
-		return new ApiResponse<List<ClubListResponseDto>>(clubService.findByCategory(category));
+		return new ApiResponse<>(clubService.findAllClubDesc());
 	}
 
 
@@ -63,7 +63,7 @@ public class ClubController {
 	@PostMapping("/clubs")
 	@Operation(summary = "동아리 생성 API", description = "동아리를 생성하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> saveClub(
-		@Valid @RequestPart ClubRequestDto clubRequestDto,
+		@RequestPart("request") ClubRequestDto clubRequestDto,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){

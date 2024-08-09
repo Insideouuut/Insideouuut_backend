@@ -1,7 +1,9 @@
 package com.goorm.insideout.image.dto;
 
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.image.domain.ClubImage;
+import com.goorm.insideout.image.domain.ClubPostImage;
 import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.meeting.domain.Meeting;
@@ -15,6 +17,10 @@ public record StoreImageDto(String uploadName, String storeName) {
 
 	public ClubImage toClubImageEntity(Club club, String url) {
 		return ClubImage.createClubImage(uploadName, storeName, url, club);
+	}
+
+	public ClubPostImage toClubPostImageEntity(ClubPost clubPost, String url) {
+		return ClubPostImage.createClubPostImage(uploadName, storeName, url, clubPost);
 	}
 
 	public MeetingImage toMeetingImageEntity(Meeting meeting, String url) {
