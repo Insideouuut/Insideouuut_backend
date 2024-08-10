@@ -14,6 +14,8 @@ import lombok.Setter;
 @Builder
 public class ChatRoomResponseDTO {
 
+	private Long associatedId;
+
 	private String title;
 
 	private ChatRoomType type;
@@ -28,6 +30,7 @@ public class ChatRoomResponseDTO {
 
 	public static ChatRoomResponseDTO of(ChatRoom chatRoom, Long userCount,Long unreadMessageCnt) {
 		return ChatRoomResponseDTO.builder()
+			.associatedId(chatRoom.getAssociatedId())
 			.title(chatRoom.getTitle())
 			.type(chatRoom.getType())
 			.lastMessageContent(chatRoom.getLastMessageContent())
