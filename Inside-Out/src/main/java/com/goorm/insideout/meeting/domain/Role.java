@@ -8,7 +8,8 @@ import lombok.Getter;
 public enum Role {
 
 	HOST("호스트"),
-	MEMBER("멤버");
+	MEMBER("멤버"),
+	NONE("권한 없음");
 
 	private final String name;
 }

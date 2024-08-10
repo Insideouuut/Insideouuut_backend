@@ -39,5 +39,6 @@ public interface ClubRepository extends JpaRepository<Club, Long>, ClubQueryDslR
 		,nativeQuery = true)
 	List<Club> findByCategoryJQL(@Param("category") String category);
 
+	Optional<Club> findByClubName(String clubName);
 
 }

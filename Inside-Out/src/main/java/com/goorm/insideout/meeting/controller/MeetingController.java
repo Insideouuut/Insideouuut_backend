@@ -28,6 +28,7 @@ import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
+import com.goorm.insideout.meeting.service.MeetingUserService;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
@@ -41,6 +42,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "MeetingController", description = "모임 관련 API")
 public class MeetingController {
 	private final MeetingService meetingService;
+	private final MeetingUserService meetingUserService;
 	private final ImageService imageService;
 	private final ChatRoomService chatRoomService;
 	private final UserChatRoomService userChatRoomService;
@@ -71,8 +73,11 @@ public class MeetingController {
 
 	@GetMapping("/meetings/{meetingId}")
 	@Operation(summary = "모임 단건 조회 API", description = "모임을 단건으로 조회할 수 있는 API 입니다.")
-	public ApiResponse<MeetingResponse> findById(@PathVariable Long meetingId) {
-		return new ApiResponse<>(meetingService.findById(meetingId));
+	public ApiResponse<MeetingResponse> findById(
+		@PathVariable Long meetingId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		return new ApiResponse<>(meetingService.findById(meetingId, customUserDetails.getUser()));
 	}
 
 	@GetMapping("/meetings/participating")
