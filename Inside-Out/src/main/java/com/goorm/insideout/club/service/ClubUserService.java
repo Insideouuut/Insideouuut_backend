@@ -16,8 +16,6 @@ public interface ClubUserService {
 
 	void clubUserDelete(Long userId, Long clubId);
 
-	//ClubUser clubUserApply(Club club, User user, ClubApplyRequestDto clubApplyRequestDto);
-
 	ClubUser clubUserAccept(Club club, User user, Long applyId);
 
 	void clubUserReject(Club club, User user, Long applyId);
@@ -28,7 +26,6 @@ public interface ClubUserService {
 
 	//List<ClubDetailResponseDto> findMemberList(Club club);
 	List<ClubMembersResponseDto> findMemberList(Club club);
-
 
 	void clubUserLeave(Club club, User user);
 

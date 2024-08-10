@@ -64,7 +64,6 @@ public class ClubPost {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "club_id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
 	Club club;
 
 	@OneToMany(mappedBy = "clubPost", cascade = CascadeType.ALL)

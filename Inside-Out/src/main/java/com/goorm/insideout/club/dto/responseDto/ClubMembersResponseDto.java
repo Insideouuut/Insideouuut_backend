@@ -17,7 +17,6 @@ public class ClubMembersResponseDto {
 
 	private String role;
 	private String userName;
-	//private ProfileImage profileImage;
 	private String profileImgUrl;
 	private BigDecimal mannerTemp;
 
@@ -29,7 +28,6 @@ public class ClubMembersResponseDto {
 
 		this.role = clubUser.getRole().getName();
 		this.userName = clubUser.getUserName();
-		//this.profileImage = clubUser.getProfileImage();
 		this.profileImgUrl = clubUser.getProfileImgUrl();
 		this.mannerTemp = clubUser.getMannerTemp();
 

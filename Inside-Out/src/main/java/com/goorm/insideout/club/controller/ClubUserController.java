@@ -44,7 +44,6 @@ public class ClubUserController {
 	private final ClubUserService clubUserService;
 	private final ClubApplyService clubApplyService;
 	private final UserChatRoomService userChatRoomService;
-	private final UserService userService;
 
 	@DeleteMapping("/{clubId}/members")
 	@Operation(summary = "동아리 멤버 탈퇴 API", description = "동아리 멤버를 탈퇴하는 API 입니다.")

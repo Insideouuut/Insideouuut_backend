@@ -18,7 +18,6 @@ public class ClubApplyResponseDto {
 
 	private Long applyId;
 	private String userName;
-	//private ProfileImage profileImage;
 	private String profileImgUrl;
 	private BigDecimal mannerTemp;
 	private String answer;
@@ -31,7 +30,6 @@ public class ClubApplyResponseDto {
 	public ClubApplyResponseDto(ClubApply clubApply) {
 		this.applyId = clubApply.getApplyId();
 		this.userName = clubApply.getUserName();
-		//this.profileImage = clubApply.getProfileImage();
 		this.profileImgUrl = clubApply.getProfileImgUrl();
 		this.mannerTemp = clubApply.getMannerTemp();
 		this.answer = clubApply.getAnswer();

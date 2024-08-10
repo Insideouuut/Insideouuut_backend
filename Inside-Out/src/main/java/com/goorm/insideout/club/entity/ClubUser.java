@@ -46,7 +46,6 @@ public class ClubUser {
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id",insertable = false,updatable = false)
-	@OnDelete(action = OnDeleteAction.CASCADE)
 	User user;
 
 	@NotNull
@@ -70,15 +69,5 @@ public class ClubUser {
 	private String userName;
 	private String profileImgUrl;
 	private BigDecimal mannerTemp;
-
-/*
-	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-	@JoinColumn(name = "profile_image_id")
-	private ProfileImage profileImage;
-
- */
-
-
-
 
 }
