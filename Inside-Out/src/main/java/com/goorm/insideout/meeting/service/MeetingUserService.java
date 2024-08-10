@@ -42,6 +42,10 @@ public class MeetingUserService {
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_MEMBER));
 
+		if (meeting.isHost(user)) {
+			throw ModongException.from(ErrorCode.MEETING_HOST_CANNOT_EXIT);
+		}
+
 		MeetingUser meetingUser = meetingUserRepository.findByMeetingIdAndUserId(meeting.getId(), user.getId())
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_MEMBER));
 
