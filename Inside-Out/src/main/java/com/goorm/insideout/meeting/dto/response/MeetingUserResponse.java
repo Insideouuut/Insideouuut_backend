@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 public class MeetingUserResponse {
 	private Long id;
+	private String role;
 	private String nickName;
 	private ImageResponse profileImage;
 	private BigDecimal mannerTemp;
@@ -21,6 +22,7 @@ public class MeetingUserResponse {
 	public static MeetingUserResponse of(MeetingUser meetingUser) {
 		MeetingUserResponse response = new MeetingUserResponse();
 		response.id = meetingUser.getId();
+		response.role = meetingUser.getRole().name();
 		response.nickName = meetingUser.getUser().getNickname();
 		response.mannerTemp = meetingUser.getUser().getMannerTemp();
 		response.profileImage = ImageResponse.from(meetingUser.getUser().getProfileImage().getImage());

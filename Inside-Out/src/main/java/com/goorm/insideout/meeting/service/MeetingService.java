@@ -13,9 +13,11 @@ import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
+import com.goorm.insideout.meeting.domain.MeetingApply;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
+import com.goorm.insideout.meeting.domain.Role;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingPlaceRequest;
 import com.goorm.insideout.meeting.dto.request.SearchRequest;
@@ -40,6 +42,10 @@ public class MeetingService {
 	public Meeting save(MeetingCreateRequest request, User user) {
 		MeetingPlace meetingPlace = findOrCreatePlace(request.getMeetingPlace());
 		Meeting meeting = request.toEntity(user, meetingPlace);
+
+		MeetingUser meetingUser = MeetingUser.of(meeting, user, Role.HOST);
+		meetingUserRepository.save(meetingUser);
+
 		return meetingRepository.save(meeting);
 	}
 
@@ -50,7 +56,9 @@ public class MeetingService {
 			.toList();
 	}
 
-	public MeetingResponse findById(Long id) {
+	public MeetingResponse findById(Long id, User user) {
+
+
 		Meeting meeting = meetingRepository.findById(id)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
 
