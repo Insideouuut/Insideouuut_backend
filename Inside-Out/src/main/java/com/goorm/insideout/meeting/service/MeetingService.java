@@ -9,23 +9,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
-import com.goorm.insideout.meeting.domain.ApprovalStatus;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingPlaceRequest;
-import com.goorm.insideout.meeting.dto.request.MeetingSearchRequest;
+import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.repository.MeetingRepository;
 import com.goorm.insideout.meeting.repository.MeetingUserRepository;
 import com.goorm.insideout.meeting.repository.PlaceRepository;
 import com.goorm.insideout.user.domain.User;
-import com.goorm.insideout.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,12 +37,10 @@ public class MeetingService {
 	private final PlaceRepository placeRepository;
 
 	@Transactional
-	public Long save(MeetingCreateRequest request, User user) {
+	public Meeting save(MeetingCreateRequest request, User user) {
 		MeetingPlace meetingPlace = findOrCreatePlace(request.getMeetingPlace());
 		Meeting meeting = request.toEntity(user, meetingPlace);
-		meetingRepository.save(meeting);
-
-		return meeting.getId();
+		return meetingRepository.save(meeting);
 	}
 
 	public List<MeetingResponse> findAll() {
@@ -61,45 +58,29 @@ public class MeetingService {
 	}
 
 	// 검색 조건에 따른 조회
-	public List<MeetingResponse> findByCondition(MeetingSearchRequest condition) {
+	public List<MeetingResponse> findByCondition(SearchRequest condition) {
 		return meetingRepository.findAllByCondition(condition);
 	}
 
 	// 정렬 타입에 따른 조회
-	public List<MeetingResponse> findBySortType(MeetingSearchRequest condition) {
+	public List<MeetingResponse> findBySortType(SearchRequest condition) {
 		return meetingRepository.findBySortType(condition);
 	}
 
 	// 검색 조건 및 정렬 타입에 따른 조회
-	public List<MeetingResponse> findByConditionAndSortType(MeetingSearchRequest condition) {
+	public List<MeetingResponse> findByConditionAndSortType(SearchRequest condition) {
 		return meetingRepository.findByConditionAndSortType(condition);
 	}
 
-
-
-	public Page<MeetingResponse> findPendingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.PENDING,
-				Progress.ONGOING, pageable)
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
-	}
-
-	public List<MeetingResponse> findPendingMeetings(User user) {
-		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
-			ApprovalStatus.PENDING, Progress.ONGOING);
-		return meetingUsers.stream()
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
-			.collect(Collectors.toList());
-	}
-
 	public Page<MeetingResponse> findParticipatingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(), ApprovalStatus.APPROVED,
+		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
 				Progress.ONGOING, pageable)
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
 	}
 
 	public List<MeetingResponse> findParticipatingMeetings(User user) {
 		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
-			ApprovalStatus.APPROVED, Progress.ONGOING);
+			Progress.ONGOING);
 		return meetingUsers.stream()
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
 			.collect(Collectors.toList());
@@ -111,12 +92,12 @@ public class MeetingService {
 	}
 
 	public Page<MeetingResponse> findEndedMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED, Progress.ENDED, pageable)
+		return meetingUserRepository.findEndedMeetings(user.getId(), Progress.ENDED, pageable)
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
 	}
 
 	public List<MeetingResponse> findEndedMeetings(User user) {
-		List<MeetingUser> meetingUsers = meetingUserRepository.findEndedMeetings(user.getId(), ApprovalStatus.APPROVED,
+		List<MeetingUser> meetingUsers = meetingUserRepository.findEndedMeetings(user.getId(),
 			Progress.ENDED);
 		return meetingUsers.stream()
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
@@ -168,5 +149,14 @@ public class MeetingService {
 		);
 
 		return meetingPlace.orElseGet(() -> placeRepository.save(request.toEntity()));
+	}
+
+	@Transactional
+	public Meeting injectMeetingChatRoom(Long meetingId, ChatRoom newChatRoom) {
+		Meeting meeting = meetingRepository.findById(meetingId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
+		meeting.updateChatRoom(newChatRoom);
+		return meetingRepository.save(meeting);
+
 	}
 }

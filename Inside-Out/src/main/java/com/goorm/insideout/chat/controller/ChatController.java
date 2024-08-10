@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "CharController", description = "채팅 관련 API")
+@Tag(name = "ChatController", description = "채팅 관련 API")
 public class ChatController {
 	private final ChatService chatService;
 	private final SimpMessageSendingOperations messagingTemplate;
@@ -43,7 +43,7 @@ public class ChatController {
 		String email = principal.getName();
 		Chat chat = chatService.createChat(roomId, chatRequestDTO, email);
 		ChatResponseDTO chatResponseDTO = ChatResponseDTO.builder()
-			.content(chat.getContent())
+			.content(chat.getContent()) 
 			.sender(ChatUserResponse.from(chat.getUser()))
 			.sendTime(chat.getSendTime())
 			.build();

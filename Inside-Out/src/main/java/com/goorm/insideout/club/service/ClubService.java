@@ -8,6 +8,7 @@ import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubBoardResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubListResponseDto;
 import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.user.domain.User;
 
 public interface ClubService {
@@ -16,11 +17,13 @@ public interface ClubService {
 
 	Club findByClubId(Long ClubId);
 
+	ClubBoardResponseDto findClubBoard(Long clubId);
+
 	void deleteClub(Long clubId);
 
 	Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club);
 
-	List<ClubListResponseDto> findAllClubDesc();
+	List<ClubBoardResponseDto> findAllClubDesc();
 
 	Club ownClub(Long clubId, Long userId);
 
@@ -31,6 +34,4 @@ public interface ClubService {
 	public List<ClubListResponseDto> findMyClub(Long userId);
 
 	public List<ClubListResponseDto> findMyApplyClub(Long userId);
-
-	public ClubBoardResponseDto findClubBoard(Long ClubId, User user);
 }

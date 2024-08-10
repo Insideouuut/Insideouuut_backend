@@ -7,9 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.club.dto.ClubPostDto;
 import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubPostListResponseDto;
-import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.dto.responseDto.ClubPostResponseDto;
 import com.goorm.insideout.club.entity.ClubPost;
 import com.goorm.insideout.club.entity.ClubUser;
 import com.goorm.insideout.club.repository.ClubPostRepository;
@@ -39,10 +40,19 @@ public class ClubPostServiceImpl implements ClubPostService {
 	}
 
 	@Override
-	public ClubPost findByClubPostId(Long clubPostId) {
-
-		return clubPostRepository.findById(clubPostId)
+	public ClubPostDto findByClubPostId(Long clubPostId) {
+		ClubPost clubPost = clubPostRepository.findById(clubPostId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
+
+		return ClubPostDto.of(clubPost);
+	}
+
+	@Override
+	public List<ClubPostListResponseDto> findAll() {
+		return clubPostRepository.findAll()
+			.stream()
+			.map(ClubPostListResponseDto::new)
+			.toList();
 	}
 
 	@Override
