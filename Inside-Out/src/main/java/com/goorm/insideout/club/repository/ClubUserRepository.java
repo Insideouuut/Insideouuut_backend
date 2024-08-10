@@ -20,9 +20,6 @@ public interface ClubUserRepository extends JpaRepository<ClubUser,Long> {
 	@Transactional
 	void deleteByUserIdAndClubId(Long userId, Long clubId);
 
-	@Transactional
-	void deleteByClubUserId(Long clubUserId);
-
 	Optional<ClubUser> findByClubUserId(Long clubUserId);
 
 	@Query("SELECT cu FROM ClubUser cu JOIN FETCH cu.user WHERE cu.userId = :userId AND cu.clubId = :clubId")

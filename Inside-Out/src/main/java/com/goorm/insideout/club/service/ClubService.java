@@ -13,7 +13,7 @@ import com.goorm.insideout.user.domain.User;
 
 public interface ClubService {
 
-	Club createClub(ClubRequestDto ClubRequestDto, /*MultipartFile multipartFile,*/ User user) throws IOException;
+	Club createClub(ClubRequestDto ClubRequestDto, User user);
 
 	Club findByClubId(Long ClubId);
 
@@ -21,20 +21,16 @@ public interface ClubService {
 
 	void deleteClub(Long clubId);
 
-	Club modifyClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/   User user, Club club) throws
-		IOException;
+	Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club);
 
 	List<ClubBoardResponseDto> findAllClubDesc();
 
 	Club ownClub(Long clubId, Long userId);
-
 	// 정렬 타입에 따른 조회
 	List<ClubBoardResponseDto> findBySortType(SearchRequest condition);
 
 	// 검색 조건 및 정렬 타입에 따른 조회
 	List<ClubBoardResponseDto> findByConditionAndSortType(SearchRequest condition);
-
-	// Club belongToClub(Long userId);
 
 	List<ClubListResponseDto> findByCategory(String category);
 

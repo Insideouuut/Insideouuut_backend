@@ -25,27 +25,27 @@ import com.goorm.insideout.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ClubCommentServiceImpl implements ClubCommentService{
+public class ClubCommentServiceImpl implements ClubCommentService {
 
 	private final ClubCommentRepository clubCommentRepository;
 	private final ClubUserRepository clubUserRepository;
 	private final ClubPostRepository clubPostRepository;
 
 	@Override
-	public ClubComment saveComment(Long clubId, ClubCommentRequestDto clubCommentRequestDto, Long clubPostId, User user) {
+	@Transactional
+	public ClubComment saveComment(Long clubId, ClubCommentRequestDto clubCommentRequestDto, Long clubPostId,
+		User user) {
 
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
-
-		return clubCommentRepository.save(clubCommentBuilder(clubCommentRequestDto,clubPostId, clubUser));
+		return clubCommentRepository.save(clubCommentBuilder(clubCommentRequestDto, clubPostId, clubUser));
 	}
 
 	@Override
 	public List<ClubCommentListResponseDto> findCommentsByClubPostId(Long clubPostId) {
-
 
 		return clubCommentRepository.findByClubPostIdJQL(clubPostId).stream()
 			.map(ClubCommentListResponseDto::new)
@@ -53,28 +53,29 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 	}
 
 	@Override
+	@Transactional
 	public void deleteComment(Long clubId, Long clubCommentId, User user) {
 		ClubComment clubComment = clubCommentRepository.findById(clubCommentId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
-		if(!clubComment.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
+		if (!clubComment.getClubUser().getClubUserId().equals(clubUser.getClubUserId())) {
 			throw new IllegalStateException();
 		}
 
 		clubCommentRepository.deleteById(clubCommentId);
 	}
 
-
 	@Override
+	@Transactional
 	public void updateComment(Long clubId, Long clubCommentId, ClubCommentRequestDto clubCommentRequestDto, User user) {
 		ClubComment clubComment = clubCommentRepository.findById(clubCommentId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(user.getId(), clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 
-		if(!clubComment.getClubUser().getClubUserId().equals(clubUser.getClubUserId())){
+		if (!clubComment.getClubUser().getClubUserId().equals(clubUser.getClubUserId())) {
 			throw new IllegalStateException();
 		}
 
@@ -85,17 +86,20 @@ public class ClubCommentServiceImpl implements ClubCommentService{
 
 	@Override
 	public ClubComment findByCommentId(Long clubCommentId) {
-		return clubCommentRepository.findById(clubCommentId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+		return clubCommentRepository.findById(clubCommentId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 	}
 
-	public ClubComment clubCommentBuilder(ClubCommentRequestDto clubCommentRequestDto, Long clubPostId, ClubUser clubUser) {
+	public ClubComment clubCommentBuilder(ClubCommentRequestDto clubCommentRequestDto, Long clubPostId,
+		ClubUser clubUser) {
 
 		return ClubComment.builder()
 			.content(clubCommentRequestDto.getContent())
 			.dateTime(LocalDateTime.now())
 			.writer(clubUser.getUserName())
 			.clubUser(clubUser)
-			.clubPost(clubPostRepository.findById(clubPostId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND)))
+			.clubPost(clubPostRepository.findById(clubPostId)
+				.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND)))
 			.build();
 
 	}

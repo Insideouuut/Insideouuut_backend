@@ -26,7 +26,6 @@ public class ClubRequestDto {
 	private String ratio;
 	private int minAge;
 	private int maxAge;
-	//private List<Integer> ageRange;
 	private String name;
 	private String introduction;
 	private Set<String> rules;
