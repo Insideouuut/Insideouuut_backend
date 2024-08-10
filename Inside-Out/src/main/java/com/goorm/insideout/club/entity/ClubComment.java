@@ -46,10 +46,9 @@ public class ClubComment {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "clubPost_Id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ClubPost clubPost;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "clubUser_Id")
 	private ClubUser clubUser;
 

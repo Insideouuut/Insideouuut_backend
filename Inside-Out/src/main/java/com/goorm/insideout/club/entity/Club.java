@@ -93,11 +93,15 @@ public class Club {
 	private Set<String> rules = new HashSet<>();//
 
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "owner_id")
 	User owner;
 
 	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
+	@Builder.Default
+	List<ClubUser> members = new ArrayList<>();
+
+	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonIgnore
 	List<ClubPost> posts;
 
@@ -110,10 +114,6 @@ public class Club {
 	ChatRoom chatRoom;
 
 	private Long chat_room_id;
-
-	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
-	@Builder.Default
-	List<ClubUser> members = new ArrayList<>();
 
 	public void increaseMemberCount() {
 		this.memberCount++;

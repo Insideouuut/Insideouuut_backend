@@ -56,15 +56,13 @@ public class ClubPost {
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "clubUser_Id")
-	//@OnDelete(action = OnDeleteAction.CASCADE)
 	private ClubUser clubUser;
 
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "club_id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
 	Club club;
 
 	public void update(ClubPostRequestDto clubPostRequestDto){
