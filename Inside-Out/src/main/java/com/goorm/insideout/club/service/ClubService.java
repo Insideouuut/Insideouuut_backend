@@ -26,6 +26,11 @@ public interface ClubService {
 	List<ClubBoardResponseDto> findAllClubDesc();
 
 	Club ownClub(Long clubId, Long userId);
+	// 정렬 타입에 따른 조회
+	List<ClubBoardResponseDto> findBySortType(SearchRequest condition);
+
+	// 검색 조건 및 정렬 타입에 따른 조회
+	List<ClubBoardResponseDto> findByConditionAndSortType(SearchRequest condition);
 
 	List<ClubListResponseDto> findByCategory(String category);
 
