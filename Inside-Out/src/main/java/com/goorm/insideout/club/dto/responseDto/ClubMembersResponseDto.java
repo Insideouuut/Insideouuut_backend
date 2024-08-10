@@ -15,6 +15,7 @@ import lombok.Setter;
 @Setter
 public class ClubMembersResponseDto {
 
+	private String role;
 	private String userName;
 	private String profileImgUrl;
 	private BigDecimal mannerTemp;
@@ -25,6 +26,7 @@ public class ClubMembersResponseDto {
 
 	public ClubMembersResponseDto(ClubUser clubUser){
 
+		this.role = clubUser.getRole().getName();
 		this.userName = clubUser.getUserName();
 		this.profileImgUrl = clubUser.getProfileImgUrl();
 		this.mannerTemp = clubUser.getMannerTemp();

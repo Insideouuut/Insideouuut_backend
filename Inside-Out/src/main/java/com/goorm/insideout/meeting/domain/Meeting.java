@@ -131,7 +131,7 @@ public class Meeting {
 		meeting.description = description;
 		meeting.category = category;
 		meeting.categoryDetail = categoryDetail;
-		meeting.participantsNumber = 1;
+		meeting.increaseParticipantsNumber();
 		meeting.participantLimit = participantLimit;
 		meeting.rules = rules;
 		meeting.joinQuestions = joinQuestions;

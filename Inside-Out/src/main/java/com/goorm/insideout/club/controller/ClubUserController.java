@@ -15,6 +15,7 @@ import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.club.dto.requestDto.ClubApplyRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubApplyResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubMembersResponseDto;
+import com.goorm.insideout.club.dto.responseDto.ClubUserAuthorityResponse;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubApply;
 import com.goorm.insideout.club.entity.ClubUser;
@@ -23,6 +24,7 @@ import com.goorm.insideout.club.service.ClubService;
 import com.goorm.insideout.club.service.ClubUserService;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.meeting.dto.response.MeetingUserAuthorityResponse;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.service.UserService;
 import com.goorm.insideout.userchatroom.service.UserChatRoomService;
@@ -133,5 +135,14 @@ public class ClubUserController {
 
 
 		return new ApiResponse<List<ClubMembersResponseDto>>(clubUserService.findMemberList(club));
+	}
+
+	@GetMapping("/{clubId}/members/authority")
+	@Operation(summary = "동아리에 대한 사용자 권한 확인 API", description = "동아리에 대한 사용자의 권한을 확인할 수 있는 API 입니다.")
+	public ApiResponse<ClubUserAuthorityResponse> checkMeetingAuthority(
+		@PathVariable Long clubId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		return new ApiResponse<>(clubUserService.checkUserAuthority(clubId, customUserDetails));
 	}
 }

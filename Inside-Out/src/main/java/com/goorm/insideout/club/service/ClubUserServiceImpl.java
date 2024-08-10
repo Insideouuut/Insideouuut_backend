@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.club.dto.responseDto.ClubMembersResponseDto;
+import com.goorm.insideout.club.dto.responseDto.ClubUserAuthorityResponse;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubApply;
 import com.goorm.insideout.club.repository.ClubApplyRepository;
@@ -20,6 +22,9 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.repository.ProfileImageRepository;
+import com.goorm.insideout.meeting.domain.MeetingUser;
+import com.goorm.insideout.meeting.domain.Role;
+import com.goorm.insideout.meeting.dto.response.MeetingUserAuthorityResponse;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.repository.UserRepository;
 
@@ -73,6 +78,8 @@ public class ClubUserServiceImpl implements ClubUserService {
 			.clubId(clubApply.getClubId())
 			.userName(clubApply.getUserName())
 			.profileImgUrl(profileImage.getImage().getUrl())
+			.role(Role.MEMBER)
+			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.build();
 
@@ -95,6 +102,21 @@ public class ClubUserServiceImpl implements ClubUserService {
 	}
 
 	@Override
+	public ClubUserAuthorityResponse checkUserAuthority(Long clubId, CustomUserDetails customUserDetails) {
+		if (customUserDetails == null) {
+			return ClubUserAuthorityResponse.of(Role.NONE);
+		}
+
+		Optional<ClubUser> optionalClubUser = clubUserRepository.findByUserIdAndClubId(customUserDetails.getUser().getId(), clubId);
+		if (optionalClubUser.isEmpty()) {
+			return ClubUserAuthorityResponse.of(Role.NONE);
+		}
+		ClubUser clubUser = optionalClubUser.get();
+
+		return ClubUserAuthorityResponse.of(clubUser.getRole());
+	}
+
+	@Override
 	public List<ClubMembersResponseDto> findMemberList(Club club) {
 		List<ClubUser> memberList = getMembers(club.getClubId());
 		List<ClubMembersResponseDto> clubMembersResponseDtoList = new ArrayList<>();
@@ -111,6 +133,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 		Long clubId = club.getClubId();
 		Long userId = user.getId();
 		List<ClubUser> members = getMembers(clubId);
+
 		ClubUser clubUser = clubUserRepository.findByUserIdAndClubId(userId, clubId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 

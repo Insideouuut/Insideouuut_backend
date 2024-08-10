@@ -36,7 +36,7 @@ public class ChatRoom {
 	@Column(name = "chat_room_id")
 	private Long id;
 
-	@Column(name = "title", updatable = false, nullable = false, unique = true)
+	@Column(name = "title", updatable = false, nullable = false)
 	private String title;
 
 	@Column(name = "type", nullable = false)

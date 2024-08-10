@@ -3,6 +3,7 @@ package com.goorm.insideout.meeting.service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -43,9 +44,9 @@ public class MeetingApplyService {
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
 
 		// 이미 가입되어있으면 에러 처리
-		List<MeetingUser> existingMeetingUser = meetingUserRepository.findByMeetingIdAndUserId(meetingId,
+		Optional<MeetingUser> existingMeetingUser = meetingUserRepository.findByMeetingIdAndUserId(meetingId,
 			user.getId());
-		if (!existingMeetingUser.isEmpty()) {
+		if (existingMeetingUser.isPresent()) {
 			throw ModongException.from(ErrorCode.MEETING_ALREADY_JOINED);
 		}
 

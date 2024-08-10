@@ -11,9 +11,11 @@ import org.springframework.data.jpa.repository.Query;
 import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
 
+import io.swagger.v3.oas.annotations.Operation;
+
 public interface MeetingUserRepository extends JpaRepository<MeetingUser, Long> {
 	List<MeetingUser> findByMeetingId(Long meetingId);
-	List<MeetingUser> findByMeetingIdAndUserId(Long meetingId, Long userId);
+	Optional<MeetingUser> findByMeetingIdAndUserId(Long meetingId, Long userId);
 	// 나의 모임 참여 목록 찾기 -> 이후 Meeting 객체로 변경
 	@Query("select m from MeetingUser m where m.user.id = ?1 and m.meeting.progress = ?2")
 	Page<MeetingUser> findOngoingMeetingsByProgress(Long id, Progress progress, Pageable pageable);
