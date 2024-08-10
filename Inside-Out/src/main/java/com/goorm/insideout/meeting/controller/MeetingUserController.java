@@ -13,6 +13,7 @@ import com.goorm.insideout.auth.dto.CustomUserDetails;
 
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.meeting.dto.response.MeetingUserAuthorityResponse;
 import com.goorm.insideout.meeting.dto.response.MeetingUserResponse;
 import com.goorm.insideout.meeting.service.MeetingUserService;
 import com.goorm.insideout.user.domain.User;
@@ -42,5 +43,14 @@ public class MeetingUserController {
 	public ApiResponse<List<MeetingUserResponse>> getMemberList(@PathVariable("meetingId") Long meetingId) {
 		List<MeetingUserResponse> meetingUsers = meetingUserService.findMeetingUsers(meetingId);
 		return new ApiResponse<List<MeetingUserResponse>>(meetingUsers);
+	}
+
+	@GetMapping("/{meetingId}/members/authority")
+	@Operation(summary = "모임에 대한 사용자 권한 확인 API", description = "모임에 대한 사용자의 권한을 확인할 수 있는 API 입니다.")
+	public ApiResponse<MeetingUserAuthorityResponse> checkMeetingAuthority(
+		@PathVariable Long meetingId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		return new ApiResponse<>(meetingUserService.checkUserAuthority(meetingId, customUserDetails));
 	}
 }
