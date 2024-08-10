@@ -15,6 +15,7 @@ import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Role;
 import com.goorm.insideout.meeting.dto.response.MeetingUserAuthorityResponse;
 import com.goorm.insideout.meeting.dto.response.MeetingUserResponse;
+import com.goorm.insideout.meeting.repository.MeetingRepository;
 import com.goorm.insideout.meeting.repository.MeetingUserRepository;
 import com.goorm.insideout.user.domain.User;
 
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MeetingUserService {
 	private final MeetingUserRepository meetingUserRepository;
+	private final MeetingRepository meetingRepository;
 
 	@Transactional
 	public void meetingUserExpel(Long meetingUserId, User host) {
@@ -33,6 +35,17 @@ public class MeetingUserService {
 		Meeting meeting = meetingUser.getMeeting();
 		validateIsHost(host, meeting);
 		meetingUserRepository.deleteById(meetingUserId);
+	}
+
+	@Transactional
+	public void meetingUserExit(Long meetingId, User user) {
+		Meeting meeting = meetingRepository.findById(meetingId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_MEMBER));
+
+		MeetingUser meetingUser = meetingUserRepository.findByMeetingIdAndUserId(meeting.getId(), user.getId())
+			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_MEMBER));
+
+		meetingUserRepository.delete(meetingUser);
 	}
 
 	@Transactional
