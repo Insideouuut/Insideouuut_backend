@@ -7,11 +7,14 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.image.domain.ProfileImage;
+import com.goorm.insideout.meeting.domain.Role;
 import com.goorm.insideout.user.domain.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -59,6 +62,10 @@ public class ClubUser {
 	@NotNull
 	@Column(name = "club_id")
 	Long clubId;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "role")
+	private Role role;
 
 	private String userName;
 	private String profileImgUrl;

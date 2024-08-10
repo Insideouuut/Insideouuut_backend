@@ -25,6 +25,7 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
+import com.goorm.insideout.meeting.domain.Role;
 import com.goorm.insideout.meeting.dto.request.SearchRequest;
 import com.goorm.insideout.image.domain.ProfileImage;
 import com.goorm.insideout.image.repository.ProfileImageRepository;
@@ -83,6 +84,7 @@ public class ClubServiceImpl implements ClubService{
 			.clubId(club.getClubId())
 			.userName(user.getName())
 			.profileImgUrl(profileImage.getImage().getUrl())
+			.role(Role.HOST)
 			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.build();
