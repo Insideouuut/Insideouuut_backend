@@ -30,11 +30,20 @@ public class MeetingUserController {
 	private final MeetingUserService meetingUserService;
 
 	@DeleteMapping("/members/{meetingUserId}/expel")
-	@Operation(summary = "모임 추방 API", description = "모임을 추방하는 API입니다.")
+	@Operation(summary = "모임 멤버 추방 API", description = "모임 멤버를 추방하는 API입니다.")
 	public ApiResponse memberExpel(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@PathVariable("meetingUserId") Long meetingUserId) {
 		User host = userDetails.getUser();
 		meetingUserService.meetingUserExpel(meetingUserId, host);
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
+
+	@DeleteMapping("/{meetingId}/members")
+	@Operation(summary = "모임 멤버 탈퇴 API", description = "멤버가 모임을 탈퇴하는 API입니다.")
+	public ApiResponse memberExit(@AuthenticationPrincipal CustomUserDetails userDetails,
+		@PathVariable("meetingId") Long meetingId) {
+		User user = userDetails.getUser();
+		meetingUserService.meetingUserExit(meetingId, user);
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
