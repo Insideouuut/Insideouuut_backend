@@ -81,7 +81,7 @@ public class ClubController {
 			userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), user);
 
 		} catch (Exception exception) {
-			return new ApiResponse<>(ErrorCode.CLUB_ALREADY_EXIST);
+			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
 		}
 		
 		return new ApiResponse<>((ClubResponseDto.of(club.getClubId(), "클럽을 성공적으로 생성하였습니다.")));
