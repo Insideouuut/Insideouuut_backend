@@ -56,8 +56,9 @@ public class ClubPost {
 
 
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "clubUser_Id")
+	//@OnDelete(action = OnDeleteAction.CASCADE)
 	private ClubUser clubUser;
 
 	@JsonIgnore

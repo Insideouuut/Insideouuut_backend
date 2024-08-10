@@ -32,39 +32,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class ClubServiceImpl implements ClubService{
+public class ClubServiceImpl implements ClubService {
 
 	private final ClubRepository clubRepository;
 	private final ClubUserRepository clubUserRepository;
 	private final ClubApplyRepository clubApplyRepository;
-	private final UserRepository userRepository;
 	private final ProfileImageRepository profileImageRepository;
 
 	String domainPrefix = "https://insideout.site:8082/resources/upload/images/club_image/";
 
-
-
 	@Override
 	@Transactional
-	public Club createClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/ User user) throws IOException {
+	public Club createClub(ClubRequestDto clubRequestDto, User user) {
 
-		String clubImgUrl;
-		/*
-		if (multipartFile == null || multipartFile.isEmpty()) {
-			// 기본 이미지 경로 설정
-			clubImgUrl = null;
-		} else {
-			String profileImgSaveUrl = "/var/webapps/upload/clubs/club_image/" + clubRequestDto.getClubName() + user.getId() + "_" + multipartFile.getOriginalFilename();
-
-			File file = new File(profileImgSaveUrl);
-
-			multipartFile.transferTo(file.toPath());
-			clubImgUrl = domainPrefix + clubRequestDto.getClubName() + user.getId() + "_" + multipartFile.getOriginalFilename();
-		}
-
-		 */
-
-		Club club = clubBuilder(clubRequestDto, /*clubImgUrl,*/ user);
+		Club club = clubBuilder(clubRequestDto, user);
 		clubRequestDto.setEnum(club);
 		club.setCreatedAt(LocalDateTime.now());
 
@@ -77,7 +58,6 @@ public class ClubServiceImpl implements ClubService{
 			.clubId(club.getClubId())
 			.userName(user.getName())
 			.profileImgUrl(profileImage.getImage().getUrl())
-			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.build();
 
@@ -89,7 +69,7 @@ public class ClubServiceImpl implements ClubService{
 	@Override
 	public Club findByClubId(Long clubId) {
 
-		return clubRepository.findById(clubId).orElseThrow(null);
+		return clubRepository.findById(clubId).orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 	}
 
 	@Override
@@ -102,40 +82,14 @@ public class ClubServiceImpl implements ClubService{
 	@Override
 	@Transactional
 	public void deleteClub(Long clubId) {
-		Club club = clubRepository.getById(clubId);
 
 		clubRepository.deleteById(clubId);
 	}
 
 	@Override
 	@Transactional
-	public Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club) throws
-		IOException {
+	public Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club) {
 		Long clubId = club.getClubId();
-
-		String clubImgUrl;
-
-		/*
-		if (club.getClubImg() != null && clubRequestDto.getClubImgUrl() == null) {
-			File old_file = new File("/var/webapps/upload/images/team_image/" + getFileNameFromURL(club.getClubImg()));
-			if (old_file.exists()) {
-				old_file.delete();
-			}
-		}
-		//이미지가 비어있으면 기존 이미지로
-		if (multipartFile == null || multipartFile.isEmpty()) {
-
-			clubImgUrl = clubRequestDto.getClubImgUrl();
-
-		} else {    // 아니면 새 이미지로
-			String profileImgSaveUrl = "/var/webapps/upload/images/team_image/" + clubRequestDto.getClubName() + user.getId() + "_" + multipartFile.getOriginalFilename();
-
-			File file = new File(profileImgSaveUrl);
-			multipartFile.transferTo(file);
-			clubImgUrl = domainPrefix + clubRequestDto.getClubName() + user.getId() + "_" + multipartFile.getOriginalFilename();
-		}
-
-		 */
 
 		Club modify_club = clubBuilder(clubRequestDto, user);
 
@@ -151,25 +105,15 @@ public class ClubServiceImpl implements ClubService{
 	}
 
 	@Override
-	public List<ClubListResponseDto> findAllClubDesc(){
+	public List<ClubListResponseDto> findAllClubDesc() {
 
 		return clubRepository.findAllByOrderByClubIdDesc().stream()
 			.map(ClubListResponseDto::new)
 			.collect(Collectors.toList());
 	}
 
-	/*
-	@Override
-	public Club belongToClub(Long userId) {
-		return clubRepository.belongToClub(userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
-	}
-
-	 */
-
-
 	@Override
 	public List<ClubListResponseDto> findByCategory(String category) {
-
 
 		return clubRepository.findByCategoryJQL(category).stream()
 			.map(ClubListResponseDto::new)
@@ -188,7 +132,7 @@ public class ClubServiceImpl implements ClubService{
 		List<ClubApply> byUserIdJQL = clubApplyRepository.findByUserIdJQL(userId);
 		List<Club> clubList = new ArrayList<>();
 
-		for(ClubApply clubApply : byUserIdJQL){
+		for (ClubApply clubApply : byUserIdJQL) {
 			Long clubId = clubApply.getClubId();
 			clubList.add(findByClubId(clubId));
 		}
@@ -198,43 +142,6 @@ public class ClubServiceImpl implements ClubService{
 			.collect(Collectors.toList());
 	}
 
-
-	/*
-	@Override
-	public List<Club> findAllClub(List<ClubInfo> clubInfos) {
-		List<Club> clubs = new ArrayList<>();
-
-		for (ClubInfo clubInfo : clubInfos) {
-			clubs.add(clubTransfer(clubInfo));
-		}
-		return clubs;
-	}
-
-
-
-	public Club clubTransfer(ClubInfo clubInfo) {
-
-		Club club = Club.builder()
-			.clubId(clubInfo.getClubId())
-			.clubName(clubInfo.getClubName())
-			.category(clubInfo.getCategory())
-			.modifiedAt(clubInfo.getModifiedAt())
-			.content(clubInfo.getContent())
-			.date(clubInfo.getDate())
-			.region(clubInfo.getRegion())
-			.question(clubInfo.getQuestion())
-			.memberLimit(clubInfo.getMemberLimit())
-			.memberCunt(clubInfo.getMemberCunt())
-			.price(clubInfo.getPrice())
-			.ageLimit(clubInfo.getAgeLimit())
-			.clubImg(clubInfo.getClubImg())
-			.build();
-
-		return club;
-
-	}
-
-	 */
 	public Club clubBuilder(ClubRequestDto ClubRequestDto, User user) {
 
 		return Club.builder()
@@ -256,23 +163,18 @@ public class ClubServiceImpl implements ClubService{
 
 	}
 
-	// url 에서 파일 이름 추출
-	public static String getFileNameFromURL(String url) {
-
-		return url.substring(url.lastIndexOf('/') + 1, url.length());
-
-	}
-
 	@Override
 	public Club ownClub(Long clubId, Long userId) {
 
-		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
+		return clubRepository.findByClubIdAndUserIdJQL(clubId, userId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_AUTHORIZED));
 
 	}
 
 	public List<ClubUser> getMembers(Long clubId) {
 
-		Club club = this.clubRepository.findById(clubId).orElseThrow(()->ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+		Club club = this.clubRepository.findById(clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 
 		List<ClubUser> members = club.getMembers();
 
@@ -281,7 +183,7 @@ public class ClubServiceImpl implements ClubService{
 
 	@Override
 	@Transactional
-	public void setChatRoom(Club club, ChatRoom chatRoom){
+	public void setChatRoom(Club club, ChatRoom chatRoom) {
 		club.setChatRoom(chatRoom);
 		club.setChat_room_id(chatRoom.getId());
 		clubRepository.save(club);

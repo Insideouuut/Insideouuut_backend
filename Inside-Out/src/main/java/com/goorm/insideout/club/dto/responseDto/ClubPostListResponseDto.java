@@ -6,11 +6,10 @@ import lombok.Getter;
 
 @Getter
 public class ClubPostListResponseDto {
-	private String postTitle;
-
-	private String category;
-	private String writer;
-	private String content;
+	private final String postTitle;
+	private final String category;
+	private final String writer;
+	private final String content;
 
 	public static ClubPostListResponseDto of(ClubPost clubPost){
 		return new ClubPostListResponseDto(clubPost);

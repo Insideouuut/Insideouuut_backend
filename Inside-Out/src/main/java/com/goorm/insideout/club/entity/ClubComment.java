@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.goorm.insideout.club.dto.requestDto.ClubCommentRequestDto;
 import com.goorm.insideout.club.dto.requestDto.ClubPostRequestDto;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,7 +49,7 @@ public class ClubComment {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ClubPost clubPost;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "clubUser_Id")
 	private ClubUser clubUser;
 

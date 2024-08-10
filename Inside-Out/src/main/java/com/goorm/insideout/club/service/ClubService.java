@@ -12,20 +12,17 @@ import com.goorm.insideout.user.domain.User;
 
 public interface ClubService {
 
-	Club createClub(ClubRequestDto ClubRequestDto, /*MultipartFile multipartFile,*/ User user) throws IOException;
+	Club createClub(ClubRequestDto ClubRequestDto, User user);
 
 	Club findByClubId(Long ClubId);
 
 	void deleteClub(Long clubId);
 
-	Club modifyClub(ClubRequestDto clubRequestDto, /*MultipartFile multipartFile,*/   User user, Club club) throws
-		IOException;
+	Club modifyClub(ClubRequestDto clubRequestDto, User user, Club club);
 
 	List<ClubListResponseDto> findAllClubDesc();
 
 	Club ownClub(Long clubId, Long userId);
-
-	//Club belongToClub(Long userId);
 
 	List<ClubListResponseDto> findByCategory(String category);
 

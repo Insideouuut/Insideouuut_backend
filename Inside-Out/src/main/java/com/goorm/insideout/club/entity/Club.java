@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.Cascade;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.goorm.insideout.chatroom.domain.ChatRoom;
 import com.goorm.insideout.image.domain.ClubImage;
@@ -67,6 +69,7 @@ public class Club {
 	@ElementCollection
 	@CollectionTable(name = "club_join_questions", joinColumns = @JoinColumn(name = "club_id"))
 	@Column(name = "join_question")
+	@Builder.Default
 	private Set<String> joinQuestions = new HashSet<>();//
 
 
@@ -82,27 +85,24 @@ public class Club {
 
 	private int minAge;
 	private int maxAge;
-	//private List<Integer> ageRange;//
 
 	@ElementCollection
 	@CollectionTable(name = "club_rules", joinColumns = @JoinColumn(name = "club_id"))
 	@Column(name = "rule")
+	@Builder.Default
 	private Set<String> rules = new HashSet<>();//
 
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "owner_id")
 	User owner;
-
-	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
-	@Builder.Default
-	List<ClubUser> members = new ArrayList<>();
 
 	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
 	@JsonIgnore
 	List<ClubPost> posts;
 
 	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+	@Builder.Default
 	private List<ClubImage> images = new ArrayList<>();
 
 	@OneToOne(fetch = FetchType.LAZY)
@@ -110,6 +110,10 @@ public class Club {
 	ChatRoom chatRoom;
 
 	private Long chat_room_id;
+
+	@OneToMany(mappedBy = "club",fetch = FetchType.LAZY)
+	@Builder.Default
+	List<ClubUser> members = new ArrayList<>();
 
 	public void increaseMemberCount() {
 		this.memberCount++;

@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
-public class ClubApplyServiceImpl implements ClubApplyService{
+public class ClubApplyServiceImpl implements ClubApplyService {
 
 	private final ClubApplyRepository clubApplyRepository;
 	private final ClubRepository clubRepository;
@@ -42,51 +42,51 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 	@Override
 	@Transactional
 	public ClubApply findClubApplyByUserIDAndClubId(Long userId, Long clubId) {
-		return clubApplyRepository.findByUserIdAndClubId(userId,clubId).orElse(null);
+		return clubApplyRepository.findByUserIdAndClubId(userId, clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 	}
 
 	@Modifying(clearAutomatically = true)
 	@Transactional
 	@Override
 	public void clubApplyDelete(Long userId, Long clubId) {
-		clubApplyRepository.deleteByUserIdAndClubId(userId,clubId);
-
+		clubApplyRepository.deleteByUserIdAndClubId(userId, clubId);
 	}
 
 	@Override
 	@Transactional
 	public ClubApply clubApply(Club club, User user, ClubApplyRequestDto clubApplyRequestDto) {
-		if(clubApplyRepository.findByUserIdAndClubId(user.getId(), club.getClubId()).isPresent()){
+		if (clubApplyRepository.findByUserIdAndClubId(user.getId(), club.getClubId()).isPresent()) {
 			throw new IllegalStateException();
 		}
 
 		String userBrithYear = Arrays.stream(user.getBirthDate().toString().split("-"))
 			.findFirst()
-			.orElseThrow(()->ModongException.from(ErrorCode.USER_NOT_FOUND));
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 		String nowYear = Arrays.stream(LocalDateTime.now().toString().split("-"))
 			.findFirst()
 			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
 		int userAge = Integer.valueOf(nowYear) - Integer.valueOf(userBrithYear);
 
-		if(club.getMinAge() > userAge || userAge > club.getMaxAge()){
+		if (club.getMinAge() > userAge || userAge > club.getMaxAge()) {
 			throw new IllegalStateException();
 		}
 
 		List<ClubUser> members = getMembers(club.getClubId());
 
-		for(ClubUser clubUser : members){
-			if(user.getId().equals(clubUser.getUserId())){
+		for (ClubUser clubUser : members) {
+			if (user.getId().equals(clubUser.getUserId())) {
 				throw new IllegalStateException();
 			}
 		}
-		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
+		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId())
+			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
 
 		ClubApply clubApply = ClubApply.builder()
 			.userId(user.getId())
 			.clubId(club.getClubId())
 			.userName(user.getName())
 			.profileImgUrl(profileImage.getImage().getUrl())
-			//.profileImage(profileImage)
 			.mannerTemp(user.getMannerTemp())
 			.answer(clubApplyRequestDto.getAnswer())
 			.build();
@@ -94,20 +94,17 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 		return clubApplyRepository.save(clubApply);
 	}
 
-
 	@Override
 	public List<ClubApplyResponseDto> findApplyList(Club club, User user) {
 		List<ClubApply> byClubIdJQL = clubApplyRepository.findByClubIdJQL(club.getClubId());
 		List<ClubApplyResponseDto> applyList = new ArrayList<>();
 
-		List<ClubUser> members = getMembers(club.getClubId());
+		if (!user.getId().equals(club.getOwner().getId())) {
 
-		if(!user.getId().equals(club.getOwner().getId())){
-
-			throw new NoSuchElementException();
+			throw new IllegalStateException();
 		}
 
-		for(ClubApply clubApply: byClubIdJQL){
+		for (ClubApply clubApply : byClubIdJQL) {
 			ClubApplyResponseDto clubApplyResponseDto = ClubApplyResponseDto.of(clubApply);
 			applyList.add(clubApplyResponseDto);
 		}
@@ -117,18 +114,16 @@ public class ClubApplyServiceImpl implements ClubApplyService{
 
 	@Override
 	public ClubApply findClubApplyById(Long applyId) {
-		return clubApplyRepository.findByApplyId(applyId).get();
+		return clubApplyRepository.findByApplyId(applyId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
 	}
 
 	@Transactional(readOnly = true)
 	public List<ClubUser> getMembers(Long clubId) {
-		if(!this.clubRepository.findById(clubId).isPresent()){
-			throw new NoSuchElementException();
-		}
-		Club club = this.clubRepository.findById(clubId).get();
 
-		List<ClubUser> members = club.getMembers();
+		Club club = this.clubRepository.findById(clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
 
-		return members;
+		return club.getMembers();
 	}
 }
