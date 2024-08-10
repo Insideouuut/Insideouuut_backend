@@ -55,6 +55,10 @@ public class ClubServiceImpl implements ClubService {
 		clubRequestDto.setEnum(club);
 		club.setCreatedAt(LocalDateTime.now());
 
+		if(clubRepository.findByClubName(club.getClubName()).isPresent()){
+			throw ModongException.from(ErrorCode.CLUB_ALREADY_EXIST);
+		}
+
 		clubRepository.save(club);
 
 		ProfileImage profileImage = profileImageRepository.findByUserId(user.getId()).get();
