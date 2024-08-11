@@ -25,6 +25,7 @@ import com.goorm.insideout.club.dto.requestDto.ClubRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubResponseDto;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.global.exception.ErrorCode;
+import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.global.response.ApiResponse;
 import com.goorm.insideout.image.service.ImageService;
 import com.goorm.insideout.user.domain.User;
@@ -63,7 +64,7 @@ public class ClubController {
 	@PostMapping("/clubs")
 	@Operation(summary = "동아리 생성 API", description = "동아리를 생성하는 API 입니다.")
 	public ApiResponse<ClubResponseDto> saveClub(
-		@RequestPart("request") ClubRequestDto clubRequestDto,
+		@Valid @RequestPart("request") ClubRequestDto clubRequestDto,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails userDetails
 	){
@@ -81,7 +82,7 @@ public class ClubController {
 			userChatRoomService.inviteUserToChatRoom(club.getChat_room_id(), user);
 
 		} catch (Exception exception) {
-			return new ApiResponse<>(ErrorCode.INVALID_REQUEST);
+			throw ModongException.from(ErrorCode.INVALID_REQUEST, exception.getMessage());
 		}
 		
 		return new ApiResponse<>((ClubResponseDto.of(club.getClubId(), "클럽을 성공적으로 생성하였습니다.")));
