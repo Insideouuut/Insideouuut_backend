@@ -11,6 +11,7 @@ import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.GenderRatio;
 import com.goorm.insideout.club.entity.Level;
 import com.goorm.insideout.image.dto.response.ImageResponse;
+import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.querydsl.core.annotations.QueryProjection;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.user.dto.response.HostResponse;
@@ -47,6 +48,7 @@ public class ClubBoardResponseDto {
 	private List<String> joinQuestions;
 	private HostResponse host;
 	private List<ImageResponse> images;
+	private List<MeetingResponse> meetings;
 
 	@QueryProjection
 	public ClubBoardResponseDto(Club club) {
@@ -76,6 +78,10 @@ public class ClubBoardResponseDto {
 		this.activityRegion = club.getRegion();
 		this.host = HostResponse.of(club.getOwner());
 		this.chatRoomId = club.getChat_room_id();
+		this.meetings = club.getMeetings()
+			.stream()
+			.map(MeetingResponse::of)
+			.toList();
 
 		if(club.getMemberLimit() > club.getMemberCount()){
 			this.isRecruiting = true;
