@@ -61,7 +61,7 @@ public class MeetingCreateRequest {
 		}
 
 		return Meeting.createMeeting(
-			Type.valueOf(type),
+			Type.findByName(type),
 			name,
 			introduction,
 			Category.valueOf(category),

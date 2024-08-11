@@ -45,6 +45,7 @@ public enum ErrorCode {
 
 	// meeting
 	MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 모임입니다."),
+	MEETING_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 모임 타입입니다."),
 	MEETING_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 모임입니다."),
 	MEETING_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "모임에 가입되어 있지 않습니다."),
 	MEETING_ALREADY_JOINED(HttpStatus.CONFLICT, "이미 가입된 모임입니다."),
@@ -54,8 +55,8 @@ public enum ErrorCode {
 	MEETING_GENDER_RATIO_INVALID(HttpStatus.BAD_REQUEST, "성별 비율이 올바르지 않습니다."),
 	USER_AGE_NOT_IN_RANGE(HttpStatus.FORBIDDEN, "요구 나이에 맞지 않습니다."),
 	MEETING_PARTICIPANT_LIMIT_EXCEEDED(HttpStatus.FORBIDDEN, "최대 수용 인원을 초과하였습니다."),
-	MEETING_ALREADY_APPLY(HttpStatus.CONFLICT, "이미 가입 신청한 모임입니다.")
-	,
+	MEETING_ALREADY_APPLY(HttpStatus.CONFLICT, "이미 가입 신청한 모임입니다."),
+
 	// chat
 	CHAT_NOT_EMPTY(HttpStatus.NOT_FOUND, "빈값을 보낼 수 없습니다."),
 	CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),

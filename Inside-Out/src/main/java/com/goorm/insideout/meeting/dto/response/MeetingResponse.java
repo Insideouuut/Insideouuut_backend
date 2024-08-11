@@ -19,9 +19,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MeetingResponse {
 	private Long id;
+	private String type;
 	private String name;
 	private String introduction;
-	private String type;
 	private int view;
 	private int like;
 	private boolean hasMembershipFee;
@@ -45,9 +45,9 @@ public class MeetingResponse {
 	@QueryProjection
 	public MeetingResponse(Meeting meeting) {
 		this.id = meeting.getId();
+		this.type = meeting.getType().getName();
 		this.name = meeting.getTitle();
 		this.introduction = meeting.getDescription();
-		this.type = meeting.getType().name();
 		this.rules = new ArrayList<>(meeting.getRules());
 		this.joinQuestions = new ArrayList<>(meeting.getJoinQuestions());
 		this.view = meeting.getView();
