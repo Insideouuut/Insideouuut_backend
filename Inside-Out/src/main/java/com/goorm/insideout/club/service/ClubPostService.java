@@ -13,6 +13,8 @@ public interface ClubPostService {
 
 	ClubPostDto findByClubPostId(Long clubPostId);
 
+	List<ClubPostDto> findByClubId(Long clubId);
+
 	List<ClubPostListResponseDto> findAll();
 
 	List<ClubPostListResponseDto> findClubPostByType(Long clubId, String type);
