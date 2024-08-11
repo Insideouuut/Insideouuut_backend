@@ -5,6 +5,7 @@ import static com.goorm.insideout.global.exception.ErrorCode.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -18,27 +19,33 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goorm.insideout.auth.domain.RefreshToken;
+import com.goorm.insideout.auth.dto.UserLoginResponse;
 import com.goorm.insideout.auth.repository.RefreshTokenRepository;
 import com.goorm.insideout.auth.utils.JWTUtil;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.user.repository.UserRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	private final AuthenticationManager authenticationManager;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final JWTUtil jwtUtil;
+	private final UserRepository userRepository;
 
 	public LoginFilter(AuthenticationManager authenticationManager, RefreshTokenRepository refreshTokenRepository,
-		JWTUtil jwtUtil, String url) {
+		JWTUtil jwtUtil, UserRepository userRepository, String url) {
 		this.authenticationManager = authenticationManager;
 		this.refreshTokenRepository = refreshTokenRepository;
 		this.jwtUtil = jwtUtil;
+		this.userRepository = userRepository;
 		setFilterProcessesUrl(url);
 	}
 
@@ -71,6 +78,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		//인증에 성공한 email 받아오기
 		String userEmail = authResult.getName();
 
+		User user = userRepository.findByEmailWithDetails(userEmail);
+
 		//토큰 생성 - access 토큰 유효기간 30분
 		String accessToken = jwtUtil.createJwt("access", userEmail, 30 * 60 * 1000L);
 		//토큰 생성 - refresh 토큰 유효기간 1일 (refresh 토큰에서는 사용자 정보를 포함하지 않음)
@@ -78,11 +87,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 		response.addHeader("Authorization", "Bearer " + accessToken);// 헤더에 access 토큰 넣기
 		response.addHeader("Set-Cookie", createCookie("refresh", refresh).toString()); //쿠키 생성밒 추가
 		// refresh 토큰 객체 생성 및 Redis 저장
-		RefreshToken refreshToken = new RefreshToken(refresh,userEmail);
+		RefreshToken refreshToken = new RefreshToken(refresh, userEmail);
 		refreshTokenRepository.save(refreshToken);
 
 		//API 응답 생성
-		createAPIResponse(response, REQUEST_OK);
+		// createAPIResponse(response, REQUEST_OK);
+		createUserResponse(response, user);
 	}
 
 	//로그인 실패시 작동 - 실패시 json 응답을 작성해 보내는것이 목적
@@ -107,6 +117,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 	private void createAPIResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
 		ApiResponse apiResponse = new ApiResponse<>(errorCode);
 		response.setStatus(errorCode.getStatus().value());
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		response.setCharacterEncoding("UTF-8");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.writeValue(response.getWriter(), apiResponse);
+	}
+
+	@Transactional
+	private void createUserResponse(HttpServletResponse response, User user) throws IOException {
+		UserLoginResponse userLoginResponse = new UserLoginResponse(user);
+		ApiResponse apiResponse = new ApiResponse<UserLoginResponse>(userLoginResponse);
+		response.setStatus(200);
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.setCharacterEncoding("UTF-8");
 		ObjectMapper mapper = new ObjectMapper();
