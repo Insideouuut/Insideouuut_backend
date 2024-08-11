@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goorm.insideout.meeting.domain.Category;
 import com.goorm.insideout.meeting.domain.GenderRatio;
 import com.goorm.insideout.meeting.domain.Level;
@@ -34,6 +35,7 @@ public class MeetingUpdateRequest {
 
 	private List<String> joinQuestions;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime date;
 
 	private String level;
