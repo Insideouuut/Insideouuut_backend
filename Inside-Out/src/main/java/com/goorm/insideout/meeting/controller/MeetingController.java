@@ -48,7 +48,7 @@ public class MeetingController {
 	private final UserChatRoomService userChatRoomService;
 
 	@PostMapping("/meetings")
-	@Operation(summary = "모임 생성 API", description = "모임을 생성하는 API 입니다. 아직 이미지 업로드 기능이 준비되지 않았기 때문에, meetingImage 필드는 제외하고 요청 보내주시면 됩니다.")
+	@Operation(summary = "모임 생성 API", description = "모임을 생성하는 API 입니다.")
 	public ApiResponse<String> createMeeting(
 		@RequestPart("request") MeetingCreateRequest request,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
@@ -65,10 +65,35 @@ public class MeetingController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
+	@PostMapping("/clubs/{clubId}/meetings")
+	@Operation(summary = "동아리 모임 생성 API", description = "동아리 모임을 생성하는 API 입니다.")
+	public ApiResponse<String> createClubMeeting(
+		@PathVariable Long clubId,
+		@RequestPart("request") MeetingCreateRequest request,
+		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		User user = customUserDetails.getUser();
+		Meeting meeting = meetingService.saveClubMeeting(request, user, clubId);
+		imageService.saveMeetingImages(multipartFiles, meeting.getId());
+
+		ChatRoom chatRoom = chatRoomService.createChatRoom(meeting.getId(), meeting.getTitle(), ChatRoomType.MEETING);
+		Meeting saveMeeting = meetingService.injectMeetingChatRoom(meeting.getId(), chatRoom);
+		userChatRoomService.inviteUserToChatRoom(saveMeeting.getChatRoom().getId(), user);
+
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
+
 	@GetMapping("/meetings")
 	@Operation(summary = "모임 전체 조회 API", description = "모임 전체를 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findAll() {
 		return new ApiResponse<>(meetingService.findAll());
+	}
+
+	@GetMapping("/clubs/{clubId}/meetings")
+	@Operation(summary = "동아리 모임 목록 조회 API", description = "특정 동아리에 대한 모임 목록을 조회할 수 있는 API 입니다.")
+	public ApiResponse<MeetingResponse> findAllClubMeetings(@PathVariable Long clubId) {
+		return new ApiResponse<>(meetingService.findAll(clubId));
 	}
 
 	@GetMapping("/meetings/{meetingId}")
