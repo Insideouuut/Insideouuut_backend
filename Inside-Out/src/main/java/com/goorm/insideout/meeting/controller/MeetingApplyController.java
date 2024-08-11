@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.response.ApiResponse;
+import com.goorm.insideout.meeting.dto.request.MeetingApplyRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingApplyResponse;
+import com.goorm.insideout.meeting.dto.response.MeetingQuestionAnswerResponse;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingApplyService;
 import com.goorm.insideout.user.domain.User;
@@ -35,8 +38,10 @@ public class MeetingApplyController {
 	@PostMapping("/{meetingId}/apply")
 	@Operation(summary = "모임 참여 신청 API", description = "모임 참여 신청을 하는 API 입니다.")
 	public ApiResponse applyMeetingUser(@PathVariable Long meetingId,
+		@RequestBody MeetingApplyRequest requestDto,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-		meetingApplyService.meetingApply(customUserDetails.getUser(), meetingId);
+
+		meetingApplyService.meetingApply(customUserDetails.getUser(), meetingId, requestDto.getAnswers());
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
@@ -78,4 +83,12 @@ public class MeetingApplyController {
 
 		return new ApiResponse<>(pendingMeetings);
 	}
+
+	@GetMapping("/apply/{applyId}")
+	@Operation(summary = "지원자 신청서 보는 API", description = "지원자 신청서 보는 API 입니다.")
+	public ApiResponse<List<MeetingQuestionAnswerResponse>> getMeetingAnswers(@PathVariable("applyId") Long applyId) {
+		List<MeetingQuestionAnswerResponse> answers = meetingApplyService.getAnswersByApplyId(applyId);
+		return new ApiResponse<List<MeetingQuestionAnswerResponse>>(answers);
+	}
+
 }

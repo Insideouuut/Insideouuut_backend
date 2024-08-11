@@ -14,8 +14,10 @@ import com.goorm.insideout.meeting.domain.Progress;
 
 public interface MeetingApplyRepository extends JpaRepository<MeetingApply, Long> {
 	Optional<MeetingApply> findById(Long applyId);
+
 	List<MeetingApply> findByMeetingId(Long meetingId);
 
+	Optional<MeetingApply> findByMeetingIdAndUserId(Long meetingId, Long userId);
 
 	@Query("select m from MeetingApply m where m.user.id = ?1 and m.meeting.progress = ?2")
 	Page<MeetingApply> findOngoingMeetingsByProgress(Long id, Progress progress, Pageable pageable);

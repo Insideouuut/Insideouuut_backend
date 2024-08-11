@@ -31,9 +31,6 @@ public class MeetingApply {
 	@JoinColumn(name = "meeting_id")
 	private Meeting meeting;
 
-	@Column(name = "answer")
-	private String answer;
-
 	private MeetingApply(User user, Meeting meeting) {
 		this.user = user;
 		this.meeting = meeting;
