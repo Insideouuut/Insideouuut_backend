@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.image.domain.MeetingImage;
 import com.goorm.insideout.like.domain.MeetingLike;
 import com.goorm.insideout.user.domain.User;
@@ -104,6 +105,10 @@ public class Meeting {
 	@JoinColumn(name = "chatroom")
 	private ChatRoom chatRoom;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "club_id")
+	private Club club;
+
 	/**
 	 * 생성 메서드
 	 */
@@ -169,6 +174,14 @@ public class Meeting {
 		this.membershipFee = meeting.membershipFee;
 		this.meetingPlace = meeting.meetingPlace;
 		this.rules = meeting.rules;
+	}
+
+	/**
+	 * 연관관계 설정 메서드
+	 */
+	public void setClub(Club club) {
+		this.club = club;
+		club.getMeetings().add(this);
 	}
 
 	/**
