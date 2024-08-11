@@ -13,7 +13,7 @@ public interface ClubPostService {
 
 	ClubPostDto findByClubPostId(Long clubPostId);
 
-	List<ClubPostDto> findByClubId(Long clubId);
+	List<ClubPostListResponseDto> findByClubId(Long clubId);
 
 	List<ClubPostListResponseDto> findAll();
 
