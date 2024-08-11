@@ -16,6 +16,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("SELECT u FROM User u LEFT JOIN FETCH u.profileImage WHERE u.id = :userId")
 	User findByIdWithProfileImage(@Param("userId") Long userId);
 
+	@Query("SELECT u FROM User u LEFT JOIN FETCH u.profileImage LEFT JOIN FETCH u.interests LEFT JOIN FETCH u.locations WHERE u.email = :email")
+	User findByEmailWithDetails(@Param("email") String email);
+
 	Optional<User> findByEmail(String email);
 
 }

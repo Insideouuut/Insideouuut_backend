@@ -54,7 +54,7 @@ public class SecurityConfig {
 		"/api/clubs",
 		"/api/clubs/{clubId}",
 		"/api/clubs/{clubId}/members/authority",
-    	"/api/meetings",
+		"/api/meetings",
 		"/api/meetings/{meetingId}",
 		"/api/meetings/{meetingId}/members/authority",
 		"/api/search/**",
@@ -66,7 +66,6 @@ public class SecurityConfig {
 		"/error",
 		"/"
 	};
-
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -88,7 +87,8 @@ public class SecurityConfig {
 					@Override
 					public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
 						CorsConfiguration configuration = new CorsConfiguration();
-						configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:3000","https://modong-backend.site"));
+						configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000",
+							"https://modong-backend.site"));
 						configuration.setAllowedMethods(Collections.singletonList("*"));
 						configuration.setAllowCredentials(true);
 						configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -116,7 +116,7 @@ public class SecurityConfig {
 				.requestMatchers(PUBLIC_URLS).permitAll()
 				.anyRequest().authenticated());
 
-		http.exceptionHandling((exceptionHandling)-> exceptionHandling
+		http.exceptionHandling((exceptionHandling) -> exceptionHandling
 			.authenticationEntryPoint(customEntryPoint));
 
 		http
@@ -125,7 +125,7 @@ public class SecurityConfig {
 			//인증 필터 자리에 커스텀한 로그인 필터 삽입
 			.addFilterAt(
 				new LoginFilter(authenticationManager(authenticationConfiguration), refreshTokenRepository, jwtUtil,
-					"/api/login"),
+					userRepository, "/api/login"),
 				UsernamePasswordAuthenticationFilter.class)
 			//로그아웃 전에 커스텀한 로그아웃 필터 적용
 			.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshTokenRepository), LogoutFilter.class);
