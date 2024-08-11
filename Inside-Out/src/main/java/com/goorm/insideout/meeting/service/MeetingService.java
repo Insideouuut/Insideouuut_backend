@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.chatroom.domain.ChatRoom;
+import com.goorm.insideout.club.entity.Club;
+import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
@@ -34,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MeetingService {
+	private final ClubRepository clubRepository;
 	private final MeetingRepository meetingRepository;
 	private final MeetingUserRepository meetingUserRepository;
 	private final PlaceRepository placeRepository;
@@ -49,8 +52,30 @@ public class MeetingService {
 		return meetingRepository.save(meeting);
 	}
 
+	@Transactional
+	public Meeting saveClubMeeting(MeetingCreateRequest request, User user, Long clubId) {
+		MeetingPlace meetingPlace = findOrCreatePlace(request.getMeetingPlace());
+		Meeting meeting = request.toEntity(user, meetingPlace);
+
+		Club club = clubRepository.findById(clubId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.CLUB_NOT_FOUND));
+		meeting.setClub(club);
+
+		MeetingUser meetingUser = MeetingUser.of(meeting, user, Role.HOST);
+		meetingUserRepository.save(meetingUser);
+
+		return meetingRepository.save(meeting);
+	}
+
 	public List<MeetingResponse> findAll() {
 		return meetingRepository.findAll()
+			.stream()
+			.map(MeetingResponse::of)
+			.toList();
+	}
+
+	public List<MeetingResponse> findAll(Long clubId) {
+		return meetingRepository.findByClubId(clubId)
 			.stream()
 			.map(MeetingResponse::of)
 			.toList();
