@@ -9,12 +9,15 @@ import com.goorm.insideout.meeting.domain.GenderRatio;
 import com.goorm.insideout.meeting.domain.Level;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
+import com.goorm.insideout.meeting.domain.Type;
 import com.goorm.insideout.user.domain.User;
 
 import lombok.Getter;
 
 @Getter
 public class MeetingUpdateRequest {
+	private String type;
+
 	private String name;
 
 	private String introduction;
@@ -56,6 +59,7 @@ public class MeetingUpdateRequest {
 		}
 
 		return Meeting.createMeeting(
+			Type.valueOf(type),
 			name,
 			introduction,
 			Category.valueOf(category),
