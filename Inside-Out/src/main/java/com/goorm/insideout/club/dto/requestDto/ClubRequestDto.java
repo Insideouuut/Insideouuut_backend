@@ -3,6 +3,7 @@ package com.goorm.insideout.club.dto.requestDto;
 import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.Category;
 import com.goorm.insideout.club.entity.Level;
@@ -21,6 +22,7 @@ public class ClubRequestDto {
 	private String level;
 	private boolean hasMembershipFee;
 	private Integer membershipFeeAmount;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private String date;
 	private Integer participantLimit;
 	private String hasGenderRatio;
