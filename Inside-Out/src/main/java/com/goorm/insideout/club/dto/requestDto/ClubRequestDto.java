@@ -1,5 +1,6 @@
 package com.goorm.insideout.club.dto.requestDto;
 
+import java.util.List;
 import java.util.Set;
 
 import com.goorm.insideout.club.entity.Club;
@@ -29,7 +30,7 @@ public class ClubRequestDto {
 	private String name;
 	private String introduction;
 	private Set<String> rules;
-	private Set<String> joinQuestions;
+	private List<String> joinQuestions;
 	private String activityRegion;
 
 	public Club setEnum(Club club) {

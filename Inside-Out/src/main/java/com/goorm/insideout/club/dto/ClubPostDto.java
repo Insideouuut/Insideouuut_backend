@@ -23,7 +23,7 @@ public class ClubPostDto {
 
 	private String category;
 
-	private LocalDateTime dateTime;
+	private LocalDateTime createTime;
 
 	private String writer;
 
@@ -39,7 +39,7 @@ public class ClubPostDto {
 	public ClubPostDto(ClubPost clubPost){
 		this.title = clubPost.getPostTitle();
 		this.category = clubPost.getCategory();
-		this.dateTime = clubPost.getCreateTime();
+		this.createTime = clubPost.getCreateTime();
 		this.writer = clubPost.getWriter();
 		this.content = clubPost.getPostContent();
 		this.images = clubPost.getImages()
