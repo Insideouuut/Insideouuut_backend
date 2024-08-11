@@ -1,5 +1,8 @@
 package com.goorm.insideout.club.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +26,7 @@ public class ClubQuestionAnswer {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "apply_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private ClubApply clubApply;
 
 	@Column(name = "question")

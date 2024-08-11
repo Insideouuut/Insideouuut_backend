@@ -38,7 +38,7 @@ import lombok.Setter;
 public class ClubUser {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "clubUser_id")
 	private Long clubUserId;
 

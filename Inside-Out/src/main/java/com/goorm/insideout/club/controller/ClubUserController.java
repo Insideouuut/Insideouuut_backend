@@ -15,6 +15,7 @@ import com.goorm.insideout.auth.dto.CustomUserDetails;
 import com.goorm.insideout.club.dto.requestDto.ClubApplyRequestDto;
 import com.goorm.insideout.club.dto.responseDto.ClubApplyResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubMembersResponseDto;
+import com.goorm.insideout.club.dto.responseDto.ClubQuestionAnswerResponseDto;
 import com.goorm.insideout.club.dto.responseDto.ClubUserAuthorityResponse;
 import com.goorm.insideout.club.entity.Club;
 import com.goorm.insideout.club.entity.ClubApply;
@@ -76,7 +77,7 @@ public class ClubUserController {
 	public ApiResponse apply(@AuthenticationPrincipal CustomUserDetails userDetails, @PathVariable("clubId") Long clubId, @Valid @RequestBody ClubApplyRequestDto clubApplyRequestDto) {
 		User user = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
-		clubApplyService.clubApply(club, user, clubApplyRequestDto);
+		clubApplyService.clubApply(club, user, clubApplyRequestDto, clubApplyRequestDto.getAnswers());
 
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
@@ -144,5 +145,13 @@ public class ClubUserController {
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		return new ApiResponse<>(clubUserService.checkUserAuthority(clubId, customUserDetails));
+	}
+
+
+	@GetMapping("/{clubId}/apply/{applyId}")
+	@Operation(summary = "동아리 멤버 지원자 조회 API", description = "지원자 신청서를 보는 API 입니다.")
+	public ApiResponse<List<ClubQuestionAnswerResponseDto>> getMeetingAnswers(@PathVariable("applyId") Long applyId) {
+		List<ClubQuestionAnswerResponseDto> answers = clubApplyService.getAnswersByApplyId(applyId);
+		return new ApiResponse<List<ClubQuestionAnswerResponseDto>>(answers);
 	}
 }
