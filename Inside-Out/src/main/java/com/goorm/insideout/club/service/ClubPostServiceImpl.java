@@ -48,10 +48,10 @@ public class ClubPostServiceImpl implements ClubPostService {
 	}
 
 	@Override
-	public List<ClubPostDto> findByClubId(Long clubId) {
+	public List<ClubPostListResponseDto> findByClubId(Long clubId) {
 		return clubPostRepository.findByClubId(clubId)
 			.stream()
-			.map(ClubPostDto::of)
+			.map(ClubPostListResponseDto::of)
 			.toList();
 	}
 

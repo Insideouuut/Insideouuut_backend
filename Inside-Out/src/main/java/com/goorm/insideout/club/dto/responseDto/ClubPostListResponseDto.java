@@ -9,6 +9,7 @@ import lombok.Getter;
 
 @Getter
 public class ClubPostListResponseDto {
+	private final Long postId;
 	private final String title;
 	private final String category;
 	private final LocalDateTime createTime;
@@ -20,6 +21,7 @@ public class ClubPostListResponseDto {
 	}
 
 	public ClubPostListResponseDto(ClubPost clubPost) {
+		this.postId = clubPost.getId();
 		this.title = clubPost.getPostTitle();
 		this.category = clubPost.getCategory();
 		this.createTime = clubPost.getCreateTime();
