@@ -40,6 +40,8 @@ public class Meeting {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "meeting_id")
 	private Long id;
+	@Enumerated(EnumType.STRING)
+	private Type type;
 	@Lob
 	@Column(name = "title", nullable = false)
 	private String title;
@@ -113,6 +115,7 @@ public class Meeting {
 	 * 생성 메서드
 	 */
 	public static Meeting createMeeting(
+		Type type,
 		String title,
 		String description,
 		Category category,
@@ -132,6 +135,7 @@ public class Meeting {
 	) {
 		Meeting meeting = new Meeting();
 
+		meeting.type = type;
 		meeting.title = title;
 		meeting.description = description;
 		meeting.category = category;
