@@ -47,7 +47,7 @@ public class MeetingResponse {
 		this.id = meeting.getId();
 		this.name = meeting.getTitle();
 		this.introduction = meeting.getDescription();
-		this.type = "모임";
+		this.type = meeting.getType().name();
 		this.rules = new ArrayList<>(meeting.getRules());
 		this.joinQuestions = new ArrayList<>(meeting.getJoinQuestions());
 		this.view = meeting.getView();
