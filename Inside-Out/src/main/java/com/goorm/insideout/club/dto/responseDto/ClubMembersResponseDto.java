@@ -15,6 +15,7 @@ import lombok.Setter;
 @Setter
 public class ClubMembersResponseDto {
 
+	private Long clubUserId;
 	private String role;
 	private String userName;
 	private String profileImgUrl;
@@ -26,6 +27,7 @@ public class ClubMembersResponseDto {
 
 	public ClubMembersResponseDto(ClubUser clubUser){
 
+		this.clubUserId = clubUser.getClubUserId();
 		this.role = clubUser.getRole().getName();
 		this.userName = clubUser.getUserName();
 		this.profileImgUrl = clubUser.getProfileImgUrl();

@@ -29,7 +29,7 @@ public class MeetingUpdateRequest {
 
 	private Set<String> rules;
 
-	private Set<String> joinQuestions;
+	private List<String> joinQuestions;
 
 	private LocalDateTime date;
 

@@ -16,12 +16,12 @@ public class MeetingApplyResponse {
 
 	BasicUserResponse basicUserResponse;
 	private Long applyId;
-	private String answer;
+
 	public static MeetingApplyResponse of(MeetingApply meetingApply) {
 		MeetingApplyResponse response = new MeetingApplyResponse();
 		response.basicUserResponse = BasicUserResponse.from(meetingApply.getUser());
 		response.applyId = meetingApply.getId();
-		response.answer = meetingApply.getAnswer();
+
 
 		return response;
 	}

@@ -15,12 +15,16 @@ import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.domain.MeetingApply;
+import com.goorm.insideout.meeting.domain.MeetingQuestionAnswer;
 import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
 import com.goorm.insideout.meeting.domain.Role;
+import com.goorm.insideout.meeting.dto.AnswerDto;
 import com.goorm.insideout.meeting.dto.response.MeetingApplyResponse;
+import com.goorm.insideout.meeting.dto.response.MeetingQuestionAnswerResponse;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.repository.MeetingApplyRepository;
+import com.goorm.insideout.meeting.repository.MeetingQuestionAnswerRepository;
 import com.goorm.insideout.meeting.repository.MeetingRepository;
 import com.goorm.insideout.meeting.repository.MeetingUserRepository;
 import com.goorm.insideout.user.domain.User;
@@ -35,11 +39,12 @@ public class MeetingApplyService {
 	private final MeetingApplyRepository meetingApplyRepository;
 	private final MeetingRepository meetingRepository;
 	private final MeetingUserRepository meetingUserRepository;
+	private final MeetingQuestionAnswerRepository meetingQuestionAnswerRepository;
 	private final UserChatRoomService userChatRoomService;
 
 	// 모임 참여 신청
 	@Transactional
-	public void meetingApply(User user, Long meetingId) {
+	public void meetingApply(User user, Long meetingId, List<AnswerDto> answers) {
 		Meeting meeting = meetingRepository.findById(meetingId)
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
 
@@ -48,6 +53,13 @@ public class MeetingApplyService {
 			user.getId());
 		if (existingMeetingUser.isPresent()) {
 			throw ModongException.from(ErrorCode.MEETING_ALREADY_JOINED);
+		}
+
+		// 이미 가입신청되있는지 확인
+		Optional<MeetingApply> existingMeetingApply = meetingApplyRepository.findByMeetingIdAndUserId(meetingId,
+			user.getId());
+		if (existingMeetingApply.isPresent()) {
+			throw ModongException.from(ErrorCode.MEETING_ALREADY_APPLY);
 		}
 
 		int minimumAge = meeting.getMinimumAge();
@@ -69,8 +81,14 @@ public class MeetingApplyService {
 
 		// 모임 멤버 신청
 		MeetingApply meetingApplyUser = MeetingApply.of(user, meeting);
-		meetingApplyRepository.save(meetingApplyUser);
+		MeetingApply saveMeetingApply = meetingApplyRepository.save(meetingApplyUser);
 
+		// 질문과 답변 저장
+		for (AnswerDto answerDto : answers) {
+			MeetingQuestionAnswer questionAnswer = MeetingQuestionAnswer.of(saveMeetingApply,
+				answerDto.getQuestion(), answerDto.getAnswer());
+			meetingQuestionAnswerRepository.save(questionAnswer);
+		}
 	}
 
 	// 모임 신청 수락
@@ -114,6 +132,21 @@ public class MeetingApplyService {
 		validateIsHost(host, meeting);
 
 		meetingApplyRepository.deleteById(applyId);
+	}
+
+	// 지원 신청 id를 통해 응답 가져오기
+	public List<MeetingQuestionAnswerResponse> getAnswersByApplyId(Long applyId) {
+		List<MeetingQuestionAnswer> questionAnswers = meetingQuestionAnswerRepository.findByMeetingApplyId(applyId);
+
+		return questionAnswers.stream()
+			.map(answer -> {
+				MeetingQuestionAnswerResponse dto = new MeetingQuestionAnswerResponse();
+				dto.setApplyId(answer.getMeetingApply().getId());
+				dto.setQuestion(answer.getQuestion());
+				dto.setAnswer(answer.getAnswer());
+				return dto;
+			})
+			.collect(Collectors.toList());
 	}
 
 	// 모임 신청 조회

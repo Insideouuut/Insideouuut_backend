@@ -30,7 +30,7 @@ public class MeetingCreateRequest {
 
 	private Set<String> rules;
 
-	private Set<String> joinQuestions;
+	private List<String> joinQuestions;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
 	private LocalDateTime date;

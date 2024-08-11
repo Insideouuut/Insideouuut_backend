@@ -71,7 +71,7 @@ public class Club {
 	@CollectionTable(name = "club_join_questions", joinColumns = @JoinColumn(name = "club_id"))
 	@Column(name = "join_question")
 	@Builder.Default
-	private Set<String> joinQuestions = new HashSet<>();//
+	private List<String> joinQuestions = new ArrayList<>();//
 
 
 	private Integer memberLimit;

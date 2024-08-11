@@ -51,6 +51,5 @@ public class ClubApply {
 	private String userName;
 	private String profileImgUrl;
 	private BigDecimal mannerTemp;
-	private String answer;
 
 }

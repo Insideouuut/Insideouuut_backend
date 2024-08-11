@@ -52,7 +52,7 @@ public class Meeting {
 	@ElementCollection
 	@CollectionTable(name = "meeting_join_questions", joinColumns = @JoinColumn(name = "meeting_id"))
 	@Column(name = "join_question")
-	private Set<String> joinQuestions = new HashSet<>();
+	private List<String> joinQuestions = new ArrayList<>();
 	@Column(name = "schedule", nullable = false)
 	private LocalDateTime schedule;
 	@Enumerated(EnumType.STRING)
@@ -113,7 +113,7 @@ public class Meeting {
 		Category category,
 		String categoryDetail,
 		int participantLimit,
-		Set<String> joinQuestions,
+		List<String> joinQuestions,
 		LocalDateTime schedule,
 		Level level,
 		int minimumAge,
