@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.goorm.insideout.auth.dto.CustomUserDetails;
+import com.goorm.insideout.chat.domain.Chat;
+import com.goorm.insideout.chatroom.repository.ChatRoomRepository;
+import com.goorm.insideout.chatroom.service.ChatRoomService;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
@@ -18,6 +21,7 @@ import com.goorm.insideout.meeting.dto.response.MeetingUserResponse;
 import com.goorm.insideout.meeting.repository.MeetingRepository;
 import com.goorm.insideout.meeting.repository.MeetingUserRepository;
 import com.goorm.insideout.user.domain.User;
+import com.goorm.insideout.userchatroom.repository.UserChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class MeetingUserService {
 	private final MeetingUserRepository meetingUserRepository;
 	private final MeetingRepository meetingRepository;
+	private final UserChatRoomRepository userChatRoomRepository;
 
 	@Transactional
 	public void meetingUserExpel(Long meetingUserId, User host) {
@@ -35,6 +40,8 @@ public class MeetingUserService {
 		Meeting meeting = meetingUser.getMeeting();
 		validateIsHost(host, meeting);
 		meetingUserRepository.deleteById(meetingUserId);
+
+		userChatRoomRepository.deleteByUserIdAndChatRoomId(host.getId(), meeting.getChatRoom().getId());
 	}
 
 	@Transactional
@@ -48,8 +55,9 @@ public class MeetingUserService {
 
 		MeetingUser meetingUser = meetingUserRepository.findByMeetingIdAndUserId(meeting.getId(), user.getId())
 			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_MEMBER));
-
 		meetingUserRepository.delete(meetingUser);
+
+		userChatRoomRepository.deleteByUserIdAndChatRoomId(user.getId(), meeting.getChatRoom().getId());
 	}
 
 	@Transactional
