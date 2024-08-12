@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,13 +68,11 @@ public class MeetingController {
 	@Operation(summary = "동아리 모임 생성 API", description = "동아리 모임을 생성하는 API 입니다.")
 	public ApiResponse<String> createClubMeeting(
 		@PathVariable Long clubId,
-		@RequestPart("request") MeetingCreateRequest request,
-		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
+		@RequestBody MeetingCreateRequest request,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
 		User user = customUserDetails.getUser();
 		Meeting meeting = meetingService.saveClubMeeting(request, user, clubId);
-		imageService.saveMeetingImages(multipartFiles, meeting.getId());
 
 		ChatRoom chatRoom = chatRoomService.createChatRoom(meeting.getId(), meeting.getTitle(), ChatRoomType.MEETING);
 		Meeting saveMeeting = meetingService.injectMeetingChatRoom(meeting.getId(), chatRoom);
