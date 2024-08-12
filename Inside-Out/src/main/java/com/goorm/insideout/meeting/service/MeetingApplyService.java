@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.goorm.insideout.club.repository.ClubUserRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
@@ -36,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MeetingApplyService {
+	private final ClubUserRepository clubUserRepository;
 	private final MeetingApplyRepository meetingApplyRepository;
 	private final MeetingRepository meetingRepository;
 	private final MeetingUserRepository meetingUserRepository;
@@ -89,6 +91,58 @@ public class MeetingApplyService {
 				answerDto.getQuestion(), answerDto.getAnswer());
 			meetingQuestionAnswerRepository.save(questionAnswer);
 		}
+	}
+
+	@Transactional
+	public Long clubMeetingApply(User user, Long meetingId) {
+		Meeting meeting = meetingRepository.findById(meetingId)
+			.orElseThrow(() -> ModongException.from(ErrorCode.MEETING_NOT_FOUND));
+
+		// 동아리 모임인지 확인
+		if (meeting.getClub() == null) {
+			throw ModongException.from(ErrorCode.MEETING_NOT_BELONG_CLUB);
+		}
+
+		// 사용자가 해당 동아리의 멤버인지 확인
+		Long clubId = meeting.getClub().getClubId();
+		if (!clubUserRepository.clubUserExistByClubId(clubId)) {
+			throw ModongException.from(ErrorCode.CLUB_USER_NOT_FOUND);
+		}
+
+		// 이미 가입되어있으면 에러 처리
+		Optional<MeetingUser> existingMeetingUser = meetingUserRepository.findByMeetingIdAndUserId(meetingId,
+			user.getId());
+		if (existingMeetingUser.isPresent()) {
+			throw ModongException.from(ErrorCode.MEETING_ALREADY_JOINED);
+		}
+
+		// 유저 나이 검증
+		int minimumAge = meeting.getMinimumAge();
+		int maximumAge = meeting.getMaximumAge();
+		LocalDate birthDate = user.getBirthDate();
+		int userAge = calculateAge(birthDate);
+		if (userAge < minimumAge || userAge > maximumAge) {
+			throw ModongException.from(ErrorCode.USER_AGE_NOT_IN_RANGE);
+		}
+
+		// 최대 수용 인원 검증
+		int currentParticipantsNumber = meeting.getParticipantsNumber();
+		int participantLimit = meeting.getParticipantLimit();
+		if (currentParticipantsNumber >= participantLimit) {
+			throw ModongException.from(ErrorCode.MEETING_PARTICIPANT_LIMIT_EXCEEDED);
+		}
+
+		// 모임 참여자 수 수정
+		meeting.increaseParticipantsNumber();
+		Meeting savedMeeting = meetingRepository.save(meeting);
+
+		// 모임 유저에 등록
+		MeetingUser meetingUser = MeetingUser.of(savedMeeting, user, Role.MEMBER);
+
+		// 채팅방에 초대
+		userChatRoomService.inviteUserToChatRoom(meeting.getChatRoom().getId(), meetingUser.getUser());
+
+		return meetingUserRepository.save(meetingUser).getId();
 	}
 
 	// 모임 신청 수락
