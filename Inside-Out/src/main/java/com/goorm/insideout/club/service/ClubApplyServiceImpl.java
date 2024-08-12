@@ -1,6 +1,8 @@
 package com.goorm.insideout.club.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,16 +68,10 @@ public class ClubApplyServiceImpl implements ClubApplyService {
 			throw new IllegalStateException();
 		}
 
-		String userBrithYear = Arrays.stream(user.getBirthDate().toString().split("-"))
-			.findFirst()
-			.orElseThrow(() -> ModongException.from(ErrorCode.USER_NOT_FOUND));
-		String nowYear = Arrays.stream(LocalDateTime.now().toString().split("-"))
-			.findFirst()
-			.orElseThrow(() -> ModongException.from(ErrorCode.INVALID_REQUEST));
-		int userAge = Integer.valueOf(nowYear) - Integer.valueOf(userBrithYear);
-
-		if (club.getMinAge() > userAge || userAge > club.getMaxAge()) {
-			throw new IllegalStateException();
+		LocalDate birthDate = user.getBirthDate();
+		int userAge = calculateAge(birthDate);
+		if (userAge < club.getMinAge() || userAge > club.getMaxAge()) {
+			throw ModongException.from(ErrorCode.USER_AGE_NOT_IN_RANGE);
 		}
 
 		List<ClubUser> members = getMembers(club.getClubId());
@@ -150,5 +146,13 @@ public class ClubApplyServiceImpl implements ClubApplyService {
 				return dto;
 			})
 			.collect(Collectors.toList());
+	}
+
+	private int calculateAge(LocalDate birthDate) {
+		LocalDate today = LocalDate.now();
+		if (birthDate != null) {
+			return Period.between(birthDate, today).getYears();
+		}
+		throw ModongException.from(ErrorCode.AGE_NOT_FOUND);
 	}
 }
