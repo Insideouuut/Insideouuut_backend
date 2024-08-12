@@ -105,28 +105,12 @@ public class MeetingService {
 		return meetingRepository.findByConditionAndSortType(condition);
 	}
 
-	public Page<MeetingResponse> findParticipatingMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
-				Progress.ONGOING, pageable)
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
-	}
-
 	public List<MeetingResponse> findParticipatingMeetings(User user) {
 		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
 			Progress.ONGOING);
 		return meetingUsers.stream()
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
-			.collect(Collectors.toList());
-	}
-
-	public Page<MeetingResponse> findRunningMeetings(User user, Pageable pageable) {
-		return meetingRepository.findRunningMeetings(user.getId(), Progress.ONGOING, pageable)
-			.map(MeetingResponse::of);
-	}
-
-	public Page<MeetingResponse> findEndedMeetings(User user, Pageable pageable) {
-		return meetingUserRepository.findEndedMeetings(user.getId(), Progress.ENDED, pageable)
-			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()));
+			.toList();
 	}
 
 	public List<MeetingResponse> findEndedMeetings(User user) {
@@ -134,7 +118,7 @@ public class MeetingService {
 			Progress.ENDED);
 		return meetingUsers.stream()
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
-			.collect(Collectors.toList());
+			.toList();
 	}
 
 	@Transactional
