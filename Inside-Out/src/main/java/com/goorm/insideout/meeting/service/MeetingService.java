@@ -15,7 +15,6 @@ import com.goorm.insideout.club.repository.ClubRepository;
 import com.goorm.insideout.global.exception.ErrorCode;
 import com.goorm.insideout.global.exception.ModongException;
 import com.goorm.insideout.meeting.domain.Meeting;
-import com.goorm.insideout.meeting.domain.MeetingApply;
 import com.goorm.insideout.meeting.domain.MeetingPlace;
 import com.goorm.insideout.meeting.domain.MeetingUser;
 import com.goorm.insideout.meeting.domain.Progress;
@@ -108,6 +107,19 @@ public class MeetingService {
 	public List<MeetingResponse> findParticipatingMeetings(User user) {
 		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingMeetingsByProgress(user.getId(),
 			Progress.ONGOING);
+		return meetingUsers.stream()
+			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
+			.toList();
+	}
+
+	public Page<MeetingResponse> findRunningMeetings(User user, Pageable pageable) {
+		return meetingRepository.findRunningMeetings(user.getId(), Progress.ONGOING, pageable)
+			.map(MeetingResponse::of);
+	}
+
+	public List<MeetingResponse> findParticipatingClubMeetings(User user, Long clubId) {
+		List<MeetingUser> meetingUsers = meetingUserRepository.findOngoingClubMeetingsByProgress(user.getId(),
+			clubId, Progress.ONGOING);
 		return meetingUsers.stream()
 			.map(meetingUser -> MeetingResponse.of(meetingUser.getMeeting()))
 			.toList();
