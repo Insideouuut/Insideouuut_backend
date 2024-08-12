@@ -26,6 +26,7 @@ import com.goorm.insideout.image.service.ImageService;
 import com.goorm.insideout.meeting.domain.Meeting;
 import com.goorm.insideout.meeting.dto.request.MeetingCreateRequest;
 import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
+import com.goorm.insideout.meeting.dto.response.MeetingCreateResponse;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
 import com.goorm.insideout.meeting.service.MeetingUserService;
@@ -49,7 +50,7 @@ public class MeetingController {
 
 	@PostMapping("/meetings")
 	@Operation(summary = "모임 생성 API", description = "모임을 생성하는 API 입니다.")
-	public ApiResponse<String> createMeeting(
+	public ApiResponse<MeetingCreateResponse> createMeeting(
 		@RequestPart("request") MeetingCreateRequest request,
 		@RequestPart("imageFiles") List<MultipartFile> multipartFiles,
 		@AuthenticationPrincipal CustomUserDetails customUserDetails
@@ -62,7 +63,7 @@ public class MeetingController {
 		Meeting saveMeeting = meetingService.injectMeetingChatRoom(meeting.getId(), chatRoom);
 		userChatRoomService.inviteUserToChatRoom(saveMeeting.getChatRoom().getId(), user);
 
-		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+		return new ApiResponse<>(MeetingCreateResponse.of(meeting));
 	}
 
 	@PostMapping("/clubs/{clubId}/meetings")
