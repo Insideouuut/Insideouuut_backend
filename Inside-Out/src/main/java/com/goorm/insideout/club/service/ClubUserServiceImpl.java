@@ -3,6 +3,7 @@ package com.goorm.insideout.club.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Modifying;
@@ -174,7 +175,7 @@ public class ClubUserServiceImpl implements ClubUserService {
 		return club.getMembers();
 	}
 
-	public boolean isOwner(Club club, User owner) {
-		return club.getOwner().getId().equals(owner.getId());
+	public boolean isOwner(Club club, User user) {
+		return Objects.equals(club.getOwner().getId(), user.getId());
 	}
 }
