@@ -22,6 +22,7 @@ public class MeetingResponse {
 	private String type;
 	private String name;
 	private String introduction;
+	private Long chatRoomId;
 	private int view;
 	private int like;
 	private boolean hasMembershipFee;
@@ -47,6 +48,7 @@ public class MeetingResponse {
 		this.id = meeting.getId();
 		this.type = meeting.getType().getName();
 		this.name = meeting.getTitle();
+		this.chatRoomId = meeting.getChatRoom().getId();
 		this.introduction = meeting.getDescription();
 		this.rules = new ArrayList<>(meeting.getRules());
 		this.joinQuestions = new ArrayList<>(meeting.getJoinQuestions());
