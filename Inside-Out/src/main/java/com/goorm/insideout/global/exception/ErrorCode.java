@@ -35,6 +35,7 @@ public enum ErrorCode {
 
 	// club
 	CLUB_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 동아리입니다."),
+	CLUB_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 동아리 사용자입니다."),
 	CLUB_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 동아리입니다."),
 	CLUB_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "동아리에 가입되어 있지 않습니다."),
 	CLUB_ALREADY_JOINED(HttpStatus.CONFLICT, "이미 가입된 동아리입니다."),
@@ -46,6 +47,7 @@ public enum ErrorCode {
 	// meeting
 	MEETING_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 모임입니다."),
 	MEETING_TYPE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 모임 타입입니다."),
+	MEETING_NOT_BELONG_CLUB(HttpStatus.FORBIDDEN, "동아리 모임이 아닙니다."),
 	MEETING_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 존재하는 모임입니다."),
 	MEETING_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "모임에 가입되어 있지 않습니다."),
 	MEETING_ALREADY_JOINED(HttpStatus.CONFLICT, "이미 가입된 모임입니다."),
