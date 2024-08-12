@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	private final WebSocketErrorHandler chatErrorHandler;
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/ws-stomp").setAllowedOriginPatterns("http://localhost:5173","http://localhost:3000","https://modong-backend.site").withSockJS();
+		registry.addEndpoint("/ws-stomp").setAllowedOriginPatterns("*").withSockJS();
 		registry.setErrorHandler(chatErrorHandler);
 	}
 
