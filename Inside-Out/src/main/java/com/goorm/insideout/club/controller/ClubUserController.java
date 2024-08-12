@@ -86,11 +86,11 @@ public class ClubUserController {
 	@Operation(summary = "동아리 멤버 지원 승인 API", description = "동아리 멤버 지원을 승인하는 API 입니다.")
 	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@PathVariable("clubId") Long clubId, @PathVariable("applyId") Long applyId) {
-		User owner = userDetails.getUser();
+		User user = userDetails.getUser();
 		Club club = clubService.findByClubId(clubId);
 		ClubApply clubApply = clubApplyService.findClubApplyById(applyId);
 
-		clubUserService.clubUserAccept(club, owner, applyId);
+		clubUserService.clubUserAccept(club, user, applyId);
 
 		ClubUser clubUser = clubUserService.clubUserFind(clubApply.getUserId(), clubId);
 
