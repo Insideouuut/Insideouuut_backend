@@ -28,14 +28,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/meetings")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @Tag(name = "MeetingApplyUserController", description = "모임 멤버 신청 관련 API")
 public class MeetingApplyController {
 
 	private final MeetingApplyService meetingApplyService;
 
-	@PostMapping("/{meetingId}/apply")
+	@PostMapping("/meetings/{meetingId}/apply")
 	@Operation(summary = "모임 참여 신청 API", description = "모임 참여 신청을 하는 API 입니다.")
 	public ApiResponse applyMeetingUser(@PathVariable Long meetingId,
 		@RequestBody MeetingApplyRequest requestDto,
@@ -45,7 +45,17 @@ public class MeetingApplyController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
-	@PostMapping("/apply/{applyId}/accept")
+	@PostMapping("clubs/meetings/{meetingId}/apply")
+	@Operation(summary = "동아리 모임 참여 API", description = "동아리 모임에 참여하는 API 입니다.")
+	public ApiResponse applyClubMeetingUser(
+		@PathVariable("meetingId") Long meetingId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+
+		meetingApplyService.clubMeetingApply(customUserDetails.getUser(), meetingId);
+		return new ApiResponse<>(ErrorCode.REQUEST_OK);
+	}
+
+	@PostMapping("/meetings/apply/{applyId}/accept")
 	@Operation(summary = "모임 참여 수락 API ", description = "모임 참여 신청을 수락하는 API 입니다.")
 	public ApiResponse acceptApply(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@PathVariable("applyId") Long applyId) {
@@ -54,7 +64,7 @@ public class MeetingApplyController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
-	@DeleteMapping("/apply/{applyId}/reject")
+	@DeleteMapping("/meetings/apply/{applyId}/reject")
 	@Operation(summary = "모임 참여 거부 API", description = "모임 참여 신청을 거부하는 API 입니다.")
 	public ApiResponse rejectApply(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@PathVariable("applyId") Long applyId) {
@@ -63,7 +73,7 @@ public class MeetingApplyController {
 		return new ApiResponse<>(ErrorCode.REQUEST_OK);
 	}
 
-	@GetMapping("/{meetingId}/apply")
+	@GetMapping("/meetings/{meetingId}/apply")
 	@Operation(summary = "모임 참여 신청자 조회 API", description = "모임 참여 신청자를 조회하는 API 입니다.")
 	public ApiResponse<List<MeetingApplyResponse>> findApplyList(@AuthenticationPrincipal CustomUserDetails userDetails,
 		@PathVariable("meetingId") Long meetingId) {
@@ -72,7 +82,7 @@ public class MeetingApplyController {
 		return new ApiResponse<List<MeetingApplyResponse>>(applyList);
 	}
 
-	@GetMapping("/pending")
+	@GetMapping("/meetings/pending")
 	@Operation(summary = "나의 승인대기 모임 목록 조회 API", description = "나의 승인대기 모임 목록을 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findPendingMeetings(
 		@AuthenticationPrincipal CustomUserDetails customUserDetails,
@@ -84,7 +94,7 @@ public class MeetingApplyController {
 		return new ApiResponse<>(pendingMeetings);
 	}
 
-	@GetMapping("/apply/{applyId}")
+	@GetMapping("/meetings/apply/{applyId}")
 	@Operation(summary = "지원자 신청서 보는 API", description = "지원자 신청서 보는 API 입니다.")
 	public ApiResponse<List<MeetingQuestionAnswerResponse>> getMeetingAnswers(@PathVariable("applyId") Long applyId) {
 		List<MeetingQuestionAnswerResponse> answers = meetingApplyService.getAnswersByApplyId(applyId);
