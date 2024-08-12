@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,7 +28,6 @@ import com.goorm.insideout.meeting.dto.request.MeetingUpdateRequest;
 import com.goorm.insideout.meeting.dto.response.MeetingCreateResponse;
 import com.goorm.insideout.meeting.dto.response.MeetingResponse;
 import com.goorm.insideout.meeting.service.MeetingService;
-import com.goorm.insideout.meeting.service.MeetingUserService;
 import com.goorm.insideout.user.domain.User;
 import com.goorm.insideout.userchatroom.service.UserChatRoomService;
 
@@ -43,7 +41,6 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "MeetingController", description = "모임 관련 API")
 public class MeetingController {
 	private final MeetingService meetingService;
-	private final MeetingUserService meetingUserService;
 	private final ImageService imageService;
 	private final ChatRoomService chatRoomService;
 	private final UserChatRoomService userChatRoomService;
@@ -109,22 +106,31 @@ public class MeetingController {
 	@GetMapping("/meetings/participating")
 	@Operation(summary = "나의 참여중인 모임 목록 조회 API", description = "나의 참여중인 모임 목록을 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findParticipatingMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser(),
-			pageable);
+		List<MeetingResponse> pendingMeetings = meetingService.findParticipatingMeetings(customUserDetails.getUser());
 
 		return new ApiResponse<>(pendingMeetings);
+	}
+
+	@GetMapping("/clubs/{clubId}/meetings/participating")
+	@Operation(summary = "나의 참여중인 모임 목록 조회 API", description = "나의 참여중인 모임 목록을 조회할 수 있는 API 입니다.")
+	public ApiResponse<MeetingResponse> findParticipatingMeetings(
+		@PathVariable Long clubId,
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
+	) {
+		List<MeetingResponse> clubMeetings = meetingService.findParticipatingClubMeetings(
+			customUserDetails.getUser(), clubId);
+
+		return new ApiResponse<>(clubMeetings);
 	}
 
 	@GetMapping("/meetings/ended")
 	@Operation(summary = "나의 종료된 모임 목록 조회 API", description = "나의 종료된 모임 목록을 조회할 수 있는 API 입니다.")
 	public ApiResponse<MeetingResponse> findClosedMeetings(
-		@AuthenticationPrincipal CustomUserDetails customUserDetails,
-		Pageable pageable
+		@AuthenticationPrincipal CustomUserDetails customUserDetails
 	) {
-		Page<MeetingResponse> pendingMeetings = meetingService.findEndedMeetings(customUserDetails.getUser(), pageable);
+		List<MeetingResponse> pendingMeetings = meetingService.findEndedMeetings(customUserDetails.getUser());
 
 		return new ApiResponse<>(pendingMeetings);
 	}
