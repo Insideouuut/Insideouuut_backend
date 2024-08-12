@@ -32,4 +32,8 @@ public interface ClubUserRepository extends JpaRepository<ClubUser,Long> {
 
 	@Transactional
 	Optional<ClubUser> findByUserId(Long userId);
+
+	@Query("select (count(c) > 0) from ClubUser c where c.club.clubId = ?1")
+	boolean clubUserExistByClubId(Long clubId);
+
 }
