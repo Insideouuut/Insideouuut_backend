@@ -38,13 +38,13 @@ public class ClubCommentController {
 
 	private final ClubCommentService clubCommentService;
 
-	@GetMapping("/{clubId}/posts/{postId}/comment")
+	@GetMapping("/{clubId}/posts/{postId}/comments")
 	@Operation(summary = "동아리 게시글 댓글 조회 API", description = "동아리 게시글의 댓글을 조회하는 API 입니다.")
 	public ApiResponse<List<ClubCommentListResponseDto>> findByClubPostId(@PathVariable Long postId) {
 		return new ApiResponse<List<ClubCommentListResponseDto>>(clubCommentService.findCommentsByClubPostId(postId));
 	}
 
-	@PostMapping("/{clubId}/posts/{postId}/comment")
+	@PostMapping("/{clubId}/posts/{postId}/comments")
 	@Operation(summary = "동아리 게시글 댓글 생성 API", description = "동아리 게시글의 댓글을 생성하는 API 입니다.")
 	public ApiResponse<ClubCommentResponseDto> saveClubComment(@PathVariable Long clubId, @PathVariable Long postId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails){
 
@@ -57,7 +57,7 @@ public class ClubCommentController {
 	}
 
 
-	@PutMapping("/{clubId}/posts/{postId}/comment/{commentId}")
+	@PutMapping("/{clubId}/posts/{postId}/comments/{commentId}")
 	@Operation(summary = "동아리 게시글 댓글 수정 API", description = "동아리 게시글의 댓글을 수정하는 API 입니다.")
 	public ApiResponse<ClubCommentResponseDto> updateClubComment(@PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @Valid @RequestBody ClubCommentRequestDto clubCommentRequestDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
@@ -71,7 +71,7 @@ public class ClubCommentController {
 
 	}
 
-	@DeleteMapping("/{clubId}/posts/{postId}/comment/{commentId}")
+	@DeleteMapping("/{clubId}/posts/{postId}/comments/{commentId}")
 	@Operation(summary = "동아리 게시글 댓글 삭제 API", description = "동아리 게시글의 댓글을 삭제하는 API 입니다.")
 	public ApiResponse deleteClubComment(@PathVariable Long clubId, @PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
