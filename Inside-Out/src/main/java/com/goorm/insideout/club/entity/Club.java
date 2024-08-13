@@ -113,7 +113,7 @@ public class Club {
 	@OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
 	private List<ClubLike> likes = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "club")
 	ChatRoom chatRoom;
 

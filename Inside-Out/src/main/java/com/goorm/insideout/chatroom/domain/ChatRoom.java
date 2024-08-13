@@ -52,7 +52,4 @@ public class ChatRoom {
 	@Column(name = "last_message_time") // 데이터베이스와 매핑됨
 	private LocalDateTime lastMessageTime;
 
-	@OneToOne(mappedBy = "chatRoom")
-	@OnDelete(action = OnDeleteAction.CASCADE)
-	Club club;
 }
