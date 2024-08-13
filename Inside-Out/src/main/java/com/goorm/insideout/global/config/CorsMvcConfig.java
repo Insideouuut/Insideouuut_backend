@@ -11,7 +11,7 @@ public class CorsMvcConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry corsRegistry) {
 
 		corsRegistry.addMapping("/**")
-			.allowedOrigins("http://localhost:5173","http://localhost:3000","https://modong-backend.site")
+			.allowedOrigins("https://modong.link","http://localhost:5173","http://localhost:3000","https://modong-backend.site")
 			.allowedMethods("GET", "POST", "PUT", "DELETE")
 			.allowedHeaders("Authorization", "Content-Type")
 			.exposedHeaders("Authorization")
