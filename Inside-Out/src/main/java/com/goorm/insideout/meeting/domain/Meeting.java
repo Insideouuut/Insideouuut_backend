@@ -103,7 +103,7 @@ public class Meeting {
 	@JoinColumn(name = "meeting_place_id")
 	private MeetingPlace meetingPlace;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "chatroom")
 	private ChatRoom chatRoom;
 
